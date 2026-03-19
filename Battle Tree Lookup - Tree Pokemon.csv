@@ -1,0 +1,997 @@
+#,Pokemon,Nature,Item,Move1,Move2,Move3,Move4,EV Spread,Mega Evolution,Species,Ability1,Ability2,AbilityH,evHP,evAtk,evDef,evSpA,evSpD,evSpe,HP,Atk,Def,SpA,SpD,Spe,HP,Atk,Def,SpA,SpD,Spe,Spe Tier
+0,Barbaracle-1,Adamant,Bright Powder,Stone Edge,Razor Shell,Shell Smash,Double Team,Atk/Spe,FALSE,Barbaracle,Tough Claws,Sniper,Pickpocket,0,252,0,0,0,252,72,105,115,54,86,68,147,172,135,66,106,120,120
+1,Hawlucha-1,Jolly,Salac Berry,Acrobatics,High Jump Kick,Feather Dance,Taunt,Atk/Spe,FALSE,Hawlucha,Limber,Unburden,Mold Breaker,0,252,0,0,0,252,78,92,75,74,63,118,153,144,95,84,83,187,187
+2,Carbink-1,Calm,Light Clay,Reflect,Light Screen,Safeguard,Dazzling Gleam,Def/SpD,FALSE,Carbink,Clear Body,Clear Body,Sturdy,0,0,252,0,252,0,50,50,150,50,150,50,125,63,202,70,222,70,70
+3,Pyroar-1,Timid,King's Rock,Flamethrower,Hyper Voice,Snarl,Noble Roar,Spe/SpA,FALSE,Pyroar,Rivalry,Unnerve,Moxie,0,0,0,252,0,252,86,68,72,109,66,106,161,79,92,161,86,173,173
+4,Avalugg-1,Relaxed,Leftovers,Avalanche,Confide,Protect,Toxic,HP/Def,FALSE,Avalugg,Own Tempo,Ice Body,Sturdy,252,0,252,0,0,0,95,117,184,44,46,28,202,137,259,64,66,43,43
+5,Tyrantrum-1,Relaxed,Lax Incense,Stealth Rock,Dragon Tail,Double Team,Earthquake,Def/SpD,FALSE,Tyrantrum,Strong Jaw,Strong Jaw,Rock Head,0,0,252,0,252,0,82,121,119,69,59,71,157,141,188,89,111,81,81
+6,Aurorus-1,Calm,Sitrus Berry,Substitute,Thunder Wave,Round,Thunderbolt,HP/SpD,FALSE,Aurorus,Refrigerate,Refrigerate,Snow Warning,252,0,0,0,252,0,123,77,72,99,92,58,230,87,92,119,158,78,78
+7,Talonflame-1,Timid,Charti Berry,Round,Me First,Will-O-Wisp,Flamethrower,Spe/SpA,FALSE,Talonflame,Flame Body,Flame Body,Gale Wings,0,0,0,252,0,252,78,81,71,74,69,126,153,90,91,126,89,195,195
+8,Sylveon-1,Calm,Misty Seed,Misty Terrain,Tail Whip,Helping Hand,Dazzling Gleam,HP/SpD,FALSE,Sylveon,Cute Charm,Cute Charm,Pixilate,252,0,0,0,252,0,95,65,65,110,130,60,202,76,85,130,200,80,80
+9,Chesnaught-1,Adamant,Leftovers,Taunt,Spiky Shield,Feint,Wood Hammer,Atk/Def,FALSE,Chesnaught,Overgrow,Overgrow,Bulletproof,0,252,252,0,0,0,88,107,122,74,75,64,163,174,174,84,95,84,84
+10,Delphox-1,Timid,Petaya Berry,Confide,Psychic,Flamethrower,Round,Spe/SpA,FALSE,Delphox,Blaze,Blaze,Magician,0,0,0,252,0,252,75,69,72,114,100,104,150,80,92,166,120,171,171
+11,Greninja-1,Calm,Leftovers,Mat Block,Spikes,Scald,Toxic,Def/SpD,FALSE,Greninja,Torrent,Torrent,Protean,0,0,252,0,252,0,72,95,67,103,71,122,147,103,119,123,135,142,142
+12,Gogoat-1,Impish,Yache Berry,Substitute,Horn Leech,Bulk Up,Payback,Def/SpD,FALSE,Gogoat,Sap Sipper,Sap Sipper,Grass Pelt,0,0,252,0,252,0,123,100,62,97,81,68,198,120,125,105,133,88,88
+13,Noivern-1,Timid,Yache Berry,Super Fang,Boomburst,Round,Torment,Spe/SpA,FALSE,Noivern,Frisk,Infiltrator,Telepathy,0,0,0,252,0,252,85,70,80,97,80,123,160,81,100,149,100,192,192
+14,Florges-1,Sassy,Babiri Berry,Flower Shield,Dazzling Gleam,Energy Ball,Wish,Def/SpD,FALSE,Florges,Flower Veil,Flower Veil,Symbiosis,0,0,252,0,252,0,78,65,68,112,154,75,153,85,120,132,226,85,85
+15,Goodra-1,Modest,Lax Incense,Substitute,Muddy Water,Dragon Pulse,Sludge Wave,SpA/SpD,FALSE,Goodra,Sap Sipper,Hydration,Gooey,0,0,0,252,252,0,90,100,70,110,150,80,165,108,90,178,202,100,100
+16,Trevenant-1,Modest,Wise Glasses,Psychic,Shadow Ball,Energy Ball,Round,SpA/SpD,FALSE,Trevenant,Natural Cure,Frisk,Harvest,0,0,0,252,252,0,85,110,76,65,82,56,160,117,96,128,134,76,76
+17,Gourgeist (Average Size)-1,Impish,Sitrus Berry,Will-O-Wisp,Trick-or-Treat,Pain Split,Phantom Force,HP/Def,FALSE,Gourgeist (Average Size),Pickup,Frisk,Insomnia,252,0,252,0,0,0,65,90,122,58,75,84,172,110,191,70,95,104,104
+18,Clawitzer-1,Calm,Bright Powder,Heal Pulse,Muddy Water,Double Team,Confide,Def/SpD,FALSE,Clawitzer,Mega Launcher,Mega Launcher,Mega Launcher,0,0,252,0,252,0,71,73,88,120,89,59,146,83,140,140,155,79,79
+19,Beedrill-1,Adamant,Expert Belt,Poison Jab,Pursuit,Fell Stinger,Toxic,Atk/Spe,FALSE,Beedrill,Swarm,Swarm,Sniper,0,252,0,0,0,252,65,90,40,45,80,75,140,156,60,58,100,127,127
+20,Aromatisse-1,Calm,Lax Incense,Charm,Sweet Kiss,Attract,Draining Kiss,HP/SpD,FALSE,Aromatisse,Healer,Healer,Aroma Veil,252,0,0,0,252,0,101,72,72,99,89,29,208,82,92,119,155,49,49
+21,Minior (Meteor Form)-1,Sassy,Light Clay,U-turn,Rock Tomb,Light Screen,Reflect,HP/SpD,FALSE,Minior (Meteor Form),Shields Down,Shields Down,Shields Down,252,0,0,0,252,0,60,60,100,60,100,60,167,80,120,80,167,72,72
+22,Oricorio (Sensu Style)-1,Calm,Weakness Policy,Revelation Dance,Pluck,Calm Mind,Baton Pass,HP/SpD,FALSE,Oricorio (Sensu Style),Dancer,Dancer,Dancer,252,0,0,0,252,0,75,70,70,98,70,93,182,81,90,118,134,113,113
+23,Lycanroc (Midday Form)-1,Naughty,Rockium Z,Stealth Rock,Accelerock,Rock Polish,Rock Climb,HP/Atk/Def,FALSE,Lycanroc (Midday Form),Keen Eye,Sand Rush,Steadfast,170,170,170,0,0,0,75,115,65,55,65,112,171,171,106,75,76,132,132
+24,Comfey-1,Modest,Petaya Berry,Energy Ball,Flower Shield,Dazzling Gleam,Endure,HP/SpA,FALSE,Comfey,Flower Veil,Triage,Natural Cure,252,0,0,252,0,0,51,52,90,82,110,100,158,64,110,147,130,120,120
+25,Toxapex-1,Sassy,Poisonium Z,Toxic Spikes,Venom Drench,Venoshock,Scald,HP/Def/SpD,FALSE,Toxapex,Merciless,Limber,Regenerator,170,0,170,0,170,0,50,63,152,53,142,35,146,83,193,73,201,49,49
+26,Golisopod-1,Modest,Eject Button,First Impression,Struggle Bug,Scald,Ice Beam,HP/SpA,FALSE,Golisopod,Emergency Exit,Emergency Exit,Emergency Exit,252,0,0,252,0,0,75,125,140,60,90,40,182,130,160,123,110,60,60
+27,Lurantis-1,Modest,Smooth Rock,Solar Beam,Weather Ball,Sunny Day,Synthesis,SpA/SpD,FALSE,Lurantis,Leaf Guard,Leaf Guard,Contrary,0,0,0,252,252,0,70,105,90,80,90,45,145,112,110,145,142,65,65
+28,Ribombee-1,Naive,Big Root,Substitute,Leech Life,Draining Kiss,Stun Spore,HP/Spe,FALSE,Ribombee,Honey Gather,Shield Dust,Sweet Veil,252,0,0,0,0,252,60,55,60,95,70,124,167,75,80,115,81,193,193
+29,Vikavolt-1,Quiet,Focus Band,Charge Beam,Energy Ball,Mud-Slap,Charge,Def/SpA,FALSE,Vikavolt,Levitate,Levitate,Levitate,0,0,252,252,0,0,77,70,90,145,75,43,152,90,142,216,95,56,56
+30,Mudsdale-1,Sassy,Sitrus Berry,Counter,Rest,Sleep Talk,Payback,HP/SpD,FALSE,Mudsdale,Own Tempo,Stamina,Inner Focus,252,0,0,0,252,0,100,125,100,55,85,35,207,145,120,75,150,49,49
+31,Decidueye-1,Naive,Flyinium Z,Brave Bird,Feather Dance,Ominous Wind,Defog,HP/Atk/Spe,FALSE,Decidueye,Overgrow,Overgrow,Long Reach,170,170,0,0,0,170,78,107,75,100,100,70,174,148,95,120,108,122,122
+32,Incineroar-1,Naughty,Razor Fang,Brutal Swing,Fire Fang,Bulk Up,Lick,Atk/Spe,FALSE,Incineroar,Blaze,Blaze,Intimidate,0,252,0,0,0,252,95,115,90,80,90,60,170,183,110,100,99,112,112
+33,Primarina-1,Lax,Mystic Water,Bubble Beam,Shadow Ball,Energy Ball,Aqua Ring,HP/SpD,FALSE,Primarina,Torrent,Torrent,Liquid Voice,252,0,0,0,252,0,80,74,74,126,116,60,187,94,103,146,151,80,80
+34,Araquanid-1,Relaxed,Bright Powder,Double Team,Toxic,Stockpile,Aqua Ring,HP/Def,FALSE,Araquanid,Water Bubble,Water Bubble,Water Absorb,252,0,252,0,0,0,68,70,92,50,132,42,175,90,158,70,152,55,55
+35,Bewear-1,Sassy,Persim Berry,Thrash,Brutal Swing,Low Sweep,Wide Guard,Atk/SpD,FALSE,Bewear,Fluffy,Klutz,Unnerve,0,252,0,0,252,0,120,125,80,55,60,60,195,177,100,75,123,72,72
+36,Turtonator-1,Sassy,Rocky Helmet,Shell Trap,Dragon Tail,Fire Spin,Taunt,HP/SpD,FALSE,Turtonator,Shell Armor,Shell Armor,Shell Armor,252,0,0,0,252,0,60,78,135,91,85,36,167,98,155,111,150,50,50
+37,Bruxish-1,Modest,Wacan Berry,Psychic,Scald,Blizzard,Disable,HP/SpA,FALSE,Bruxish,Dazzling,Strong Jaw,Wonder Skin,252,0,0,252,0,0,68,105,70,70,70,92,175,112,90,134,90,112,112
+38,Drampa-1,Lax,Shell Bell,Thunderbolt,Flamethrower,Surf,Dragon Pulse,HP/Def,FALSE,Drampa,Berserk,Sap Sipper,Cloud Nine,252,0,252,0,0,0,78,60,85,135,91,36,185,80,150,155,99,56,56
+39,Dhelmise-1,Brave,Float Stone,Heavy Slam,Shadow Claw,Switcheroo,Energy Ball,HP/Atk/SpA,FALSE,Dhelmise,Steelworker,Steelworker,Steelworker,170,170,0,170,0,0,70,131,100,86,90,40,166,189,120,127,110,54,54
+40,Togedemaru-1,Impish,Rocky Helmet,Spiky Shield,Wish,Nuzzle,Reflect,HP/Def,FALSE,Togedemaru,Iron Barbs,Lightning Rod,Sturdy,252,0,252,0,0,0,65,98,63,40,73,96,172,118,126,54,93,116,116
+41,Azelf-1,Adamant,Weakness Policy,Explosion,Payback,Acrobatics,Rest,HP/Atk,FALSE,Azelf,Levitate,Levitate,Levitate,252,252,0,0,0,0,75,125,70,125,70,115,182,194,90,130,90,135,135
+42,Kommo-o-1,Sassy,Focus Sash,Counter,Reversal,Dragon Tail,Taunt,HP/SpD,FALSE,Kommo-o,Bulletproof,Soundproof,Overcoat,252,0,0,0,252,0,75,110,125,100,105,85,182,130,145,120,172,94,94
+43,Uxie-1,Bold,Chesto Berry,Calm Mind,Rest,Extrasensory,Thunder Wave,HP/Def/SpD,FALSE,Uxie,Levitate,Levitate,Levitate,170,0,170,0,170,0,75,75,130,75,130,95,171,85,188,95,171,115,115
+44,Mesprit-1,Adamant,Flame Orb,Acrobatics,U-turn,Facade,Fling,HP/Atk,FALSE,Mesprit,Levitate,Levitate,Levitate,252,252,0,0,0,0,80,105,105,105,105,80,187,172,125,112,125,100,100
+45,Rotom (Heat Rotom)-1,Mild,Sitrus Berry,Thunder Wave,Electro Ball,Double Team,Ominous Wind,HP/SpA,FALSE,Rotom (Heat Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,85,114,172,127,106,106
+46,Rotom (Wash Rotom)-1,Quiet,Leftovers,Charge Beam,Confuse Ray,Double Team,Substitute,HP/SpA,FALSE,Rotom (Wash Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,85,127,172,127,95,95
+47,Rotom (Mow Rotom)-1,Lax,Light Clay,Reflect,Light Screen,Volt Switch,Leaf Storm,HP/Def,FALSE,Rotom (Mow Rotom),Levitate,Levitate,Levitate,252,0,252,0,0,0,50,65,107,105,107,86,157,85,174,125,114,106,106
+48,Rotom (Frost Rotom)-1,Calm,Bright Powder,Double Team,Charge Beam,Charge,Ominous Wind,HP/SpD,FALSE,Rotom (Frost Rotom),Levitate,Levitate,Levitate,252,0,0,0,252,0,50,65,107,105,107,86,157,76,127,125,174,106,106
+49,Rotom (Fan Rotom)-1,Sassy,Damp Rock,Rain Dance,Thunder,Air Slash,Shadow Ball,HP/SpD,FALSE,Rotom (Fan Rotom),Levitate,Levitate,Levitate,252,0,0,0,252,0,50,65,107,105,107,86,157,85,127,125,174,95,95
+50,Electivire-1,Naive,Bright Powder,Thunder Wave,Focus Punch,Rock Slide,Fire Punch,Atk/Spe,FALSE,Electivire,Motor Drive,Motor Drive,Vital Spirit,0,252,0,0,0,252,75,123,67,95,85,95,150,175,87,115,94,161,161
+51,Magmortar-1,Lonely,Quick Claw,Will-O-Wisp,Confuse Ray,Thunder Punch,Fire Punch,HP/Atk,FALSE,Magmortar,Flame Body,Flame Body,Vital Spirit,252,252,0,0,0,0,75,95,67,125,95,83,182,161,78,145,115,103,103
+52,Barbaracle-2,Modest,Wise Glasses,Ancient Power,Blizzard,Surf,Focus Blast,Def/SpA,FALSE,Barbaracle,Tough Claws,Sniper,Pickpocket,0,0,252,252,0,0,72,105,115,54,86,68,147,112,167,116,106,88,88
+53,Hawlucha-2,Careful,Leftovers,Toxic,Bounce,Roost,Protect,Def/SpD,FALSE,Hawlucha,Limber,Unburden,Mold Breaker,0,0,252,0,252,0,78,92,75,74,63,118,153,112,127,84,126,138,138
+54,Carbink-2,Bold,Smooth Rock,Toxic,Protect,Sandstorm,Power Gem,Def/SpD,FALSE,Carbink,Clear Body,Clear Body,Sturdy,0,0,252,0,252,0,50,50,150,50,150,50,125,63,222,70,202,70,70
+55,Pyroar-2,Timid,Heat Rock,Sunny Day,Hyper Voice,Fire Blast,Solar Beam,Spe/SpA,FALSE,Pyroar,Rivalry,Unnerve,Moxie,0,0,0,252,0,252,86,68,72,109,66,106,161,79,92,161,86,173,173
+56,Avalugg-2,Careful,Apicot Berry,Rest,Curse,Frost Breath,Skull Bash,Def/SpD,FALSE,Avalugg,Own Tempo,Ice Body,Sturdy,0,0,252,0,252,0,95,117,184,44,46,28,170,137,236,57,107,48,48
+57,Tyrantrum-2,Impish,Leftovers,Crunch,Charm,Sandstorm,Dragon Claw,Def/SpD,FALSE,Tyrantrum,Strong Jaw,Strong Jaw,Rock Head,0,0,252,0,252,0,82,121,119,69,59,71,157,141,188,80,111,91,91
+58,Aurorus-2,Calm,Leftovers,Ancient Power,Hail,Sandstorm,Freeze-Dry,HP/SpD,FALSE,Aurorus,Refrigerate,Refrigerate,Snow Warning,252,0,0,0,252,0,123,77,72,99,92,58,230,87,92,119,158,78,78
+59,Talonflame-2,Timid,Heat Rock,Round,Fire Blast,Sunny Day,Solar Beam,Spe/SpA,FALSE,Talonflame,Flame Body,Flame Body,Gale Wings,0,0,0,252,0,252,78,81,71,74,69,126,153,90,91,126,89,195,195
+60,Sylveon-2,Calm,Ganlon Berry,Baton Pass,Calm Mind,Psych Up,Moonblast,Def/SpD,FALSE,Sylveon,Cute Charm,Cute Charm,Pixilate,0,0,252,0,252,0,95,65,65,110,130,60,170,76,117,130,200,80,80
+61,Chesnaught-2,Adamant,Expert Belt,Dragon Claw,Seed Bomb,Earthquake,Brick Break,Atk/Def,FALSE,Chesnaught,Overgrow,Overgrow,Bulletproof,0,252,252,0,0,0,88,107,122,74,75,64,163,174,174,84,95,84,84
+62,Delphox-2,Modest,Flame Orb,Role Play,Switcheroo,Mystical Fire,Shadow Ball,Spe/SpA,FALSE,Delphox,Blaze,Blaze,Magician,0,0,0,252,0,252,75,69,72,114,100,104,150,80,92,182,120,156,156
+63,Greninja-2,Timid,Damp Rock,Rain Dance,Surf,Round,Ice Beam,Spe/SpA,FALSE,Greninja,Torrent,Torrent,Protean,0,0,0,252,0,252,72,95,67,103,71,122,147,103,87,155,91,191,191
+64,Gogoat-2,Quiet,Occa Berry,Surf,Energy Ball,Rock Slide,Grass Knot,Atk/SpA,FALSE,Gogoat,Sap Sipper,Sap Sipper,Grass Pelt,0,252,0,252,0,0,123,100,62,97,81,68,198,152,82,163,101,79,79
+65,Noivern-2,Adamant,Roseli Berry,Dragon Claw,Wild Charge,X-Scissor,Acrobatics,Atk/Spe,FALSE,Noivern,Frisk,Infiltrator,Telepathy,0,252,0,0,0,252,85,70,80,97,80,123,160,134,100,105,100,175,175
+66,Florges-2,Quiet,Kebia Berry,Misty Terrain,Grassy Terrain,Nature Power,Round,SpA/SpD,FALSE,Florges,Flower Veil,Flower Veil,Symbiosis,0,0,0,252,252,0,78,65,68,112,154,75,153,85,88,180,206,85,85
+67,Goodra-2,Careful,Lum Berry,Aqua Tail,Body Slam,Earthquake,Outrage,Atk/SpD,FALSE,Goodra,Sap Sipper,Hydration,Gooey,0,252,0,0,252,0,90,100,70,110,150,80,165,152,90,117,222,100,100
+68,Trevenant-2,Careful,Leftovers,Toxic,Ingrain,Protect,Phantom Force,Def/SpD,FALSE,Trevenant,Natural Cure,Frisk,Harvest,0,0,252,0,252,0,85,110,76,65,82,56,160,130,128,76,147,76,76
+69,Gourgeist (Average Size)-2,Impish,Iron Ball,Trick Room,Gyro Ball,Seed Bomb,Explosion,HP/Def/SpD,FALSE,Gourgeist (Average Size),Pickup,Frisk,Insomnia,170,0,170,0,170,0,65,90,122,58,75,84,161,110,179,70,116,104,52
+70,Clawitzer-2,Modest,Petaya Berry,Flash Cannon,Scald,Sludge Wave,Round,SpA/SpD,FALSE,Clawitzer,Mega Launcher,Mega Launcher,Mega Launcher,0,0,0,252,252,0,71,73,88,120,89,59,146,83,108,189,141,79,79
+71,Beedrill-2,Calm,Occa Berry,Infestation,Protect,Attract,Toxic,HP/SpD,FALSE,Beedrill,Swarm,Swarm,Sniper,252,0,0,0,252,0,65,90,40,45,80,75,172,99,60,65,145,95,95
+72,Aromatisse-2,Calm,Assault Vest,Round,Psychic,Energy Ball,Dazzling Gleam,SpA/SpD,FALSE,Aromatisse,Healer,Healer,Aroma Veil,0,0,0,252,252,0,101,72,72,99,89,29,176,82,92,151,155,49,49
+73,Probopass-1,Impish,Chesto Berry,Thunder Wave,Double Team,Rest,Magnet Bomb,HP/Def,FALSE,Probopass,Sturdy,Magnet Pull,Sand Force,252,0,252,0,0,0,60,55,145,75,150,40,167,75,216,85,170,60,60
+74,Lickilicky-1,Modest,Expert Belt,Blizzard,Muddy Water,Fire Blast,Thunder,HP/SpA,FALSE,Lickilicky,Own Tempo,Oblivious,Cloud Nine,252,0,0,252,0,0,110,85,95,80,95,50,217,94,115,145,115,70,70
+75,Minior (Meteor Form)-2,Bold,Absorb Bulb,Confuse Ray,Cosmic Power,Ancient Power,Charge Beam,HP/Def/SpD,FALSE,Minior (Meteor Form),Shields Down,Shields Down,Shields Down,170,0,170,0,170,0,60,60,100,60,100,60,156,72,155,80,141,80,80
+76,Oricorio (Pa'u Style)-1,Hasty,Charti Berry,Revelation Dance,Teeter Dance,Feather Dance,Acrobatics,HP/Spe,FALSE,Oricorio (Pa'u Style),Dancer,Dancer,Dancer,252,0,0,0,0,252,75,70,70,98,70,93,182,90,81,118,90,159,159
+77,Lycanroc (Midnight Form)-1,Calm,Focus Sash,Counter,Reversal,Sucker Punch,Rock Slide,HP/SpD,FALSE,Lycanroc (Midnight Form),Keen Eye,Vital Spirit,No Guard,252,0,0,0,252,0,85,115,75,55,75,82,192,121,95,75,139,102,102
+78,Comfey-2,Adamant,Muscle Band,U-turn,Play Rough,Petal Dance,Acrobatics,Atk/Spe,FALSE,Comfey,Flower Veil,Triage,Natural Cure,0,252,0,0,0,252,51,52,90,82,110,100,126,114,110,91,130,152,152
+79,Toxapex-2,Quiet,Wacan Berry,Sludge Wave,Surf,Blizzard,Wide Guard,HP/SpA/SpD,FALSE,Toxapex,Merciless,Limber,Regenerator,170,0,0,170,170,0,50,63,152,53,142,35,146,83,172,103,183,49,49
+80,Golisopod-2,Lonely,Sitrus Berry,Swords Dance,Leech Life,Razor Shell,Sucker Punch,HP/Atk,FALSE,Golisopod,Emergency Exit,Emergency Exit,Emergency Exit,252,252,0,0,0,0,75,125,140,60,90,40,182,194,144,80,110,60,60
+81,Lurantis-2,Sassy,Grassium Z,Solar Blade,Ingrain,Synthesis,Giga Drain,HP/SpD,FALSE,Lurantis,Leaf Guard,Leaf Guard,Contrary,252,0,0,0,252,0,70,105,90,80,90,45,177,125,110,100,156,58,58
+82,Ribombee-2,Timid,Light Clay,Pollen Puff,Reflect,Light Screen,U-turn,HP/Spe,FALSE,Ribombee,Honey Gather,Shield Dust,Sweet Veil,252,0,0,0,0,252,60,55,60,95,70,124,167,67,80,115,90,193,193
+83,Vikavolt-2,Impish,Magnet,Wild Charge,Bug Bite,Sky Drop,Electroweb,HP/Def/SpD,FALSE,Vikavolt,Levitate,Levitate,Levitate,170,0,170,0,170,0,77,70,90,145,75,43,173,90,144,148,116,63,63
+84,Mudsdale-2,Naughty,Rindo Berry,Earthquake,Superpower,Rock Tomb,Roar,HP/Atk,FALSE,Mudsdale,Own Tempo,Stamina,Inner Focus,252,252,0,0,0,0,100,125,100,55,85,35,207,194,120,75,94,55,55
+85,Decidueye-2,Calm,Sitrus Berry,Curse,Confuse Ray,Roost,Energy Ball,HP/SpD,FALSE,Decidueye,Overgrow,Overgrow,Long Reach,252,0,0,0,252,0,78,107,75,100,100,70,185,114,95,120,167,90,90
+86,Incineroar-2,Modest,Firium Z,Fake Out,Heat Wave,Snarl,Will-O-Wisp,HP/SpA,FALSE,Incineroar,Blaze,Blaze,Intimidate,252,0,0,252,0,0,95,115,90,80,90,60,202,121,110,145,110,80,80
+87,Primarina-2,Mild,Normalium Z,Hyper Voice,Disarming Voice,Growl,Sing,HP/Def/SpD,FALSE,Primarina,Torrent,Torrent,Liquid Voice,170,0,170,0,170,0,80,74,74,126,116,60,176,94,103,160,157,80,80
+88,Araquanid-2,Relaxed,Sitrus Berry,Mirror Coat,Leech Life,Blizzard,Scald,HP/Def,FALSE,Araquanid,Water Bubble,Water Bubble,Water Absorb,252,0,252,0,0,0,68,70,92,50,132,42,175,90,158,70,152,55,55
+89,Bewear-2,Careful,Chesto Berry,Bulk Up,Rest,Force Palm,Payback,HP/SpD,FALSE,Bewear,Fluffy,Klutz,Unnerve,252,0,0,0,252,0,120,125,80,55,60,60,227,145,100,67,123,80,80
+90,Turtonator-2,Calm,Smooth Rock,Shell Trap,Solar Beam,Flamethrower,Sunny Day,HP/SpD,FALSE,Turtonator,Shell Armor,Shell Armor,Shell Armor,252,0,0,0,252,0,60,78,135,91,85,36,167,88,155,111,150,56,56
+91,Bruxish-2,Brave,Normalium Z,Aqua Jet,Screech,Confide,Facade,HP/Atk,FALSE,Bruxish,Dazzling,Strong Jaw,Wonder Skin,252,252,0,0,0,0,68,105,70,70,70,92,175,172,90,90,90,100,100
+92,Drampa-2,Bold,Sitrus Berry,Roost,Snarl,Play Nice,Dragon Breath,HP/Def,FALSE,Drampa,Berserk,Sap Sipper,Cloud Nine,252,0,252,0,0,0,78,60,85,135,91,36,185,72,150,155,111,56,56
+93,Dhelmise-2,Modest,Steelium Z,Metal Sound,Flash Cannon,Energy Ball,Shadow Ball,HP/SpA,FALSE,Dhelmise,Steelworker,Steelworker,Steelworker,252,0,0,252,0,0,70,131,100,86,90,40,177,135,120,151,110,60,60
+94,Togedemaru-2,Hasty,Terrain Extender,Electric Terrain,Wild Charge,Fake Out,U-turn,HP/Spe,FALSE,Togedemaru,Iron Barbs,Lightning Rod,Sturdy,252,0,0,0,0,252,65,98,63,40,73,96,172,118,74,60,93,162,162
+95,Azelf-2,Naive,Electrium Z,Charge Beam,Extrasensory,Thunder Wave,Grass Knot,Spe/SpA,FALSE,Azelf,Levitate,Levitate,Levitate,0,0,0,252,0,252,75,125,70,125,70,115,150,145,90,177,81,183,183
+96,Kommo-o-2,Jolly,Cheri Berry,Dragon Dance,Dragon Claw,Brick Break,Rock Slide,Atk/Spe,FALSE,Kommo-o,Bulletproof,Soundproof,Overcoat,0,252,0,0,0,252,75,110,125,100,105,85,150,162,145,108,125,150,150
+97,Uxie-2,Calm,Psychium Z,Future Sight,Memento,U-turn,Reflect,HP/SpD,FALSE,Uxie,Levitate,Levitate,Levitate,252,0,0,0,252,0,75,75,130,75,130,95,182,85,150,95,200,115,115
+98,Mesprit-2,Calm,Bright Powder,Future Sight,Healing Wish,Copycat,Thunder Wave,HP/SpD,FALSE,Mesprit,Levitate,Levitate,Levitate,252,0,0,0,252,0,80,105,105,105,105,80,187,112,125,125,172,100,100
+99,Rotom (Heat Rotom)-2,Calm,Bright Powder,Will-O-Wisp,Hex,Confuse Ray,Charge Beam,HP/SpD,FALSE,Rotom (Heat Rotom),Levitate,Levitate,Levitate,252,0,0,0,252,0,50,65,107,105,107,86,157,76,127,125,174,106,106
+100,Rotom (Wash Rotom)-2,Timid,Choice Scarf,Trick,Thunder Wave,Discharge,Hydro Pump,HP/Spe,FALSE,Rotom (Wash Rotom),Levitate,Levitate,Levitate,252,0,0,0,0,252,50,65,107,105,107,86,157,76,127,125,127,151,226.5
+101,Rotom (Mow Rotom)-2,Sassy,Sitrus Berry,Will-O-Wisp,Hex,Charge,Charge Beam,HP/SpD,FALSE,Rotom (Mow Rotom),Levitate,Levitate,Levitate,252,0,0,0,252,0,50,65,107,105,107,86,157,85,127,125,174,95,95
+102,Rotom (Frost Rotom)-2,Relaxed,Light Clay,Blizzard,Discharge,Reflect,Light Screen,HP/Def/SpD,FALSE,Rotom (Frost Rotom),Levitate,Levitate,Levitate,170,0,170,0,170,0,50,65,107,105,107,86,146,85,162,125,148,95,95
+103,Rotom (Fan Rotom)-2,Timid,Sitrus Berry,Will-O-Wisp,Hex,Volt Switch,Confuse Ray,Spe/SpA,FALSE,Rotom (Fan Rotom),Levitate,Levitate,Levitate,0,0,0,252,0,252,50,65,107,105,107,86,125,76,127,157,127,151,151
+104,Barbaracle-3,Adamant,Expert Belt,Dragon Claw,Earthquake,X-Scissor,Night Slash,Atk/Def,FALSE,Barbaracle,Tough Claws,Sniper,Pickpocket,0,252,252,0,0,0,72,105,115,54,86,68,147,172,167,66,106,88,88
+105,Hawlucha-3,Adamant,Liechi Berry,Swords Dance,Flying Press,Acrobatics,Steel Wing,Atk/Spe,FALSE,Hawlucha,Limber,Unburden,Mold Breaker,0,252,0,0,0,252,78,92,75,74,63,118,153,158,95,84,83,170,170
+106,Carbink-3,Quiet,Iron Ball,Trick Room,Gyro Ball,Dazzling Gleam,Power Gem,SpA/SpD,FALSE,Carbink,Clear Body,Clear Body,Sturdy,0,0,0,252,252,0,50,50,150,50,150,50,125,70,170,112,202,63,31.5
+107,Pyroar-3,Adamant,Lum Berry,Return,Fire Fang,Wild Charge,Crunch,Atk/Spe,FALSE,Pyroar,Rivalry,Unnerve,Moxie,0,252,0,0,0,252,86,68,72,109,66,106,161,132,92,116,86,158,158
+108,Avalugg-3,Bold,Icy Rock,Hail,Blizzard,Recover,Flash Cannon,Def/SpD,FALSE,Avalugg,Own Tempo,Ice Body,Sturdy,0,0,252,0,252,0,95,117,184,44,46,28,170,123,259,64,98,48,48
+109,Tyrantrum-3,Impish,Wide Lens,Horn Drill,Stone Edge,Rest,Sleep Talk,HP/Def,FALSE,Tyrantrum,Strong Jaw,Strong Jaw,Rock Head,252,0,252,0,0,0,82,121,119,69,59,71,189,141,188,80,79,91,91
+110,Aurorus-3,Adamant,Expert Belt,Giga Impact,Earthquake,Stone Edge,Frost Breath,Atk/SpD,FALSE,Aurorus,Refrigerate,Refrigerate,Snow Warning,0,252,0,0,252,0,123,77,72,99,92,58,198,141,92,107,144,78,78
+111,Talonflame-3,Jolly,Focus Sash,Swords Dance,Quick Attack,Flail,Acrobatics,Def/Spe,FALSE,Talonflame,Flame Body,Flame Body,Gale Wings,0,0,252,0,0,252,78,81,71,74,69,126,153,101,123,84,89,195,195
+112,Sylveon-3,Modest,Razor Claw,Moonblast,Shadow Ball,Round,Psyshock,SpA/SpD,FALSE,Sylveon,Cute Charm,Cute Charm,Pixilate,0,0,0,252,252,0,95,65,65,110,130,60,170,76,85,178,182,80,80
+113,Chesnaught-3,Modest,Life Orb,Focus Blast,Energy Ball,Sludge Bomb,Round,Def/SpA,FALSE,Chesnaught,Overgrow,Overgrow,Bulletproof,0,0,252,252,0,0,88,107,122,74,75,64,163,114,174,138,95,84,84
+114,Delphox-3,Timid,Heat Rock,Sunny Day,Solar Beam,Fire Blast,Psychic,Spe/SpA,FALSE,Delphox,Blaze,Blaze,Magician,0,0,0,252,0,252,75,69,72,114,100,104,150,80,92,166,120,171,171
+115,Greninja-3,Jolly,King's Rock,Water Shuriken,Rock Slide,Grass Knot,U-turn,Atk/Spe,FALSE,Greninja,Torrent,Torrent,Protean,0,252,0,0,0,252,72,95,67,103,71,122,147,147,87,110,91,191,191
+116,Gogoat-3,Sassy,Big Root,Horn Leech,Leech Seed,Protect,Payback,HP/Atk,FALSE,Gogoat,Sap Sipper,Sap Sipper,Grass Pelt,252,252,0,0,0,0,123,100,62,97,81,68,230,152,82,117,111,79,79
+117,Noivern-3,Modest,Razor Fang,Air Slash,Dragon Pulse,Flamethrower,Psychic,Spe/SpA,FALSE,Noivern,Frisk,Infiltrator,Telepathy,0,0,0,252,0,252,85,70,80,97,80,123,160,81,100,163,100,175,175
+118,Florges-3,Modest,Kebia Berry,Calm Mind,Grass Knot,Psychic,Moonblast,SpA/SpD,FALSE,Florges,Flower Veil,Flower Veil,Symbiosis,0,0,0,252,252,0,78,65,68,112,154,75,153,76,88,180,206,95,95
+119,Goodra-3,Modest,Damp Rock,Dragon Pulse,Rain Dance,Thunder,Muddy Water,SpA/SpD,FALSE,Goodra,Sap Sipper,Hydration,Gooey,0,0,0,252,252,0,90,100,70,110,150,80,165,108,90,178,202,100,100
+120,Trevenant-3,Adamant,Choice Band,Horn Leech,Shadow Claw,Earthquake,X-Scissor,HP/Atk,FALSE,Trevenant,Natural Cure,Frisk,Harvest,252,252,0,0,0,0,85,110,76,65,82,56,192,178,96,76,102,76,76
+121,Gourgeist (Average Size)-3,Modest,Wise Glasses,Shadow Ball,Sludge Bomb,Energy Ball,Flamethrower,Def/SpA,FALSE,Gourgeist (Average Size),Pickup,Frisk,Insomnia,0,0,252,252,0,0,65,90,122,58,75,84,140,99,174,121,95,104,104
+122,Clawitzer-3,Jolly,Focus Sash,Crabhammer,Return,U-turn,Flail,Atk/Spe,FALSE,Clawitzer,Mega Launcher,Mega Launcher,Mega Launcher,0,252,0,0,0,252,71,73,88,120,89,59,146,125,108,126,109,122,122
+123,Beedrill-3,Jolly,Beedrillite,Poison Jab,U-turn,Brick Break,X-Scissor,Atk/Spe,TRUE,Beedrill (Mega Beedrill),Adaptability,Adaptability,Adaptability,0,252,0,0,0,252,65,150,40,15,80,145,140,202,60,31,100,216,216
+124,Aromatisse-3,Modest,Expert Belt,Flash Cannon,Thunder,Psyshock,Moonblast,SpA/SpD,FALSE,Aromatisse,Healer,Healer,Aroma Veil,0,0,0,252,252,0,101,72,72,99,89,29,176,82,92,166,141,49,49
+125,Electivire-2,Impish,Electric Seed,Electric Terrain,Hammer Arm,Thunder Punch,Bulldoze,HP/Def,FALSE,Electivire,Motor Drive,Motor Drive,Vital Spirit,252,0,252,0,0,0,75,123,67,95,85,95,182,143,130,103,105,115,115
+126,Magmortar-2,Naughty,Sitrus Berry,Belly Drum,Mach Punch,Belch,Flare Blitz,HP/Def,FALSE,Magmortar,Flame Body,Flame Body,Vital Spirit,252,0,252,0,0,0,75,95,67,125,95,83,182,126,119,145,103,103,103
+127,Probopass-2,Relaxed,Leftovers,Thunder Wave,Bulldoze,Rock Slide,Stealth Rock,HP/Def,FALSE,Probopass,Sturdy,Magnet Pull,Sand Force,252,0,252,0,0,0,60,55,145,75,150,40,167,75,216,95,170,54,54
+128,Lickilicky-2,Careful,Normalium Z,Defense Curl,Rollout,Me First,Power Whip,HP/SpD,FALSE,Lickilicky,Own Tempo,Oblivious,Cloud Nine,252,0,0,0,252,0,110,85,95,80,95,50,217,105,115,90,161,70,70
+129,Minior (Meteor Form)-3,Jolly,Red Card,Earthquake,Acrobatics,Stone Edge,Autotomize,Atk/Spe,FALSE,Minior (Meteor Form),Shields Down,Shields Down,Shields Down,0,252,0,0,0,252,60,60,100,60,100,60,135,112,120,72,120,123,123
+130,Oricorio (Pom-Pom Style)-1,Modest,Flyinium Z,Revelation Dance,Air Slash,Roost,Tailwind,HP/SpA,FALSE,Oricorio (Pom-Pom Style),Dancer,Dancer,Dancer,252,0,0,252,0,0,75,70,70,98,70,93,182,81,90,165,90,113,113
+131,Lycanroc (Midday Form)-2,Jolly,Life Orb,Quick Attack,Thunder Fang,Accelerock,Rock Slide,Atk/Spe,FALSE,Lycanroc (Midday Form),Keen Eye,Sand Rush,Steadfast,0,252,0,0,0,252,75,115,65,55,65,112,150,167,85,67,85,180,180
+132,Comfey-3,Timid,Grassium Z,Dazzling Gleam,Petal Blizzard,Grassy Terrain,Floral Healing,Spe/SpA,FALSE,Comfey,Flower Veil,Triage,Natural Cure,0,0,0,252,0,252,51,52,90,82,110,100,126,64,110,134,130,167,167
+133,Toxapex-3,Modest,Red Card,Baneful Bunker,Venoshock,Surf,Ice Beam,HP/SpA,FALSE,Toxapex,Merciless,Limber,Regenerator,252,0,0,252,0,0,50,63,152,53,142,35,157,74,172,115,162,55,55
+134,Golisopod-3,Adamant,Quick Claw,First Impression,Liquidation,Leech Life,Brick Break,HP/Atk,FALSE,Golisopod,Emergency Exit,Emergency Exit,Emergency Exit,252,252,0,0,0,0,75,125,140,60,90,40,182,194,160,72,110,60,60
+135,Lurantis-3,Adamant,Power Herb,Solar Blade,Leech Life,Poison Jab,Payback,HP/Atk,FALSE,Lurantis,Leaf Guard,Leaf Guard,Contrary,252,252,0,0,0,0,70,105,90,80,90,45,177,172,110,90,110,65,65
+136,Ribombee-3,Bold,Sitrus Berry,Quiver Dance,Baton Pass,Silver Wind,Draining Kiss,HP/Def/SpD,FALSE,Ribombee,Honey Gather,Shield Dust,Sweet Veil,170,0,170,0,170,0,60,55,60,95,70,124,156,67,111,115,111,144,144
+137,Vikavolt-3,Modest,Electrium Z,Thunderbolt,Air Slash,Flash Cannon,Thunder Wave,HP/SpA,FALSE,Vikavolt,Levitate,Levitate,Levitate,252,0,0,252,0,0,77,70,90,145,75,43,184,81,110,216,95,63,63
+138,Mudsdale-3,Adamant,Passho Berry,Earthquake,Rock Slide,Mud-Slap,Payback,HP/Atk,FALSE,Mudsdale,Own Tempo,Stamina,Inner Focus,252,252,0,0,0,0,100,125,100,55,85,35,207,194,120,67,105,55,55
+139,Decidueye-3,Adamant,Life Orb,Spirit Shackle,Leaf Blade,Sucker Punch,Smack Down,Atk/Spe,FALSE,Decidueye,Overgrow,Overgrow,Long Reach,0,252,0,0,0,252,78,107,75,100,100,70,153,174,95,108,120,122,122
+140,Incineroar-3,Adamant,Firium Z,Darkest Lariat,Throat Chop,Earthquake,Outrage,Atk/Spe,FALSE,Incineroar,Blaze,Blaze,Intimidate,0,252,0,0,0,252,95,115,90,80,90,60,170,183,110,90,110,112,112
+141,Primarina-3,Modest,Kebia Berry,Hydro Pump,Moonblast,Psychic,Baby-Doll Eyes,HP/SpA,FALSE,Primarina,Torrent,Torrent,Liquid Voice,252,0,0,252,0,0,80,74,74,126,116,60,187,84,94,195,136,80,80
+142,Araquanid-3,Impish,Leftovers,Lunge,Liquidation,Crunch,Stockpile,HP/Def,FALSE,Araquanid,Water Bubble,Water Bubble,Water Absorb,252,0,252,0,0,0,68,70,92,50,132,42,175,90,158,63,152,62,62
+143,Bewear-3,Brave,Quick Claw,Hammer Arm,Ice Punch,Thunder Punch,Swords Dance,HP/Atk,FALSE,Bewear,Fluffy,Klutz,Unnerve,252,252,0,0,0,0,120,125,80,55,60,60,227,194,100,75,80,72,72
+144,Turtonator-3,Lonely,Normalium Z,Head Smash,Explosion,Overheat,Dragon Claw,HP/Atk,FALSE,Turtonator,Shell Armor,Shell Armor,Shell Armor,252,252,0,0,0,0,60,78,135,91,85,36,167,143,139,111,105,56,56
+145,Bruxish-3,Jolly,Waterium Z,Psychic Fangs,Aqua Jet,Ice Fang,Rain Dance,Atk/Spe,FALSE,Bruxish,Dazzling,Strong Jaw,Wonder Skin,0,252,0,0,0,252,68,105,70,70,70,92,143,157,90,81,90,158,158
+146,Drampa-3,Modest,Quick Claw,Hyper Voice,Dragon Pulse,Fire Blast,Roost,HP/SpA,FALSE,Drampa,Berserk,Sap Sipper,Cloud Nine,252,0,0,252,0,0,78,60,85,135,91,36,185,72,105,205,111,56,56
+147,Dhelmise-3,Adamant,Expert Belt,Gyro Ball,Phantom Force,Rock Slide,Brick Break,HP/Atk,FALSE,Dhelmise,Steelworker,Steelworker,Steelworker,252,252,0,0,0,0,70,131,100,86,90,40,177,201,120,95,110,60,60
+148,Togedemaru-3,Adamant,Air Balloon,Wild Charge,Spiky Shield,Fell Stinger,Poison Jab,HP/Atk,FALSE,Togedemaru,Iron Barbs,Lightning Rod,Sturdy,252,252,0,0,0,0,65,98,63,40,73,96,172,165,83,54,93,116,116
+149,Azelf-3,Timid,Focus Sash,Nasty Plot,Psyshock,Energy Ball,Thunderbolt,Spe/SpA,FALSE,Azelf,Levitate,Levitate,Levitate,0,0,0,252,0,252,75,125,70,125,70,115,150,130,90,177,90,183,183
+150,Kommo-o-3,Modest,Sitrus Berry,Clanging Scales,Focus Blast,Autotomize,Flash Cannon,HP/SpA,FALSE,Kommo-o,Bulletproof,Soundproof,Overcoat,252,0,0,252,0,0,75,110,125,100,105,85,182,117,145,167,125,105,105
+151,Uxie-3,Modest,Quick Claw,Psyshock,Energy Ball,Thunder,Shadow Ball,HP/SpA,FALSE,Uxie,Levitate,Levitate,Levitate,252,0,0,252,0,0,75,75,130,75,130,95,182,85,150,139,150,115,115
+152,Mesprit-3,Modest,Kasib Berry,Psyshock,Grass Knot,Shadow Ball,Charm,HP/SpA,FALSE,Mesprit,Levitate,Levitate,Levitate,252,0,0,252,0,0,80,105,105,105,105,80,187,112,125,172,125,100,100
+153,Rotom (Heat Rotom)-3,Modest,Passho Berry,Thunder Wave,Dark Pulse,Thunderbolt,Overheat,HP/SpA,FALSE,Rotom (Heat Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+154,Rotom (Wash Rotom)-3,Modest,Rindo Berry,Hydro Pump,Thunderbolt,Thunder Wave,Dark Pulse,HP/SpA,FALSE,Rotom (Wash Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+155,Rotom (Mow Rotom)-3,Modest,Grassium Z,Leaf Storm,Volt Switch,Will-O-Wisp,Shadow Ball,HP/SpA,FALSE,Rotom (Mow Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+156,Barbaracle-4,Adamant,Razor Claw,Stone Edge,Razor Shell,Cross Chop,Shadow Claw,Atk/Def,FALSE,Barbaracle,Tough Claws,Sniper,Pickpocket,0,252,252,0,0,0,72,105,115,54,86,68,147,172,167,66,106,88,88
+157,Hawlucha-4,Jolly,Power Herb,Sky Attack,Flying Press,U-turn,Stone Edge,Atk/Spe,FALSE,Hawlucha,Limber,Unburden,Mold Breaker,0,252,0,0,0,252,78,92,75,74,63,118,153,144,95,84,83,187,187
+158,Carbink-4,Quiet,Scope Lens,Explosion,Psychic,Moonblast,Power Gem,Atk/SpA,FALSE,Carbink,Clear Body,Clear Body,Sturdy,0,252,0,252,0,0,50,50,150,50,150,50,125,102,170,112,170,63,63
+159,Pyroar-4,Modest,White Herb,Overheat,Hyper Voice,Dark Pulse,Round,Spe/SpA,FALSE,Pyroar,Rivalry,Unnerve,Moxie,0,0,0,252,0,252,86,68,72,109,66,106,161,79,92,177,86,158,158
+160,Avalugg-4,Brave,Iron Ball,Stone Edge,Avalanche,Gyro Ball,Earthquake,Atk/Def,FALSE,Avalugg,Own Tempo,Ice Body,Sturdy,0,252,252,0,0,0,95,117,184,44,46,28,170,185,236,64,66,43,21.5
+161,Tyrantrum-4,Adamant,Choice Band,Crunch,Dragon Claw,Earthquake,Head Smash,Atk/Spe,FALSE,Tyrantrum,Strong Jaw,Strong Jaw,Rock Head,0,252,0,0,0,252,82,121,119,69,59,71,157,190,139,80,79,123,123
+162,Aurorus-4,Modest,Life Orb,Hyper Beam,Flash Cannon,Thunder,Psychic,SpA/SpD,FALSE,Aurorus,Refrigerate,Refrigerate,Snow Warning,0,0,0,252,252,0,123,77,72,99,92,58,198,87,92,166,144,78,78
+163,Talonflame-4,Adamant,Sitrus Berry,Brave Bird,Flare Blitz,Quick Attack,Swords Dance,Atk/Spe,FALSE,Talonflame,Flame Body,Flame Body,Gale Wings,0,252,0,0,0,252,78,81,71,74,69,126,153,146,91,84,89,178,178
+164,Sylveon-4,Modest,Big Root,Draining Kiss,Baby-Doll Eyes,Psyshock,Misty Terrain,SpA/SpD,FALSE,Sylveon,Cute Charm,Cute Charm,Pixilate,0,0,0,252,252,0,95,65,65,110,130,60,170,76,85,178,182,80,80
+165,Chesnaught-4,Adamant,White Herb,Wood Hammer,Hammer Arm,Earthquake,Stone Edge,Atk/Def,FALSE,Chesnaught,Overgrow,Overgrow,Bulletproof,0,252,252,0,0,0,88,107,122,74,75,64,163,174,174,84,95,84,84
+166,Delphox-4,Modest,White Herb,Overheat,Psychic,Shadow Ball,Psyshock,Spe/SpA,FALSE,Delphox,Blaze,Blaze,Magician,0,0,0,252,0,252,75,69,72,114,100,104,150,80,92,182,120,156,156
+167,Greninja-4,Modest,Wide Lens,Hydro Pump,Dark Pulse,Blizzard,Extrasensory,Spe/SpA,FALSE,Greninja,Torrent,Torrent,Protean,0,0,0,252,0,252,72,95,67,103,71,122,147,103,87,170,91,174,174
+168,Gogoat-4,Adamant,Choice Band,Earthquake,Leaf Blade,Wild Charge,Brick Break,Atk/Spe,FALSE,Gogoat,Sap Sipper,Sap Sipper,Grass Pelt,0,252,0,0,0,252,123,100,62,97,81,68,198,167,82,105,101,120,120
+169,Noivern-4,Modest,Wide Lens,Dragon Pulse,Hurricane,Flamethrower,Focus Blast,Spe/SpA,FALSE,Noivern,Frisk,Infiltrator,Telepathy,0,0,0,252,0,252,85,70,80,97,80,123,160,81,100,163,100,175,175
+170,Florges-4,Modest,Lum Berry,Round,Petal Dance,Psychic,Moonblast,SpA/SpD,FALSE,Florges,Flower Veil,Flower Veil,Symbiosis,0,0,0,252,252,0,78,65,68,112,154,75,153,76,88,180,206,95,95
+171,Goodra-4,Modest,White Herb,Draco Meteor,Thunder,Blizzard,Fire Blast,SpA/SpD,FALSE,Goodra,Sap Sipper,Hydration,Gooey,0,0,0,252,252,0,90,100,70,110,150,80,165,108,90,178,202,100,100
+172,Trevenant-4,Quiet,Iron Ball,Trick Room,Focus Blast,Energy Ball,Shadow Ball,Def/SpA,FALSE,Trevenant,Natural Cure,Frisk,Harvest,0,0,252,252,0,0,85,110,76,65,82,56,160,130,128,128,102,68,34
+173,Gourgeist (Average Size)-4,Adamant,Life Orb,Trick-or-Treat,Phantom Force,Seed Bomb,Rock Slide,HP/Atk,FALSE,Gourgeist (Average Size),Pickup,Frisk,Insomnia,252,252,0,0,0,0,65,90,122,58,75,84,172,156,142,70,95,104,104
+174,Clawitzer-4,Modest,Choice Specs,Water Pulse,Dark Pulse,Dragon Pulse,Aura Sphere,Spe/SpA,FALSE,Clawitzer,Mega Launcher,Mega Launcher,Mega Launcher,0,0,0,252,0,252,71,73,88,120,89,59,146,83,108,189,109,111,111
+175,Beedrill-4,Adamant,Beedrillite,Poison Jab,Pin Missile,Brick Break,Protect,Atk/Spe,TRUE,Beedrill (Mega Beedrill),Adaptability,Adaptability,Adaptability,0,252,0,0,0,252,65,150,40,15,80,145,140,222,60,31,100,197,197
+176,Aromatisse-4,Sassy,Leftovers,Aromatic Mist,Dazzling Gleam,Heal Pulse,Trick Room,HP/SpD,FALSE,Aromatisse,Healer,Healer,Aroma Veil,252,0,0,0,252,0,101,72,72,99,89,29,208,92,92,119,155,44,44
+177,Rotom (Frost Rotom)-3,Modest,Electrium Z,Blizzard,Thunder Wave,Dark Pulse,Thunderbolt,HP/SpA,FALSE,Rotom (Frost Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+178,Rotom (Fan Rotom)-3,Modest,Weakness Policy,Air Slash,Thunder Wave,Thunderbolt,Dark Pulse,HP/SpA,FALSE,Rotom (Fan Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+179,Electivire-3,Modest,Expert Belt,Thunder,Focus Blast,Flamethrower,Psychic,HP/SpA,FALSE,Electivire,Motor Drive,Motor Drive,Vital Spirit,252,0,0,252,0,0,75,123,67,95,85,95,182,128,87,161,105,115,115
+180,Magmortar-3,Adamant,Air Balloon,Flare Blitz,Cross Chop,Flame Charge,Rock Slide,HP/Atk,FALSE,Magmortar,Flame Body,Flame Body,Vital Spirit,252,252,0,0,0,0,75,95,67,125,95,83,182,161,87,130,115,103,103
+181,Probopass-3,Jolly,Quick Claw,Explosion,Rock Blast,Volt Switch,Sandstorm,Atk/SpD,FALSE,Probopass,Sturdy,Magnet Pull,Sand Force,0,252,0,0,252,0,60,55,145,75,150,40,135,107,165,85,202,66,66
+182,Lickilicky-3,Adamant,Quick Claw,Body Slam,Knock Off,Hammer Arm,Zen Headbutt,HP/Atk,FALSE,Lickilicky,Own Tempo,Oblivious,Cloud Nine,252,252,0,0,0,0,110,85,95,80,95,50,217,150,115,90,115,70,70
+183,Minior (Meteor Form)-4,Adamant,Sitrus Berry,Rock Slide,Shell Smash,Explosion,Acrobatics,HP/Atk,FALSE,Minior (Meteor Form),Shields Down,Shields Down,Shields Down,252,252,0,0,0,0,60,60,100,60,100,60,167,123,120,72,120,80,80
+184,Oricorio (Baile Style)-1,Timid,Choice Specs,Revelation Dance,Hurricane,U-turn,Air Slash,Spe/SpA,FALSE,Oricorio (Baile Style),Dancer,Dancer,Dancer,0,0,0,252,0,252,75,70,70,98,70,93,150,81,90,150,90,159,159
+185,Lycanroc (Midnight Form)-2,Adamant,Expert Belt,Sucker Punch,Stone Edge,Thunder Fang,Fire Fang,HP/Atk,FALSE,Lycanroc (Midnight Form),Keen Eye,Vital Spirit,No Guard,252,252,0,0,0,0,85,115,75,55,75,82,192,183,95,67,95,102,102
+186,Comfey-4,Calm,Big Root,Draining Kiss,Calm Mind,Sweet Kiss,Leech Seed,HP/SpD,FALSE,Comfey,Flower Veil,Triage,Natural Cure,252,0,0,0,252,0,51,52,90,82,110,100,158,64,110,102,178,120,120
+187,Toxapex-4,Careful,Black Sludge,Baneful Bunker,Liquidation,Payback,Stockpile,HP/SpD,FALSE,Toxapex,Merciless,Limber,Regenerator,252,0,0,0,252,0,50,63,152,53,142,35,157,83,172,65,213,55,55
+188,Golisopod-4,Adamant,Life Orb,First Impression,Aqua Jet,Sucker Punch,Rock Slide,HP/Atk,FALSE,Golisopod,Emergency Exit,Emergency Exit,Emergency Exit,252,252,0,0,0,0,75,125,140,60,90,40,182,194,160,72,110,60,60
+189,Lurantis-4,Adamant,Quick Claw,Sunny Day,Solar Blade,X-Scissor,Brick Break,HP/Atk,FALSE,Lurantis,Leaf Guard,Leaf Guard,Contrary,252,252,0,0,0,0,70,105,90,80,90,45,177,172,110,90,110,65,65
+190,Ribombee-4,Modest,Expert Belt,Quiver Dance,Dazzling Gleam,Bug Buzz,Energy Ball,HP/SpA,FALSE,Ribombee,Honey Gather,Shield Dust,Sweet Veil,252,0,0,252,0,0,60,55,60,95,70,124,167,67,80,161,90,144,144
+191,Vikavolt-4,Modest,Groundium Z,Mud Shot,Thunder,Bug Buzz,Guillotine,HP/SpA,FALSE,Vikavolt,Levitate,Levitate,Levitate,252,0,0,252,0,0,77,70,90,145,75,43,184,81,110,216,95,63,63
+192,Mudsdale-4,Brave,Yache Berry,Earthquake,Heavy Slam,Close Combat,Sandstorm,HP/Atk,FALSE,Mudsdale,Own Tempo,Stamina,Inner Focus,252,252,0,0,0,0,100,125,100,55,85,35,207,194,120,75,105,49,49
+193,Decidueye-4,Modest,Bright Powder,Nasty Plot,Shadow Ball,Grass Knot,Baton Pass,HP/SpA,FALSE,Decidueye,Overgrow,Overgrow,Long Reach,252,0,0,252,0,0,78,107,75,100,100,70,185,114,95,167,120,90,90
+194,Incineroar-4,Adamant,Quick Claw,Flare Blitz,Cross Chop,Crunch,U-turn,HP/Atk,FALSE,Incineroar,Blaze,Blaze,Intimidate,252,252,0,0,0,0,95,115,90,80,90,60,202,183,110,90,110,80,80
+195,Primarina-4,Modest,Waterium Z,Sparkling Aria,Dazzling Gleam,Blizzard,Aqua Jet,HP/SpA,FALSE,Primarina,Torrent,Torrent,Liquid Voice,252,0,0,252,0,0,80,74,74,126,116,60,187,84,94,195,136,80,80
+196,Araquanid-4,Careful,Leftovers,Lunge,Liquidation,Poison Jab,Protect,HP/SpD,FALSE,Araquanid,Water Bubble,Water Bubble,Water Absorb,252,0,0,0,252,0,68,70,92,50,132,42,175,90,112,63,202,62,62
+197,Bewear-4,Adamant,Normalium Z,Giga Impact,Hammer Arm,Payback,Earthquake,HP/Atk,FALSE,Bewear,Fluffy,Klutz,Unnerve,252,252,0,0,0,0,120,125,80,55,60,60,227,194,100,67,80,80,80
+198,Turtonator-4,Timid,Sitrus Berry,Shell Smash,Fire Blast,Dragon Pulse,Flash Cannon,Spe/SpA,FALSE,Turtonator,Shell Armor,Shell Armor,Shell Armor,0,0,0,252,0,252,60,78,135,91,85,36,135,88,155,143,105,96,96
+199,Bruxish-4,Adamant,Expert Belt,Psychic Fangs,Ice Fang,Aqua Jet,Crunch,HP/Atk,FALSE,Bruxish,Dazzling,Strong Jaw,Wonder Skin,252,252,0,0,0,0,68,105,70,70,70,92,175,172,90,81,90,112,112
+200,Drampa-4,Timid,Dragonium Z,Draco Meteor,Focus Blast,Hurricane,Glare,Spe/SpA,FALSE,Drampa,Berserk,Sap Sipper,Cloud Nine,0,0,0,252,0,252,78,60,85,135,91,36,153,72,105,187,111,96,96
+201,Dhelmise-4,Relaxed,Leftovers,Anchor Shot,Phantom Force,Protect,Giga Drain,HP/Def,FALSE,Dhelmise,Steelworker,Steelworker,Steelworker,252,0,252,0,0,0,70,131,100,86,90,40,177,151,167,106,110,54,54
+202,Togedemaru-4,Jolly,Electrium Z,Reversal,Nuzzle,U-turn,Spiky Shield,Atk/Spe,FALSE,Togedemaru,Iron Barbs,Lightning Rod,Sturdy,0,252,0,0,0,252,65,98,63,40,73,96,140,150,83,54,93,162,162
+203,Azelf-4,Timid,Expert Belt,Psychic,Fire Blast,Thunder,Shadow Ball,Spe/SpA,FALSE,Azelf,Levitate,Levitate,Levitate,0,0,0,252,0,252,75,125,70,125,70,115,150,130,90,177,90,183,183
+204,Kommo-o-4,Adamant,White Herb,Draco Meteor,Outrage,Sky Uppercut,Poison Jab,HP/Atk,FALSE,Kommo-o,Bulletproof,Soundproof,Overcoat,252,252,0,0,0,0,75,110,125,100,105,85,182,178,145,108,125,105,105
+205,Uxie-4,Modest,Leftovers,Yawn,Psychic,Charge Beam,Dazzling Gleam,HP/SpA,FALSE,Uxie,Levitate,Levitate,Levitate,252,0,0,252,0,0,75,75,130,75,130,95,182,85,150,139,150,115,115
+206,Mesprit-4,Modest,Wide Lens,Psychic,Thunder,Blizzard,Protect,HP/SpA,FALSE,Mesprit,Levitate,Levitate,Levitate,252,0,0,252,0,0,80,105,105,105,105,80,187,112,125,172,125,100,100
+207,Rotom (Heat Rotom)-4,Modest,Firium Z,Overheat,Will-O-Wisp,Shadow Ball,Volt Switch,HP/SpA,FALSE,Rotom (Heat Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+208,Venusaur-1,Calm,Big Root,Leech Seed,Toxic,Synthesis,Ingrain,HP/SpD,FALSE,Venusaur,Overgrow,Overgrow,Chlorophyll,252,0,0,0,252,0,80,82,83,100,100,80,187,91,103,120,167,100,100
+209,Charizard-1,Careful,Salac Berry,Dragon Claw,Fire Fang,Belly Drum,Shadow Claw,HP/Spe/SpD,FALSE,Charizard,Blaze,Blaze,Solar Power,170,0,0,0,170,170,78,84,78,109,85,100,174,104,98,116,138,141,141
+210,Blastoise-1,Quiet,Zoom Lens,Aqua Ring,Rock Slide,Aqua Tail,Iron Defense,HP/Def/SpD,FALSE,Blastoise,Torrent,Torrent,Rain Dish,170,0,170,0,170,0,79,83,100,85,105,78,175,103,141,115,146,88,88
+211,Meganium-1,Gentle,Sitrus Berry,Light Screen,Aromatherapy,Swagger,Solar Beam,HP/SpD,FALSE,Meganium,Overgrow,Overgrow,Leaf Guard,252,0,0,0,252,0,80,82,100,83,100,80,187,102,108,103,167,100,100
+212,Typhlosion-1,Rash,Passho Berry,Flame Burst,Flamethrower,Solar Beam,Sunny Day,Spe/SpA,FALSE,Typhlosion,Blaze,Blaze,Flash Fire,0,0,0,252,0,252,78,84,78,109,85,100,153,104,98,177,94,152,152
+213,Feraligatr-1,Careful,Lax Incense,Screech,Aqua Jet,Earthquake,Block,HP/SpD,FALSE,Feraligatr,Torrent,Torrent,Sheer Force,252,0,0,0,252,0,85,105,100,79,83,78,192,125,120,89,148,98,98
+214,Sceptile-1,Timid,Focus Sash,Quick Attack,Endeavor,Detect,Leaf Storm,Spe/SpA,FALSE,Sceptile,Overgrow,Overgrow,Unburden,0,0,0,252,0,252,70,85,65,105,85,120,145,94,85,157,105,189,189
+215,Blaziken-1,Naughty,Salac Berry,High Jump Kick,Counter,Flamethrower,Will-O-Wisp,HP/Def/Spe,FALSE,Blaziken,Blaze,Blaze,Speed Boost,170,0,170,0,0,170,80,120,70,110,70,80,176,154,111,130,81,121,121
+216,Swampert-1,Sassy,Jaboca Berry,Mirror Coat,Counter,Earthquake,Roar,Def/SpD,FALSE,Swampert,Torrent,Torrent,Damp,0,0,252,0,252,0,100,110,90,85,90,60,175,130,142,105,156,72,72
+217,Torterra-1,Adamant,Binding Band,Sand Tomb,Seed Bomb,Curse,Synthesis,HP/Atk,FALSE,Torterra,Overgrow,Overgrow,Shell Armor,252,252,0,0,0,0,95,109,105,75,85,56,202,177,125,85,105,76,76
+218,Infernape-1,Jolly,King's Rock,Fake Out,Encore,Fling,Acrobatics,Atk/Spe,FALSE,Infernape,Blaze,Blaze,Iron Fist,0,252,0,0,0,252,76,104,71,104,71,108,151,156,91,111,91,176,176
+219,Empoleon-1,Lax,Sitrus Berry,Yawn,Swords Dance,Aqua Jet,Metal Claw,HP/Def,FALSE,Empoleon,Torrent,Torrent,Defiant,252,0,252,0,0,0,84,86,88,111,101,60,191,106,154,131,108,80,80
+220,Serperior-1,Jolly,Lum Berry,Attract,Leaf Tornado,Dragon Tail,Gastro Acid,Def/Spe/SpD,FALSE,Serperior,Overgrow,Overgrow,Contrary,0,0,170,0,170,170,75,75,95,75,95,113,150,95,136,85,136,169,169
+221,Emboar-1,Careful,Chesto Berry,Gyro Ball,Curse,Rest,Sleep Talk,HP/SpD,FALSE,Emboar,Blaze,Blaze,Reckless,252,0,0,0,252,0,110,123,65,100,65,65,217,143,85,108,128,85,85
+222,Samurott-1,Mild,Normalium Z,Retaliate,Razor Shell,Assurance,Encore,HP/Atk,FALSE,Samurott,Torrent,Torrent,Shell Armor,252,252,0,0,0,0,95,100,85,108,70,70,202,152,94,140,90,90,90
+223,Dugtrio (Alola Form)-1,Hasty,Expert Belt,Dig,Rock Slide,Iron Head,Sandstorm,Atk/Spe,FALSE,Dugtrio (Alola Form),Sand Veil,Tangling Hair,Sand Force,0,252,0,0,0,252,35,100,60,50,70,110,110,152,72,70,90,178,178
+224,Marowak-1,Sassy,Red Card,Bone Rush,Double Kick,Endeavor,Smack Down,HP/SpD,FALSE,Marowak,Rock Head,Lightning Rod,Battle Armor,252,0,0,0,252,0,60,80,110,50,80,45,167,100,130,70,145,58,58
+225,Medicham-1,Impish,Fightinium Z,Fake Out,High Jump Kick,Bulk Up,Feint,HP/Spe,FALSE,Medicham,Pure Power,Pure Power,Telepathy,252,0,0,0,0,252,60,60,75,60,75,80,167,80,104,72,95,132,132
+226,Pidgeot-1,Jolly,Charti Berry,Aerial Ace,Steel Wing,Thief,Roost,Atk/Spe,FALSE,Pidgeot,Keen Eye,Tangled Feet,Big Pecks,0,252,0,0,0,252,83,80,75,70,70,101,158,132,95,81,90,168,168
+227,Mawile-1,Adamant,Quick Claw,Crunch,Sucker Punch,Iron Head,Taunt,HP/Atk,FALSE,Mawile,Hyper Cutter,Intimidate,Sheer Force,252,252,0,0,0,0,50,85,85,55,55,50,157,150,105,67,75,70,70
+228,Banette-1,Adamant,Muscle Band,Knock Off,Shadow Claw,Curse,Pursuit,HP/Atk,FALSE,Banette,Insomnia,Frisk,Cursed Body,252,252,0,0,0,0,64,115,65,83,63,65,171,183,85,92,83,85,85
+229,Sableye-1,Bold,Lax Incense,Knock Off,Shadow Ball,Confuse Ray,Recover,HP/Def,FALSE,Sableye,Keen Eye,Stall,Prankster,252,0,252,0,0,0,50,75,75,65,65,50,157,85,139,85,85,70,70
+230,Lanturn-1,Naughty,Salac Berry,Thunder Wave,Volt Switch,Waterfall,Agility,Atk/Spe,FALSE,Lanturn,Volt Absorb,Illuminate,Water Absorb,0,252,0,0,0,252,125,58,58,76,76,67,200,121,78,96,86,119,119
+231,Breloom-1,Brave,Fightinium Z,Fake Tears,Helping Hand,Mach Punch,Stun Spore,HP/Atk,FALSE,Breloom,Effect Spore,Poison Heal,Technician,252,252,0,0,0,0,60,130,80,60,60,70,167,200,100,80,80,81,81
+232,Audino-1,Bold,Leftovers,Heal Pulse,Toxic,Thunder Wave,Draining Kiss,HP/Def,FALSE,Audino,Healer,Regenerator,Klutz,252,0,252,0,0,0,103,60,86,60,86,50,210,72,151,80,106,70,70
+233,Skarmory-1,Naive,Lax Incense,Spikes,Stealth Rock,Sky Drop,Whirlwind,HP/Spe,FALSE,Skarmory,Keen Eye,Sturdy,Weak Armor,252,0,0,0,0,252,65,80,140,40,70,70,172,100,160,60,81,134,134
+234,Absol-1,Careful,Sitrus Berry,Payback,Mean Look,Double Team,Baton Pass,HP/Def/SpD,FALSE,Absol,Pressure,Super Luck,Justified,170,0,170,0,170,0,65,130,60,75,60,75,161,150,101,85,111,95,95
+235,Sharpedo-1,Adamant,Muscle Band,Aqua Jet,Ice Fang,Crunch,Bulldoze,Atk/Spe,FALSE,Sharpedo,Rough Skin,Rough Skin,Speed Boost,0,252,0,0,0,252,70,120,40,95,40,95,145,189,60,103,60,147,147
+236,Hariyama-1,Brave,King's Rock,Feint,Fake Out,Smack Down,Vital Throw,Atk/Def/SpD,FALSE,Hariyama,Thick Fat,Guts,Sheer Force,0,170,170,0,170,0,144,120,60,40,60,50,219,177,101,60,101,63,63
+237,Vespiquen-1,Sassy,Quick Claw,Defend Order,Toxic,Protect,Heal Order,HP/Def/SpD,FALSE,Vespiquen,Pressure,Pressure,Unnerve,170,0,170,0,170,0,70,80,102,80,102,40,166,100,143,100,157,54,54
+238,Raichu (Alola Form)-1,Modest,Twisted Spoon,Volt Switch,Safeguard,Psyshock,Disarming Voice,Spe/SpA,FALSE,Raichu (Alola Form),Surge Surfer,Surge Surfer,Surge Surfer,0,0,0,252,0,252,60,85,50,95,85,110,135,94,70,161,105,162,162
+239,Glalie-1,Bold,Icy Rock,Hail,Blizzard,Shadow Ball,Weather Ball,HP/Def,FALSE,Glalie,Inner Focus,Ice Body,Moody,252,0,252,0,0,0,80,80,80,80,80,80,187,90,145,100,100,100,100
+240,Manectric-1,Adamant,Life Orb,Crunch,Odor Sleuth,Quick Attack,Wild Charge,Atk/Spe,FALSE,Manectric,Static,Lightning Rod,Minus,0,252,0,0,0,252,70,75,60,105,60,105,145,139,80,112,80,157,157
+241,Staraptor-1,Hasty,Focus Sash,U-turn,Feather Dance,Quick Attack,Endeavor,Atk/Spe,FALSE,Staraptor,Intimidate,Intimidate,Reckless,0,252,0,0,0,252,85,120,70,50,60,100,160,172,81,70,80,167,167
+242,Gastrodon-1,Gentle,Damp Rock,Rain Dance,Sludge Bomb,Muddy Water,Counter,SpA/SpD,FALSE,Gastrodon,Sticky Hold,Storm Drain,Sand Force,0,0,0,252,252,0,111,83,68,92,82,39,186,103,79,144,147,59,59
+243,Camerupt-1,Lonely,Passho Berry,Yawn,Flamethrower,Earthquake,Stone Edge,HP/Atk,FALSE,Camerupt,Magma Armor,Solid Rock,Anger Point,252,252,0,0,0,0,70,100,70,105,75,40,177,167,81,125,95,60,60
+244,Sawk-1,Naughty,Black Belt,Low Sweep,Quick Guard,Retaliate,Taunt,Atk/Spe,FALSE,Sawk,Sturdy,Inner Focus,Mold Breaker,0,252,0,0,0,252,75,125,75,30,75,85,150,194,95,50,85,137,137
+245,Throh-1,Impish,Payapa Berry,Protect,Toxic,Circle Throw,Wide Guard,Atk/Def,FALSE,Throh,Guts,Inner Focus,Mold Breaker,0,252,252,0,0,0,120,100,85,30,85,45,195,152,150,45,105,65,65
+246,Unfezant-1,Jolly,Enigma Berry,Aerial Ace,U-turn,Razor Wind,Tailwind,HP/Atk/Def,FALSE,Unfezant,Big Pecks,Super Luck,Rivalry,170,170,170,0,0,0,80,115,80,65,55,93,176,156,121,76,75,124,124
+247,Pelipper-1,Modest,Sea Incense,Surf,Tailwind,Blizzard,Hurricane,HP/Spe/SpA,FALSE,Pelipper,Keen Eye,Drizzle,Rain Dish,170,0,0,170,0,170,60,50,100,95,70,65,156,63,120,149,90,106,106
+248,Amoonguss-1,Calm,Petaya Berry,Energy Ball,Venoshock,Toxic,Confide,SpA/SpD,FALSE,Amoonguss,Effect Spore,Effect Spore,Regenerator,0,0,0,252,252,0,114,85,70,85,80,30,189,94,90,137,145,50,50
+249,Electrode-1,Calm,Shuca Berry,Swagger,Light Screen,Charge Beam,Thunder Wave,HP/SpD,FALSE,Electrode,Soundproof,Static,Aftermath,252,0,0,0,252,0,60,50,70,80,80,150,167,63,90,100,145,170,170
+250,Ludicolo-1,Lax,Leftovers,Leech Seed,Toxic,Giga Drain,Rain Dance,HP/Def/SpA,FALSE,Ludicolo,Swift Swim,Rain Dish,Own Tempo,170,0,170,170,0,0,80,70,70,90,100,70,176,90,122,131,108,90,90
+251,Shiftry-1,Brave,Iron Ball,Fling,Razor Leaf,Brick Break,Swords Dance,HP/Atk/SpD,FALSE,Shiftry,Chlorophyll,Early Bird,Pickpocket,170,170,0,0,170,0,90,100,60,90,60,80,186,155,80,110,101,90,45
+252,Exploud-1,Modest,Chople Berry,Fire Blast,Roar,Uproar,Hyper Voice,Def/SpA,FALSE,Exploud,Soundproof,Soundproof,Scrappy,0,0,252,252,0,0,104,91,63,91,73,68,179,99,115,157,93,88,88
+253,Lopunny-1,Naive,Toxic Orb,Fake Out,Encore,Fling,Dizzy Punch,HP/Spe,FALSE,Lopunny,Cute Charm,Klutz,Limber,252,0,0,0,0,252,65,76,84,54,96,105,172,96,104,74,104,172,172
+254,Froslass-1,Timid,Colbur Berry,Hail,Ice Beam,Ominous Wind,Thunderbolt,Spe/SpA,FALSE,Froslass,Snow Cloak,Snow Cloak,Cursed Body,0,0,0,252,0,252,70,80,70,80,70,110,145,90,90,132,90,178,178
+255,Lilligant-1,Timid,Persim Berry,Charm,Sleep Powder,Petal Dance,Healing Wish,Spe/SpA,FALSE,Lilligant,Chlorophyll,Own Tempo,Leaf Guard,0,0,0,252,0,252,70,60,75,110,75,90,145,72,95,162,95,156,156
+256,Darmanitan-1,Naive,Firium Z,Fire Punch,Psychic,Protect,Will-O-Wisp,HP/Spe,FALSE,Darmanitan,Sheer Force,Sheer Force,Zen Mode,252,0,0,0,0,252,105,140,55,30,55,95,212,160,75,50,67,161,161
+257,Ambipom-1,Naive,King's Rock,Fake Out,Fling,Thief,U-turn,Atk/Spe,FALSE,Ambipom,Technician,Pickup,Skill Link,0,252,0,0,0,252,75,100,66,60,66,115,150,152,86,80,77,183,183
+258,Cofagrigus-1,Sassy,Chesto Berry,Night Shade,Will-O-Wisp,Mean Look,Rest,HP/SpD,FALSE,Cofagrigus,Mummy,Mummy,Mummy,252,0,0,0,252,0,58,50,145,95,105,30,165,70,165,115,172,45,45
+259,Golurk-1,Lonely,Muscle Band,Shadow Punch,Iron Defense,Bulldoze,Heavy Slam,HP/SpD,FALSE,Golurk,Iron Fist,Klutz,No Guard,252,0,0,0,252,0,89,124,80,55,80,55,196,158,90,75,132,75,75
+260,Durant-1,Naive,Sitrus Berry,Crunch,Dig,Bug Bite,Metal Sound,HP/Atk/Spe,FALSE,Durant,Swarm,Hustle,Truant,170,170,0,0,0,170,58,109,112,48,48,109,154,150,132,68,61,165,165
+261,Golem (Alola Form)-1,Impish,Quick Claw,Wild Charge,Smack Down,Bulldoze,Counter,HP/Atk/Def,FALSE,Golem (Alola Form),Magnet Pull,Sturdy,Galvanize,170,170,170,0,0,0,80,120,130,55,65,45,176,161,188,67,85,65,65
+262,Slowbro-1,Bold,Sitrus Berry,Yawn,Psychic,Calm Mind,Water Pulse,HP/Def,FALSE,Slowbro,Oblivious,Own Tempo,Regenerator,252,0,252,0,0,0,95,75,110,100,80,30,202,85,178,120,100,50,50
+263,Weezing-1,Impish,Payapa Berry,Pain Split,Explosion,Haze,Will-O-Wisp,HP/Def,FALSE,Weezing,Levitate,Levitate,Levitate,252,0,252,0,0,0,65,90,120,85,70,60,172,110,189,94,90,80,80
+264,Kangaskhan-1,Adamant,Normalium Z,Dizzy Punch,Fake Out,Chip Away,Roar,Atk/Spe,FALSE,Kangaskhan,Early Bird,Scrappy,Inner Focus,0,252,0,0,0,252,105,95,80,40,80,90,180,161,100,54,100,142,142
+265,Tauros-1,Naughty,Liechi Berry,Earthquake,Rock Slide,Zen Headbutt,Substitute,Atk/Spe,FALSE,Tauros,Intimidate,Anger Point,Sheer Force,0,252,0,0,0,252,75,100,95,40,70,110,150,167,115,60,81,162,162
+266,Spiritomb-1,Calm,Sitrus Berry,Sucker Punch,Pain Split,Toxic,Grudge,HP/SpD,FALSE,Spiritomb,Pressure,Pressure,Infiltrator,252,0,0,0,252,0,50,92,108,92,108,35,157,100,128,112,176,55,55
+267,Whimsicott-1,Modest,Wise Glasses,Dazzling Gleam,Psychic,Cotton Spore,Grass Knot,HP/SpA,FALSE,Whimsicott,Prankster,Infiltrator,Chlorophyll,252,0,0,252,0,0,60,67,85,77,75,116,167,78,105,141,95,136,136
+268,Druddigon-1,Impish,Roseli Berry,Crunch,Scary Face,Glare,Dragon Tail,Atk/Def,FALSE,Druddigon,Rough Skin,Sheer Force,Mold Breaker,0,252,252,0,0,0,77,120,90,60,90,48,152,172,156,72,110,68,68
+269,Musharna-1,Modest,Zoom Lens,Hypnosis,Dream Eater,Calm Mind,Helping Hand,Def/SpA/SpD,FALSE,Musharna,Forewarn,Synchronize,Telepathy,0,0,170,170,170,0,116,55,85,107,95,29,191,67,126,162,136,49,49
+270,Scrafty-1,Naughty,Liechi Berry,Fake Out,Bulk Up,Focus Punch,Substitute,HP/Atk,FALSE,Scrafty,Shed Skin,Moxie,Intimidate,252,252,0,0,0,0,65,90,115,45,115,58,172,156,135,65,121,78,78
+271,Ferrothorn-1,Impish,Leftovers,Iron Head,Thunder Wave,Sandstorm,Ingrain,HP/Def,FALSE,Ferrothorn,Iron Barbs,Iron Barbs,Anticipation,252,0,252,0,0,0,74,94,131,54,116,20,181,114,201,66,136,40,40
+272,Alakazam-1,Timid,Twisted Spoon,Energy Ball,Psychic,Telekinesis,Guard Split,Spe/SpA,FALSE,Alakazam,Synchronize,Inner Focus,Magic Guard,0,0,0,252,0,252,55,50,45,135,95,120,130,63,65,187,115,189,189
+273,Slowking-1,Calm,Sitrus Berry,Psyshock,Water Pulse,Trick Room,Heal Pulse,SpA/SpD,FALSE,Slowking,Oblivious,Own Tempo,Regenerator,0,0,0,252,252,0,95,75,80,100,110,30,170,85,100,152,178,50,50
+274,Jellicent-1,Quiet,Damp Rock,Rain Dance,Hydro Pump,Ice Beam,Confuse Ray,Def/SpA,FALSE,Jellicent,Water Absorb,Cursed Body,Damp,0,0,252,252,0,0,100,60,70,85,105,60,175,80,122,150,125,72,72
+275,Altaria-1,Calm,Sitrus Berry,Flamethrower,Cotton Guard,Dragon Pulse,Roost,HP/SpD,FALSE,Altaria,Natural Cure,Natural Cure,Cloud Nine,252,0,0,0,252,0,75,70,90,70,105,80,182,81,110,90,172,100,100
+276,Toxicroak-1,Lonely,Payapa Berry,Fake Out,Brick Break,Sucker Punch,Taunt,Atk/Spe,FALSE,Toxicroak,Anticipation,Dry Skin,Poison Touch,0,252,0,0,0,252,83,106,65,86,65,85,158,173,76,106,85,137,137
+277,Gothitelle-1,Calm,Chesto Berry,Fake Tears,Psychic,Rest,Calm Mind,HP/Def/Spe,FALSE,Gothitelle,Frisk,Competitive,Shadow Tag,170,0,170,0,0,170,70,55,95,95,110,65,166,67,136,115,143,106,106
+278,Reuniclus-1,Bold,Kee Berry,Psychic,Energy Ball,Recover,Wonder Room,HP/Def/SpA,FALSE,Reuniclus,Overcoat,Magic Guard,Regenerator,170,0,170,170,0,0,110,65,75,125,85,30,206,76,127,166,105,50,50
+279,Bisharp-1,Lax,Sitrus Berry,Night Slash,Metal Claw,Taunt,Metal Burst,HP/Def,FALSE,Bisharp,Defiant,Inner Focus,Pressure,252,0,252,0,0,0,65,125,100,60,70,70,172,145,167,80,81,90,90
+280,Abomasnow-1,Impish,Leftovers,Frost Breath,Icy Wind,Leech Seed,Ingrain,HP/Def/SpD,FALSE,Abomasnow,Snow Warning,Snow Warning,Soundproof,170,0,170,0,170,0,90,92,75,92,85,60,186,112,127,100,126,80,80
+281,Nidoqueen-1,Relaxed,Payapa Berry,Chip Away,Swagger,Helping Hand,Flatter,HP/Def/SpD,FALSE,Nidoqueen,Poison Point,Rivalry,Sheer Force,170,0,170,0,170,0,90,92,87,75,85,76,186,112,140,95,126,86,86
+282,Nidoking-1,Naughty,King's Rock,Bulldoze,Megahorn,Rock Slide,Sucker Punch,HP/Atk,FALSE,Nidoking,Poison Point,Rivalry,Sheer Force,252,252,0,0,0,0,81,102,77,85,75,85,188,169,97,105,85,105,105
+283,Cradily-1,Bold,Tanga Berry,Round,Gastro Acid,Stockpile,Swallow,Def/SpD,FALSE,Cradily,Suction Cups,Suction Cups,Storm Drain,0,0,252,0,252,0,86,81,97,81,107,43,161,90,163,101,159,63,63
+284,Armaldo-1,Brave,Chesto Berry,X-Scissor,Rock Blast,Rest,Curse,HP/SpD,FALSE,Armaldo,Battle Armor,Battle Armor,Swift Swim,252,0,0,0,252,0,75,125,100,70,80,45,182,159,120,90,132,58,58
+285,Rampardos-1,Brave,Passho Berry,Rock Slide,Crunch,Curse,Protect,Atk/Def/SpD,FALSE,Rampardos,Mold Breaker,Mold Breaker,Sheer Force,0,170,170,0,170,0,97,165,60,65,50,58,172,226,101,85,91,70,70
+286,Bastiodon-1,Careful,Enigma Berry,Iron Head,Taunt,Wide Guard,Metal Burst,HP/Atk,FALSE,Bastiodon,Sturdy,Sturdy,Soundproof,252,252,0,0,0,0,60,52,168,47,138,30,167,104,188,60,173,50,50
+287,Shiinotic-1,Sassy,Assault Vest,Moonblast,Giga Drain,Sludge Bomb,Charge Beam,HP/SpD,FALSE,Shiinotic,Illuminate,Effect Spore,Rain Dish,252,0,0,0,252,0,60,45,80,90,100,30,167,65,100,110,167,45,45
+288,Mismagius-1,Naive,Colbur Berry,Taunt,Protect,Imprison,Shadow Ball,HP/Spe,FALSE,Mismagius,Levitate,Levitate,Levitate,252,0,0,0,0,252,60,60,60,105,105,105,167,80,80,125,112,172,172
+289,Carracosta-1,Naughty,Sitrus Berry,Aqua Tail,Rock Slide,Shell Smash,Iron Defense,HP/Atk,FALSE,Carracosta,Solid Rock,Sturdy,Swift Swim,252,252,0,0,0,0,74,108,133,83,65,32,181,176,153,103,76,52,52
+290,Escavalier-1,Brave,Liechi Berry,Megahorn,Quick Guard,Swords Dance,Reversal,HP/Atk,FALSE,Escavalier,Swarm,Shell Armor,Overcoat,252,252,0,0,0,0,70,135,105,60,105,20,177,205,125,80,125,36,36
+291,Accelgor-1,Hasty,Focus Sash,Encore,Bug Buzz,Giga Drain,Me First,Spe/SpA,FALSE,Accelgor,Hydration,Sticky Hold,Unburden,0,0,0,252,0,252,80,70,40,100,60,145,155,90,54,152,80,216,216
+292,Salazzle-1,Timid,Poisonium Z,Venoshock,Flamethrower,Nasty Plot,Toxic,Spe/SpA,FALSE,Salazzle,Corrosion,Corrosion,Oblivious,0,0,0,252,0,252,68,64,60,111,60,117,143,75,80,163,80,185,185
+293,Drifblim-1,Bold,Salac Berry,Calm Mind,Stockpile,Ominous Wind,Baton Pass,Def/SpD,FALSE,Drifblim,Aftermath,Unburden,Flare Boost,0,0,252,0,252,0,150,80,44,90,54,80,225,90,105,110,106,100,100
+294,Toucannon-1,Adamant,Steelium Z,Swords Dance,Drill Peck,Steel Wing,Smack Down,HP/Atk/Def,FALSE,Toucannon,Keen Eye,Skill Link,Sheer Force,170,170,170,0,0,0,80,120,75,75,75,60,176,177,116,85,95,80,80
+295,Oranguru-1,Modest,Psychium Z,Psychic,Energy Ball,Shadow Ball,Nasty Plot,HP/SpA,FALSE,Oranguru,Inner Focus,Telepahty,Symbiosis,252,0,0,252,0,0,90,60,80,90,110,60,197,72,100,156,130,80,80
+296,Komala-1,Adamant,Chople Berry,Flail,Payback,Low Sweep,Play Rough,Atk/Spe,FALSE,Komala,Comatose,Comatose,Comatose,0,252,0,0,0,252,65,115,65,75,95,65,140,183,85,85,115,117,117
+297,Muk-1,Relaxed,Black Sludge,Poison Jab,Stockpile,Swallow,Mud-Slap,HP/Atk,FALSE,Muk,Stench,Sticky Hold,Poison Touch,252,252,0,0,0,0,105,105,75,65,100,50,212,157,104,85,120,63,63
+298,Gengar-1,Timid,Focus Sash,Shadow Ball,Dream Eater,Nightmare,Hypnosis,Spe/SpA,FALSE,Gengar,Cursed Body,Cursed Body,Cursed Body,0,0,0,252,0,252,60,65,60,130,75,110,135,76,80,182,95,178,178
+299,Ampharos-1,Mild,Shuca Berry,Power Gem,Thunder Wave,Discharge,Charge Beam,HP/SpA/SpD,FALSE,Ampharos,Static,Static,Plus,170,0,0,170,170,0,90,75,85,115,90,55,186,95,94,171,131,75,75
+300,Politoed-1,Modest,Cell Battery,Waterfall,Encore,Swagger,Bounce,Spe/SpA,FALSE,Politoed,Water Absorb,Damp,Drizzle,0,0,0,252,0,252,90,75,75,90,100,70,165,85,95,156,120,122,122
+301,Pinsir-1,Naughty,Persim Berry,Bug Bite,Brick Break,Thrash,Swords Dance,Atk/Spe,FALSE,Pinsir,Hyper Cutter,Mold Breaker,Moxie,0,252,0,0,0,252,65,125,100,55,70,85,140,194,120,75,81,137,137
+302,Scizor-1,Brave,Occa Berry,Metal Claw,Night Slash,Aerial Ace,Swords Dance,HP/Def,FALSE,Scizor,Swarm,Technician,Light Metal,252,0,252,0,0,0,70,130,100,55,80,65,177,165,152,75,100,76,76
+303,Heracross-1,Brave,Black Belt,Aerial Ace,Pursuit,Swords Dance,Brick Break,HP/Atk/Def,FALSE,Heracross,Swarm,Guts,Moxie,170,170,170,0,0,0,80,125,75,40,95,85,176,182,116,60,115,94,94
+304,Ursaring-1,Adamant,Chesto Berry,Thrash,Crunch,Rest,Counter,Atk/Def/SpD,FALSE,Ursaring,Guts,Quick Feet,Unnerve,0,170,170,0,170,0,90,130,75,75,75,55,165,188,116,85,116,75,75
+305,Houndoom-1,Adamant,Charcoal,Fire Fang,Flame Charge,Will-O-Wisp,Sucker Punch,Atk/Spe,FALSE,Houndoom,Early Bird,Flash Fire,Unnerve,0,252,0,0,0,252,75,90,50,110,80,95,150,156,70,117,100,147,147
+306,Tsareena-1,Adamant,Occa Berry,Trop Kick,Play Rough,Low Sweep,Feint,Atk/Spe,FALSE,Tsareena,Leaf Guard,Queenly Majesty,Sweet Veil,0,252,0,0,0,252,72,120,98,50,98,72,147,189,118,63,118,124,124
+307,Wailord-1,Brave,Chesto Berry,Waterfall,Heavy Slam,Curse,Rest,Atk/Def/SpD,FALSE,Wailord,Water Veil,Oblivious,Pressure,0,170,170,0,170,0,170,90,45,90,45,60,245,144,86,110,86,72,72
+308,Passimian-1,Adamant,Coba Berry,Close Combat,Rock Slide,Iron Head,Feint,Atk/Spe,FALSE,Passimian,Receiver,Receiver,Defiant,0,252,0,0,0,252,100,120,90,40,60,80,175,189,110,54,80,132,132
+309,Bronzong-1,Impish,Sitrus Berry,Hypnosis,Rain Dance,Gyro Ball,Trick Room,HP/Def/SpD,FALSE,Bronzong,Levitate,Heatproof,Heavy Metal,170,0,170,0,170,0,67,89,116,79,116,33,163,109,172,89,157,53,53
+310,Drapion-1,Bold,Scope Lens,Night Slash,Taunt,Toxic Spikes,X-Scissor,HP/Def,FALSE,Drapion,Battle Armor,Sniper,Keen Eye,252,0,252,0,0,0,70,90,110,60,75,95,177,99,178,80,95,115,115
+311,Crabominable-1,Adamant,Expert Belt,Superpower,Ice Punch,Payback,Rock Slide,Atk/SpD,FALSE,Crabominable,Hyper Cutter,Iron Fist,Anger Point,0,252,0,0,252,0,97,132,77,62,67,43,172,202,97,73,119,63,63
+312,Ninetales-1,Modest,Passho Berry,Will-O-Wisp,Hex,Confuse Ray,Flame Burst,Spe/SpA,FALSE,Ninetales,Flash Fire,Flash Fire,Drought,0,0,0,252,0,252,73,76,75,81,100,100,148,86,95,146,120,152,152
+313,Machamp-1,Brave,Rawst Berry,Dynamic Punch,Payback,Foresight,Wide Guard,HP/Atk,FALSE,Machamp,Guts,No Guard,Steadfast,252,252,0,0,0,0,90,130,80,65,85,55,197,200,100,85,105,67,67
+314,Shuckle-1,Careful,Binding Band,Power Split,Encore,Gastro Acid,Sand Tomb,HP/SpD,FALSE,Shuckle,Sturdy,Gluttony,Contrary,252,0,0,0,252,0,20,10,230,10,230,5,127,30,250,27,310,25,25
+315,Mimikyu-1,Jolly,Bright Powder,Shadow Claw,Slash,Double Team,Thunder Wave,Atk/Spe,FALSE,Mimikyu,Disguise,Disguise,Disguise,0,252,0,0,0,252,55,90,80,50,105,96,130,142,100,63,125,162,162
+316,Honchkrow-1,Quiet,Kee Berry,Psychic,Dark Pulse,Protect,Nasty Plot,Def/SpA/SpD,FALSE,Honchkrow,Insomnia,Super Luck,Moxie,0,0,170,170,170,0,100,125,52,105,52,71,175,145,93,160,93,81,81
+317,Gigalith-1,Naughty,Rawst Berry,Bulldoze,Rock Blast,Gravity,Curse,HP/Atk/Def,FALSE,Gigalith,Sturdy,Sand Stream,Sand Force,170,170,170,0,0,0,85,135,130,60,80,25,181,193,171,80,90,45,45
+318,Conkeldurr-1,Bold,Black Belt,Rock Slide,Force Palm,Smelling Salts,Bulk Up,HP/Def/SpD,FALSE,Conkeldurr,Guts,Sheer Force,Iron Fist,170,0,170,0,170,0,105,140,95,55,65,45,201,144,149,75,106,65,65
+319,Excadrill-1,Naughty,Soft Sand,Hone Claws,Rock Slide,Drill Run,Iron Defense,Atk/Def,FALSE,Excadrill,Sand Rush,Sand Force,Mold Breaker,0,252,252,0,0,0,110,135,60,50,65,88,185,205,112,70,76,108,108
+320,Wishiwashi (School Form)-1,Brave,Sitrus Berry,Waterfall,Ice Beam,Double-Edge,Rain Dance,HP/Atk,FALSE,Wishiwashi (School Form),Schooling,Schooling,Schooling,252,252,0,0,0,0,45,140,130,140,135,30,152,211,150,160,155,45,45
+321,Steelix-1,Impish,Chesto Berry,Earthquake,Rest,Curse,Stealth Rock,HP/SpD,FALSE,Steelix,Rock Head,Sturdy,Sheer Force,252,0,0,0,252,0,75,85,200,55,65,30,182,105,242,67,117,50,50
+322,Weavile-1,Hasty,Razor Fang,Fake Out,Taunt,Night Slash,Fling,Atk/Spe,FALSE,Weavile,Pressure,Pressure,Pickpocket,0,252,0,0,0,252,70,120,65,45,85,125,145,172,76,65,105,194,194
+323,Gliscor-1,Naughty,Razor Fang,Acrobatics,Fling,U-turn,Swords Dance,Atk/Spe,FALSE,Gliscor,Hyper Cutter,Sand Veil,Poison Heal,0,252,0,0,0,252,75,95,125,45,75,95,150,161,145,65,85,147,147
+324,Zoroark-1,Naive,Focus Sash,Night Slash,Shadow Claw,Taunt,Counter,Atk/Spe,FALSE,Zoroark,Illusion,Illusion,Illusion,0,252,0,0,0,252,60,105,60,120,60,105,135,157,80,140,72,172,172
+325,Mandibuzz-1,Calm,Wacan Berry,Taunt,Flatter,Roost,Toxic,Spe/SpD,FALSE,Mandibuzz,Big Pecks,Overcoat,Weak Armor,0,0,0,0,252,252,110,65,105,55,95,80,185,76,125,75,161,132,132
+326,Braviary-1,Adamant,King's Rock,Rock Slide,Air Slash,Tailwind,Sky Drop,Atk/Def/SpD,FALSE,Braviary,Keen Eye,Sheer Force,Defiant,0,170,170,0,170,0,100,123,75,57,75,80,175,180,116,69,116,100,100
+327,Tentacruel-1,Hasty,Black Sludge,Ice Beam,Sludge Wave,Hex,Toxic Spikes,Spe/SpA,FALSE,Tentacruel,Clear Body,Liquid Ooze,Rain Dish,0,0,0,252,0,252,80,70,65,80,120,100,155,90,76,132,140,167,167
+328,Aerodactyl-1,Jolly,Choice Scarf,Rock Slide,,,,Atk/Spe,FALSE,Aerodactyl,Rock Head,Pressure,Unnerve,0,252,0,0,0,252,80,105,65,60,75,130,155,157,85,72,95,200,300
+329,Porygon2-1,Modest,Sitrus Berry,Blizzard,Magic Coat,Lock-On,Zap Cannon,HP/SpA,FALSE,Porygon2,Trace,Download,Analytic,252,0,0,252,0,0,85,80,90,105,95,60,192,90,110,172,115,80,80
+330,Palossand-1,Bold,Smooth Rock,Shore Up,Sandstorm,Shadow Ball,Earth Power,HP/Def,FALSE,Palossand,Water Compaction,Water Compaction,Sand Veil,252,0,252,0,0,0,85,75,110,100,75,35,192,85,178,120,95,55,55
+331,Yanmega-1,Modest,Cheri Berry,Air Slash,Bug Buzz,Detect,U-turn,SpA/SpD,FALSE,Yanmega,Speed Boost,Tinted Lens,Frisk,0,0,0,252,252,0,86,76,86,116,56,95,161,86,106,184,108,115,115
+332,Gardevoir-1,Timid,Psychium Z,Hypnosis,Dream Eater,Imprison,Dazzling Gleam,HP/Spe,FALSE,Gardevoir,Synchronize,Trace,Telepathy,252,0,0,0,0,252,68,65,65,125,115,80,175,76,85,145,135,145,145
+333,Gallade-1,Hasty,Expert Belt,Shadow Sneak,Brick Break,Psycho Cut,Swords Dance,Atk/Spe,FALSE,Gallade,Steadfast,Steadfast,Justified,0,252,0,0,0,252,68,125,65,65,115,80,143,177,76,85,135,145,145
+334,Exeggutor-1,Mild,Petaya Berry,Psyshock,Grass Knot,Light Screen,Synthesis,Spe/SpA/SpD,FALSE,Exeggutor,Chlorophyll,Chlorophyll,Harvest,0,0,0,170,170,170,95,95,85,125,75,55,170,115,94,182,116,96,96
+335,Starmie-1,Timid,Sitrus Berry,Psychic,Cosmic Power,Recover,Reflect Type,HP/Spe,FALSE,Starmie,Illuminate,Natural Cure,Analytic,252,0,0,0,0,252,60,75,85,100,85,115,167,85,105,120,105,183,183
+336,Flygon-1,Naive,Weakness Policy,Earthquake,Dragon Claw,Endure,Fire Blast,Atk/Spe,FALSE,Flygon,Levitate,Levitate,Levitate,0,252,0,0,0,252,80,100,80,80,80,100,155,152,100,100,90,167,167
+337,Klinklang-1,Impish,Shuca Berry,Gear Grind,Thunder Wave,Screech,Volt Switch,HP/Spe,FALSE,Klinklang,Plus,Minus,Clear Body,252,0,0,0,0,252,60,100,115,70,85,90,167,120,148,81,105,142,142
+338,Chandelure-1,Modest,Spell Tag,Flamethrower,Confuse Ray,Will-O-Wisp,Hex,HP/Spe/SpA,FALSE,Chandelure,Flash Fire,Flame Body,Infiltrator,170,0,0,170,0,170,60,55,90,145,90,80,156,67,110,204,110,121,121
+339,Vaporeon-1,Quiet,Quick Claw,Wish,Surf,Helping Hand,Shadow Ball,Def/SpA,FALSE,Vaporeon,Water Absorb,Water Absorb,Hydration,0,0,252,252,0,0,130,65,60,110,95,65,205,85,112,178,115,76,76
+340,Jolteon-1,Hasty,Magnet,Quick Attack,Thunderbolt,Thunder Wave,Swagger,Spe/SpA,FALSE,Jolteon,Volt Absorb,Volt Absorb,Quick Feet,0,0,0,252,0,252,65,65,60,110,95,130,140,85,72,162,115,200,200
+341,Flareon-1,Naughty,Focus Sash,Quick Attack,Flail,Work Up,Fire Blast,Atk/SpA,FALSE,Flareon,Flash Fire,Flash Fire,Guts,0,252,0,252,0,0,65,130,60,95,110,65,140,200,80,147,117,85,85
+342,Espeon-1,Naive,Focus Sash,Yawn,Dream Eater,Calm Mind,Protect,Spe/SpA,FALSE,Espeon,Synchronize,Synchronize,Magic Bounce,0,0,0,252,0,252,65,65,60,130,95,110,140,85,80,182,103,178,178
+343,Umbreon-1,Impish,Leftovers,Confuse Ray,Payback,Curse,Moonlight,HP/Def,FALSE,Umbreon,Synchronize,Synchronize,Inner Focus,252,0,252,0,0,0,95,65,110,60,130,65,202,85,178,72,150,85,85
+344,Leafeon-1,Impish,Scope Lens,X-Scissor,Leaf Blade,Swords Dance,Grass Whistle,HP/Spe,FALSE,Leafeon,Leaf Guard,Leaf Guard,Chlorophyll,252,0,0,0,0,252,65,110,130,60,65,95,172,130,165,72,85,147,147
+345,Glaceon-1,Rash,Quick Claw,Ice Shard,Blizzard,Mirror Coat,Helping Hand,HP/SpA,FALSE,Glaceon,Snow Cloak,Snow Cloak,Ice Body,252,0,0,252,0,0,65,60,110,130,95,65,172,80,130,200,103,85,85
+346,Lucario-1,Modest,Fightinium Z,Metal Sound,Dark Pulse,Aura Sphere,Heal Pulse,Spe/SpA,FALSE,Lucario,Steadfast,Inner Focus,Justified,0,0,0,252,0,252,70,110,70,115,70,90,145,117,90,183,90,142,142
+347,Hippowdon-1,Impish,Soft Sand,Earthquake,Crunch,Yawn,Whirlwind,Atk/Def,FALSE,Hippowdon,Sand Stream,Sand Stream,Sand Force,0,252,252,0,0,0,108,112,118,68,72,47,183,164,187,79,92,67,67
+348,Liepard-1,Timid,Roseli Berry,Snarl,Shadow Ball,Snatch,Fake Out,Spe/SpA,FALSE,Liepard,Limber,Unburden,Prankster,0,0,0,252,0,252,64,88,50,88,50,106,139,97,70,140,70,173,173
+349,Dusknoir-1,Bold,Leftovers,Disable,Will-O-Wisp,Pain Split,Mean Look,HP/Def,FALSE,Dusknoir,Pressure,Pressure,Frisk,252,0,252,0,0,0,45,100,135,65,135,45,152,108,205,85,155,65,65
+350,Mienshao-1,Naive,Salac Berry,U-turn,Endure,Calm Mind,Baton Pass,HP/Spe,FALSE,Mienshao,Inner Focus,Regenerator,Reckless,252,0,0,0,0,252,65,125,60,95,60,105,172,145,80,115,72,172,172
+351,Beartic-1,Brave,Sitrus Berry,Shadow Claw,Stone Edge,Avalanche,Bulk Up,Atk/SpD,FALSE,Beartic,Snow Cloak,Slush Rush,Swift Swim,0,252,0,0,252,0,95,130,80,70,80,50,170,200,100,90,132,63,63
+352,Bouffalant-1,Adamant,Silk Scarf,Head Charge,Pursuit,Scary Face,Aerial Ace,HP/Atk,FALSE,Bouffalant,Reckless,Sap Sipper,Soundproof,252,252,0,0,0,0,95,110,95,40,95,55,202,178,115,54,115,75,75
+353,Aggron-1,Impish,Focus Sash,Protect,Roar,Stealth Rock,Metal Burst,HP/SpD,FALSE,Aggron,Sturdy,Rock Head,Heavy Metal,252,0,0,0,252,0,70,110,180,60,60,50,177,130,220,72,112,70,70
+354,Walrein-1,Calm,Chesto Berry,Frost Breath,Snore,Stockpile,Rest,Def/SpD,FALSE,Walrein,Thick Fat,Ice Body,Oblivious,0,0,252,0,252,0,110,80,90,95,90,65,185,90,142,115,156,85,85
+355,Mamoswine-1,Adamant,Passho Berry,Double Hit,Earthquake,Icicle Crash,Stealth Rock,Atk/Spe/SpD,FALSE,Mamoswine,Oblivious,Snow Cloak,Thick Fat,0,170,0,0,170,170,110,130,80,70,60,80,185,188,100,81,101,121,121
+356,Lapras-1,Quiet,Damp Rock,Rain Dance,Thunder,Ice Shard,Confuse Ray,Def/SpA,FALSE,Lapras,Water Absorb,Shell Armor,Hydration,0,0,252,252,0,0,130,85,80,85,95,60,205,105,132,150,115,72,72
+357,Crobat-1,Jolly,Charti Berry,Cross Poison,X-Scissor,Hypnosis,U-turn,Atk/Spe,FALSE,Crobat,Inner Focus,Inner Focus,Infiltrator,0,252,0,0,0,252,85,90,80,70,80,130,160,142,100,81,100,200,200
+358,Magnezone-1,Rash,Steelium Z,Metal Sound,Flash Cannon,Thunderbolt,Magnet Rise,HP/SpA,FALSE,Magnezone,Magnet Pull,Sturdy,Analytic,252,0,0,252,0,0,70,70,115,130,90,60,177,90,135,200,99,80,80
+359,Rhyperior-1,Brave,Zoom Lens,Payback,Rock Blast,Stone Edge,Protect,HP/Atk/SpD,FALSE,Rhyperior,Lightning Rod,Solid Rock,Reckless,170,170,0,0,170,0,115,140,130,55,55,40,211,199,150,75,96,54,54
+360,Tangrowth-1,Bold,Big Root,Leech Seed,Ingrain,Giga Drain,Toxic,HP/Def/SpD,FALSE,Tangrowth,Chlorophyll,Leaf Guard,Regenerator,170,0,170,0,170,0,100,100,125,110,50,50,196,108,182,130,91,70,70
+361,Porygon-Z-1,Modest,Wise Glasses,Psychic,Shadow Ball,Thunderbolt,Thunder Wave,Spe/SpA,FALSE,Porygon-Z,Adaptability,Download,Analytic,0,0,0,252,0,252,85,80,70,135,75,90,160,90,90,205,95,142,142
+362,Vanilluxe-1,Calm,Never-Melt Ice,Ice Beam,Frost Breath,Mirror Coat,Icy Wind,HP/SpA/SpD,FALSE,Vanilluxe,Ice Body,Snow Warning,Weak Armor,170,0,0,170,170,0,71,95,85,110,95,79,167,103,105,151,149,99,99
+363,Eelektross-1,Quiet,Magnet,Discharge,Gastro Acid,Thunderbolt,Thunder Wave,HP/SpA,FALSE,Eelektross,Levitate,Levitate,Levitate,252,0,0,252,0,0,85,115,80,105,80,50,192,135,100,172,100,63,63
+364,Gyarados-1,Lonely,Muscle Band,Ice Fang,Aqua Tail,Thunder Wave,Dragon Dance,HP/Atk/Spe,FALSE,Gyarados,Intimidate,Intimidate,Moxie,170,170,0,0,0,170,95,125,79,60,100,81,191,182,89,80,120,122,122
+365,Snorlax-1,Adamant,Sitrus Berry,Return,Wild Charge,Counter,Recycle,Atk/Def,FALSE,Snorlax,Immunity,Thick Fat,Gluttony,0,252,252,0,0,0,160,110,65,65,110,30,235,178,117,76,130,50,50
+366,Kingdra-1,Adamant,Persim Berry,Waterfall,Quash,Protect,Outrage,HP/Atk/Spe,FALSE,Kingdra,Swift Swim,Sniper,Damp,170,170,0,0,0,170,75,95,95,95,95,85,171,149,115,103,115,126,126
+367,Blissey-1,Calm,Leftovers,Attract,Round,Heal Pulse,Aromatherapy,Def/SpD,FALSE,Blissey,Natural Cure,Serene Grace,Healer,0,0,252,0,252,0,255,10,10,75,135,55,330,27,62,95,205,75,75
+368,Milotic-1,Bold,Enigma Berry,Surf,Recover,Mirror Coat,Confuse Ray,HP/Def,FALSE,Milotic,Marvel Scale,Competitive,Cute Charm,252,0,252,0,0,0,95,60,79,100,125,81,202,72,144,120,145,101,101
+369,Malamar-1,Adamant,Tanga Berry,Payback,Psycho Cut,Reflect,Flatter,Atk/Def,FALSE,Malamar,Contrary,Suction Cups,Infiltrator,0,252,252,0,0,0,86,92,88,68,75,73,161,158,140,79,95,93,93
+370,Sandslash-1,Impish,Quick Claw,Dig,Poison Jab,Swagger,Sand Attack,HP/Def,FALSE,Sandslash,Sand Veil,Sand Veil,Sand Rush,252,0,252,0,0,0,75,100,110,45,55,65,182,120,178,58,75,85,85
+371,Haxorus-1,Hasty,Haban Berry,Dual Chop,Earthquake,Roar,Taunt,Atk/Spe,FALSE,Haxorus,Rivalry,Mold Breaker,Unnerve,0,252,0,0,0,252,76,147,90,60,70,97,151,199,99,80,90,163,163
+372,Togekiss-1,Calm,Sitrus Berry,Encore,Follow Me,Reflect,Dazzling Gleam,HP/SpD,FALSE,Togekiss,Hustle,Serene Grace,Super Luck,252,0,0,0,252,0,85,50,95,120,115,80,192,63,115,140,183,100,100
+373,Volcarona-1,Modest,Power Herb,Fire Spin,Heat Wave,Solar Beam,Whirlwind,HP/Spe,FALSE,Volcarona,Flame Body,Flame Body,Swarm,252,0,0,0,0,252,85,60,65,135,105,100,192,72,85,170,125,152,152
+374,Arcanine-1,Modest,Firium Z,Flamethrower,Solar Beam,Burn Up,Sunny Day,Spe/SpA,FALSE,Arcanine,Intimidate,Flash Fire,Justified,0,0,0,252,0,252,90,110,80,100,80,95,165,117,100,167,100,147,147
+375,Archeops-1,Jolly,Sitrus Berry,Quick Attack,Acrobatics,Crunch,U-turn,Atk/Spe,FALSE,Archeops,Defeatist,Defeatist,Defeatist,0,252,0,0,0,252,75,140,65,112,65,110,150,192,85,118,85,178,178
+376,Dragonite-1,Impish,Custap Berry,Toxic,Thunder Wave,Roost,Rock Slide,HP/Def/SpD,FALSE,Dragonite,Inner Focus,Inner Focus,Multiscale,170,0,170,0,170,0,91,134,95,100,100,80,187,154,149,108,141,100,100
+377,Tyranitar-1,Impish,Iron Ball,Rock Slide,Stealth Rock,Thunder Wave,Fling,HP/SpD,FALSE,Tyranitar,Sand Stream,Sand Stream,Unnerve,252,0,0,0,252,0,100,134,110,95,100,61,207,154,143,103,152,81,40.5
+378,Salamence-1,Adamant,Yache Berry,Roost,Scary Face,Dragon Tail,Earthquake,Atk/Def/SpD,FALSE,Salamence,Intimidate,Intimidate,Moxie,0,170,170,0,170,0,95,135,80,110,80,100,170,193,121,117,121,120,120
+379,Metagross-1,Naive,Occa Berry,Meteor Mash,Magnet Rise,Zen Headbutt,Agility,Atk/Spe,FALSE,Metagross,Clear Body,Clear Body,Light Metal,0,252,0,0,0,252,80,135,130,95,90,70,155,187,150,115,99,134,134
+380,Garchomp-1,Jolly,Lax Incense,Earthquake,Protect,Sandstorm,Sand Tomb,HP/Spe,FALSE,Garchomp,Sand Veil,Sand Veil,Rough Skin,252,0,0,0,0,252,108,130,95,80,85,102,215,150,115,90,105,169,169
+381,Hydreigon-1,Rash,Dragon Fang,Dragon Pulse,Earth Power,Surf,Dragon Tail,Atk/Spe,FALSE,Hydreigon,Levitate,Levitate,Levitate,0,252,0,0,0,252,92,105,90,125,90,98,167,157,110,159,99,150,150
+382,Slaking-1,Naive,Chople Berry,Earthquake,Brick Break,Rock Slide,Encore,Atk/Spe,FALSE,Slaking,Truant,Truant,Truant,0,252,0,0,0,252,150,160,100,95,65,100,225,212,120,115,76,167,167
+383,Venusaur-2,Brave,Grassium Z,Roar,Venoshock,Power Whip,Earthquake,HP/Atk/Def,FALSE,Venusaur,Overgrow,Overgrow,Chlorophyll,170,170,170,0,0,0,80,82,83,100,100,80,176,135,124,120,120,90,90
+384,Charizard-2,Adamant,Charti Berry,Dragon Claw,Shadow Claw,Rock Slide,Dragon Dance,Atk/Spe,FALSE,Charizard,Blaze,Blaze,Solar Power,0,252,0,0,0,252,78,84,78,109,85,100,153,149,98,116,105,152,152
+385,Blastoise-2,Quiet,Blastoisinite,Water Pulse,Aura Sphere,Dark Pulse,Dragon Pulse,HP/SpA,TRUE,Blastoise (Mega Blastoise),Mega Launcher,Mega Launcher,Mega Launcher,252,0,0,252,0,0,79,103,120,135,115,78,186,123,140,205,135,88,88
+386,Meganium-2,Bold,Chesto Berry,Double Team,Petal Blizzard,Substitute,Rest,HP/Def,FALSE,Meganium,Overgrow,Overgrow,Leaf Guard,252,0,252,0,0,0,80,82,100,83,100,80,187,91,167,103,120,100,100
+387,Typhlosion-2,Naive,Wide Lens,Inferno,Focus Blast,Extrasensory,Will-O-Wisp,Spe/SpA,FALSE,Typhlosion,Blaze,Blaze,Flash Fire,0,0,0,252,0,252,78,84,78,109,85,100,153,104,98,161,94,167,167
+388,Feraligatr-2,Adamant,Liechi Berry,Superpower,Aqua Tail,Ice Fang,Dragon Dance,HP/Atk/Spe,FALSE,Feraligatr,Torrent,Torrent,Sheer Force,170,170,0,0,0,170,85,105,100,79,83,78,181,160,120,89,103,119,119
+389,Sceptile-2,Hasty,Scope Lens,Leaf Blade,Night Slash,Earthquake,Swords Dance,Atk/Spe,FALSE,Sceptile,Overgrow,Overgrow,Unburden,0,252,0,0,0,252,70,85,65,105,85,120,145,137,76,125,105,189,189
+390,Blaziken-2,Adamant,Salac Berry,Blaze Kick,Flame Charge,Endure,Reversal,HP/Atk/Spe,FALSE,Blaziken,Blaze,Blaze,Speed Boost,170,170,0,0,0,170,80,120,70,110,70,80,176,177,90,117,90,121,121
+391,Swampert-2,Careful,Chesto Berry,Waterfall,Hammer Arm,Rest,Curse,HP/SpD,FALSE,Swampert,Torrent,Torrent,Damp,252,0,0,0,252,0,100,110,90,85,90,60,207,130,110,94,156,80,80
+392,Torterra-2,Jolly,Choice Scarf,Rock Slide,Earthquake,Wood Hammer,Tickle,Atk/Spe,FALSE,Torterra,Overgrow,Overgrow,Shell Armor,0,252,0,0,0,252,95,109,105,75,85,56,170,161,125,85,105,118,177
+393,Infernape-2,Mild,Charcoal,Heat Wave,Will-O-Wisp,Grass Knot,Calm Mind,HP/Spe/SpA,FALSE,Infernape,Blaze,Blaze,Iron Fist,170,0,0,170,0,170,76,104,71,104,71,108,172,124,81,159,91,149,149
+394,Empoleon-2,Lonely,Muscle Band,Drill Peck,Aqua Jet,Metal Claw,Feather Dance,HP/Atk/SpD,FALSE,Empoleon,Torrent,Torrent,Defiant,170,170,0,0,170,0,84,86,88,111,101,60,180,139,97,131,142,80,80
+395,Serperior-2,Sassy,Sitrus Berry,Leaf Tornado,Hidden Power,Mirror Coat,Captivate,HP/SpA/SpD,FALSE,Serperior,Overgrow,Overgrow,Contrary,170,0,0,170,170,0,75,75,95,75,95,113,171,95,115,116,149,119,119
+396,Emboar-2,Brave,Quick Claw,Yawn,Wild Charge,Bulldoze,Heat Crash,Atk/Def/SpD,FALSE,Emboar,Blaze,Blaze,Reckless,0,170,170,0,170,0,110,123,65,100,65,65,185,180,106,120,106,76,76
+397,Samurott-2,Quiet,Zoom Lens,Blizzard,Giga Impact,Detect,Hydro Pump,Atk/SpA,FALSE,Samurott,Torrent,Torrent,Shell Armor,0,252,0,252,0,0,95,100,85,108,70,70,170,152,105,176,90,81,81
+398,Dugtrio-1,Naive,Passho Berry,Sand Attack,Pursuit,Tri Attack,Dig,HP/Spe,FALSE,Dugtrio,Sand Veil,Arena Trap,Sand Force,252,0,0,0,0,252,35,100,50,50,70,120,142,120,70,70,81,189,189
+399,Marowak (Alola Form)-1,Quiet,Air Balloon,Will-O-Wisp,Hex,Thunder,Rain Dance,HP/SpA,FALSE,Marowak (Alola Form),Cursed Body,Lightning Rod,Rock Head,252,0,0,252,0,0,60,80,110,50,80,45,167,100,130,112,100,58,58
+400,Medicham-2,Timid,Psychium Z,Psychic,Shadow Ball,Energy Ball,Calm Mind,Spe/SpA,FALSE,Medicham,Pure Power,Pure Power,Telepathy,0,0,0,252,0,252,60,60,75,60,75,80,135,72,95,112,95,145,145
+401,Pidgeot-2,Quiet,Flyinium Z,Mirror Move,Twister,Sand Attack,Double Team,HP/SpA,FALSE,Pidgeot,Keen Eye,Tangled Feet,Big Pecks,252,0,0,252,0,0,83,80,75,70,70,101,190,100,95,134,90,108,108
+402,Mawile-2,Modest,Fairium Z,Flash Cannon,Fairy Wind,Metal Burst,Shadow Ball,HP/SpA,FALSE,Mawile,Hyper Cutter,Intimidate,Sheer Force,252,0,0,252,0,0,50,85,85,55,55,50,157,94,105,117,75,70,70
+403,Banette-2,Modest,Fairium Z,Dazzling Gleam,Snatch,Dark Pulse,Ominous Wind,HP/SpA,FALSE,Banette,Insomnia,Frisk,Cursed Body,252,0,0,252,0,0,64,115,65,83,63,65,171,121,85,148,83,85,85
+404,Sableye-2,Careful,Normalium Z,Captivate,Foul Play,Mean Look,Moonlight,HP/SpD,FALSE,Sableye,Keen Eye,Stall,Prankster,252,0,0,0,252,0,50,75,75,65,65,50,157,95,95,76,128,70,70
+405,Lanturn-2,Calm,Sitrus Berry,Thunder Wave,Charge Beam,Stockpile,Swallow,Def/SpA,FALSE,Lanturn,Volt Absorb,Illuminate,Water Absorb,0,0,252,252,0,0,125,58,58,76,76,67,200,70,110,128,105,87,87
+406,Breloom-2,Jolly,Toxic Orb,Substitute,Seed Bomb,Wake-Up Slap,Spore,Atk/Spe,FALSE,Breloom,Effect Spore,Poison Heal,Technician,0,252,0,0,0,252,60,130,80,60,60,70,135,182,100,72,80,134,134
+407,Audino-2,Modest,Choice Specs,Hyper Voice,Thunder,Blizzard,Fire Blast,Def/SpA,FALSE,Audino,Healer,Regenerator,Klutz,0,0,252,252,0,0,103,60,86,60,86,50,178,72,138,123,106,70,70
+408,Skarmory-2,Naughty,Cell Battery,Brave Bird,Steel Wing,Swords Dance,Roar,HP/Spe,FALSE,Skarmory,Keen Eye,Sturdy,Weak Armor,252,0,0,0,0,252,65,80,140,40,70,70,172,110,160,60,81,122,122
+409,Absol-2,Adamant,Chople Berry,Sucker Punch,Magic Coat,Psycho Cut,Taunt,HP/Atk,FALSE,Absol,Pressure,Super Luck,Justified,252,252,0,0,0,0,65,130,60,75,60,75,172,200,80,85,80,95,95
+410,Sharpedo-2,Mild,Poisonium Z,Poison Jab,Surf,Dark Pulse,Taunt,Spe/SpA,FALSE,Sharpedo,Rough Skin,Rough Skin,Speed Boost,0,0,0,252,0,252,70,120,40,95,40,95,145,140,54,161,60,147,147
+411,Hariyama-2,Careful,Custap Berry,Reversal,Bullet Punch,Protect,Belly Drum,Def/SpD,FALSE,Hariyama,Thick Fat,Guts,Sheer Force,0,0,252,0,252,0,144,120,60,40,60,50,219,140,112,54,123,70,70
+412,Vespiquen-2,Quiet,Normalium Z,Attack Order,Power Gem,Captivate,Confuse Ray,HP/SpA,FALSE,Vespiquen,Pressure,Pressure,Unnerve,252,0,0,252,0,0,70,80,102,80,102,40,177,100,122,145,122,54,54
+413,Raichu-1,Bold,Shuca Berry,Nuzzle,Focus Blast,Sweet Kiss,Charge Beam,HP/Def,FALSE,Raichu,Static,Static,Lightning Rod,252,0,252,0,0,0,60,90,55,90,80,110,167,99,117,110,100,130,130
+414,Glalie-2,Modest,Normalium Z,Weather Ball,Rain Dance,Shadow Ball,Dark Pulse,Spe/SpA,FALSE,Glalie,Inner Focus,Ice Body,Moody,0,0,0,252,0,252,80,80,80,80,80,80,155,90,100,145,100,132,132
+415,Manectric-2,Modest,Air Balloon,Flamethrower,Overheat,Discharge,Charge,Spe/SpA,FALSE,Manectric,Static,Lightning Rod,Minus,0,0,0,252,0,252,70,75,60,105,60,105,145,85,80,172,80,157,157
+416,Staraptor-2,Adamant,Choice Scarf,Pursuit,Close Combat,Brave Bird,Final Gambit,HP/Spe,FALSE,Staraptor,Intimidate,Intimidate,Reckless,252,0,0,0,0,252,85,120,70,50,60,100,192,154,90,63,80,152,228
+417,Gastrodon-2,Careful,Rindo Berry,Waterfall,Amnesia,Curse,Yawn,Atk/Def/SpD,FALSE,Gastrodon,Sticky Hold,Storm Drain,Sand Force,0,170,170,0,170,0,111,83,68,92,82,39,186,124,109,100,135,59,59
+418,Camerupt-2,Timid,Firium Z,Sunny Day,Solar Beam,Eruption,Flash Cannon,HP/Spe,FALSE,Camerupt,Magma Armor,Solid Rock,Anger Point,252,0,0,0,0,252,70,100,70,105,75,40,177,108,90,125,95,101,101
+419,Sawk-2,Naughty,Focus Sash,Earthquake,Payback,Endure,Reversal,Atk/Spe,FALSE,Sawk,Sturdy,Inner Focus,Mold Breaker,0,252,0,0,0,252,75,125,75,30,75,85,150,194,95,50,85,137,137
+420,Throh-2,Brave,Expert Belt,Revenge,Storm Throw,Protect,Seismic Toss,Atk/Def,FALSE,Throh,Guts,Inner Focus,Mold Breaker,0,252,252,0,0,0,120,100,85,30,85,45,195,167,137,50,105,58,58
+421,Unfezant-2,Jolly,Power Herb,Giga Impact,Quick Attack,Hypnosis,Sky Attack,Atk/Spe,FALSE,Unfezant,Big Pecks,Super Luck,Rivalry,0,252,0,0,0,252,80,115,80,65,55,93,155,167,100,76,75,159,159
+422,Pelipper-2,Bold,Rocky Helmet,Stockpile,Roost,Toxic,Surf,HP/Def,FALSE,Pelipper,Keen Eye,Drizzle,Rain Dish,252,0,252,0,0,0,60,50,100,95,70,65,167,63,167,115,90,85,85
+423,Amoonguss-2,Bold,Bright Powder,Double Team,Giga Drain,Toxic,Swagger,Def/SpD,FALSE,Amoonguss,Effect Spore,Effect Spore,Regenerator,0,0,252,0,252,0,114,85,70,85,80,30,189,94,134,105,132,50,50
+424,Electrode-2,Hasty,Focus Sash,Electro Ball,Taunt,Protect,Explosion,Atk/Spe,FALSE,Electrode,Soundproof,Static,Aftermath,0,252,0,0,0,252,60,50,70,80,80,150,135,102,81,100,100,222,222
+425,Ludicolo-2,Naughty,Tanga Berry,Fake Out,Grass Knot,Surf,Tickle,HP/Atk/SpA,FALSE,Ludicolo,Swift Swim,Rain Dish,Own Tempo,170,170,0,170,0,0,80,70,70,90,100,70,176,122,90,131,108,90,90
+426,Shiftry-2,Rash,Miracle Seed,Fake Out,Extrasensory,Solar Beam,Swagger,Spe/SpA,FALSE,Shiftry,Chlorophyll,Early Bird,Pickpocket,0,0,0,252,0,252,90,100,60,90,60,80,165,120,80,156,72,132,132
+427,Exploud-2,Lonely,Darkinium Z,Crunch,Fake Tears,Ice Beam,Giga Impact,Atk/SpA,FALSE,Exploud,Soundproof,Soundproof,Scrappy,0,252,0,252,0,0,104,91,63,91,73,68,179,157,74,143,93,88,88
+428,Lopunny-2,Jolly,Liechi Berry,Charm,Focus Punch,Substitute,Thunder Punch,Atk/Spe,FALSE,Lopunny,Cute Charm,Klutz,Limber,0,252,0,0,0,252,65,76,84,54,96,105,140,128,104,66,116,172,172
+429,Froslass-2,Lonely,Kasib Berry,Ice Shard,Thunder Wave,Hex,Taunt,Atk/Spe,FALSE,Froslass,Snow Cloak,Snow Cloak,Cursed Body,0,252,0,0,0,252,70,80,70,80,70,110,145,145,81,100,90,162,162
+430,Lilligant-2,Bold,Big Root,Ingrain,Leech Seed,Toxic,Protect,HP/Def/SpD,FALSE,Lilligant,Chlorophyll,Own Tempo,Leaf Guard,170,0,170,0,170,0,70,60,75,110,75,90,166,72,127,130,116,110,110
+431,Darmanitan-2,Calm,Luminous Moss,Psychic,Flamethrower,Round,Confide,HP/SpD,FALSE,Darmanitan,Sheer Force,Sheer Force,Zen Mode,252,0,0,0,252,0,105,140,55,30,55,95,212,144,75,50,117,115,115
+432,Ambipom-2,Timid,Focus Sash,Grass Knot,Thunderbolt,Nasty Plot,Counter,Spe/SpA,FALSE,Ambipom,Technician,Pickup,Skill Link,0,0,0,252,0,252,75,100,66,60,66,115,150,108,86,112,86,183,183
+433,Cofagrigus-2,Quiet,Spell Tag,Shadow Ball,Energy Ball,Will-O-Wisp,Nasty Plot,HP/SpA,FALSE,Cofagrigus,Mummy,Mummy,Mummy,252,0,0,252,0,0,58,50,145,95,105,30,165,70,165,161,125,45,45
+434,Golurk-2,Brave,Wide Lens,Hammer Arm,Rock Slide,Curse,Gyro Ball,Atk/SpD,FALSE,Golurk,Iron Fist,Klutz,No Guard,0,252,0,0,252,0,89,124,80,55,80,55,164,193,100,75,132,67,67
+435,Durant-2,Impish,Power Herb,Dig,Iron Defense,Agility,Baton Pass,Def/Spe,FALSE,Durant,Swarm,Hustle,Truant,0,0,252,0,0,252,58,109,112,48,48,109,133,129,180,61,68,161,161
+436,Golem-1,Naughty,Absorb Bulb,Stone Edge,Earthquake,Sandstorm,Autotomize,HP/Atk,FALSE,Golem,Rock Head,Sturdy,Sand Veil,252,252,0,0,0,0,80,120,130,55,65,45,187,189,150,75,76,65,65
+437,Slowbro-2,Modest,Quick Claw,Flamethrower,Ice Beam,Slack Off,Water Pulse,Def/SpA,FALSE,Slowbro,Oblivious,Own Tempo,Regenerator,0,0,252,252,0,0,95,75,110,100,80,30,170,85,162,167,100,50,50
+438,Weezing-2,Rash,Safety Goggles,Sludge Bomb,Fire Blast,Stockpile,Swallow,HP/SpA,FALSE,Weezing,Levitate,Levitate,Levitate,252,0,0,252,0,0,65,90,120,85,70,60,172,110,140,150,81,80,80
+439,Kangaskhan-2,Jolly,Salac Berry,Rock Slide,Sucker Punch,Endure,Reversal,Atk/Spe,FALSE,Kangaskhan,Early Bird,Scrappy,Inner Focus,0,252,0,0,0,252,105,95,80,40,80,90,180,147,100,54,100,156,156
+440,Tauros-2,Jolly,Expert Belt,Zen Headbutt,Wild Charge,Swagger,Giga Impact,Atk/Spe,FALSE,Tauros,Intimidate,Anger Point,Sheer Force,0,252,0,0,0,252,75,100,95,40,70,110,150,152,115,54,90,178,178
+441,Spiritomb-2,Brave,Quick Claw,Shadow Sneak,Sucker Punch,Will-O-Wisp,Taunt,HP/Atk,FALSE,Spiritomb,Pressure,Pressure,Infiltrator,252,252,0,0,0,0,50,92,108,92,108,35,157,158,128,112,128,49,49
+442,Whimsicott-2,Modest,Choice Specs,Switcheroo,Hurricane,Moonblast,Energy Ball,Spe/SpA,FALSE,Whimsicott,Prankster,Infiltrator,Chlorophyll,0,0,0,252,0,252,60,67,85,77,75,116,135,78,105,141,95,168,168
+443,Druddigon-2,Adamant,Scope Lens,Dragon Claw,Night Slash,Slash,Hone Claws,HP/Def/SpD,FALSE,Druddigon,Rough Skin,Sheer Force,Mold Breaker,170,0,170,0,170,0,77,120,90,60,90,48,173,154,131,72,131,68,68
+444,Musharna-2,Bold,Lum Berry,Shadow Ball,Energy Ball,Psychic,Trick Room,Def/SpA,FALSE,Musharna,Forewarn,Synchronize,Telepathy,0,0,252,252,0,0,116,55,85,107,95,29,191,67,150,159,115,49,49
+445,Scrafty-2,Jolly,Coba Berry,High Jump Kick,Rock Slide,Taunt,Dragon Dance,HP/Spe,FALSE,Scrafty,Shed Skin,Moxie,Intimidate,252,0,0,0,0,252,65,90,115,45,115,58,172,110,135,58,135,121,121
+446,Ferrothorn-2,Careful,Chesto Berry,Rest,Payback,Gyro Ball,Curse,HP/SpD,FALSE,Ferrothorn,Iron Barbs,Iron Barbs,Anticipation,252,0,0,0,252,0,74,94,131,54,116,20,181,114,151,66,184,40,40
+447,Alakazam-2,Timid,Focus Sash,Psych Up,Encore,Protect,Psychic,Spe/SpA,FALSE,Alakazam,Synchronize,Inner Focus,Magic Guard,0,0,0,252,0,252,55,50,45,135,95,120,130,63,65,187,115,189,189
+448,Slowking-2,Gentle,King's Rock,Zen Headbutt,Earthquake,Swagger,Psych Up,Atk/SpD,FALSE,Slowking,Oblivious,Own Tempo,Regenerator,0,252,0,0,252,0,95,75,80,100,110,30,170,127,90,120,178,50,50
+449,Jellicent-2,Bold,Bright Powder,Acid Armor,Recover,Ominous Wind,Scald,HP/Def,FALSE,Jellicent,Water Absorb,Cursed Body,Damp,252,0,252,0,0,0,100,60,70,85,105,60,207,72,134,105,125,80,80
+450,Altaria-2,Lonely,Snowball,Dragon Claw,Pluck,Steel Wing,Dragon Dance,Atk/Spe,FALSE,Altaria,Natural Cure,Natural Cure,Cloud Nine,0,252,0,0,0,252,75,70,90,70,105,80,150,134,99,90,125,132,132
+451,Toxicroak-2,Modest,Petaya Berry,Focus Blast,Sludge Bomb,Substitute,Protect,Spe/SpA,FALSE,Toxicroak,Anticipation,Dry Skin,Poison Touch,0,0,0,252,0,252,83,106,65,86,65,85,158,113,85,151,85,137,137
+452,Gothitelle-2,Modest,Twisted Spoon,Psyshock,Miracle Eye,Mirror Coat,Tickle,HP/Def/SpA,FALSE,Gothitelle,Frisk,Competitive,Shadow Tag,170,0,170,170,0,0,70,55,95,95,110,65,166,67,136,149,130,85,85
+453,Reuniclus-2,Brave,King's Rock,Rock Slide,Explosion,Gyro Ball,Trick Room,Atk/Def/SpD,FALSE,Reuniclus,Overcoat,Magic Guard,Regenerator,0,170,170,0,170,0,110,65,75,125,85,30,185,116,116,145,126,45,45
+454,Bisharp-2,Adamant,Chople Berry,Aerial Ace,Low Sweep,Iron Head,Scary Face,HP/Atk,FALSE,Bisharp,Defiant,Inner Focus,Pressure,252,252,0,0,0,0,65,125,100,60,70,70,172,194,120,72,90,90,90
+455,Abomasnow-2,Lonely,Miracle Seed,Wood Hammer,Brick Break,Double Team,Blizzard,HP/Atk/SpA,FALSE,Abomasnow,Snow Warning,Snow Warning,Soundproof,170,170,0,170,0,0,90,92,75,92,85,60,186,146,85,133,105,80,80
+456,Nidoqueen-2,Mild,Absorb Bulb,Thunderbolt,Hyper Beam,Earth Power,Counter,HP/SpA,FALSE,Nidoqueen,Poison Point,Rivalry,Sheer Force,252,0,0,252,0,0,90,92,87,75,85,76,197,112,96,139,105,96,96
+457,Nidoking-2,Quiet,Black Sludge,Amnesia,Sludge Bomb,Flamethrower,Protect,HP/SpA,FALSE,Nidoking,Poison Point,Rivalry,Sheer Force,252,0,0,252,0,0,81,102,77,85,75,85,188,122,97,150,95,94,94
+458,Cradily-2,Brave,Quick Claw,Confuse Ray,Energy Ball,Stone Edge,Earthquake,HP/Atk/SpA,FALSE,Cradily,Suction Cups,Suction Cups,Storm Drain,170,170,0,170,0,0,86,81,97,81,107,43,182,134,117,122,127,56,56
+459,Armaldo-2,Hasty,Razor Fang,Rock Slide,Earthquake,X-Scissor,Rock Polish,HP/Spe,FALSE,Armaldo,Battle Armor,Battle Armor,Swift Swim,252,0,0,0,0,252,75,125,100,70,80,45,182,145,108,90,100,106,106
+460,Rampardos-2,Naughty,Sitrus Berry,Head Smash,Stone Edge,Hammer Arm,Scary Face,Atk/Spe,FALSE,Rampardos,Mold Breaker,Mold Breaker,Sheer Force,0,252,0,0,0,252,97,165,60,65,50,58,172,238,80,85,63,110,110
+461,Bastiodon-2,Bold,Chesto Berry,Round,Rest,Ancient Power,Iron Defense,Def/SpA,FALSE,Bastiodon,Sturdy,Sturdy,Soundproof,0,0,252,252,0,0,60,52,168,47,138,30,135,64,242,99,158,50,50
+462,Shiinotic-2,Modest,Normalium Z,Flash,Light Screen,Confuse Ray,Dazzling Gleam,HP/SpA,FALSE,Shiinotic,Illuminate,Effect Spore,Rain Dish,252,0,0,252,0,0,60,45,80,90,100,30,167,58,100,156,120,50,50
+463,Mismagius-2,Timid,Kasib Berry,Shadow Ball,Wonder Room,Grudge,Pain Split,HP/SpD,FALSE,Mismagius,Levitate,Levitate,Levitate,252,0,0,0,252,0,60,60,60,105,105,105,167,72,80,125,157,137,137
+464,Carracosta-2,Rash,Wide Lens,Rock Slide,Swagger,Blizzard,Hydro Pump,HP/SpA,FALSE,Carracosta,Solid Rock,Sturdy,Swift Swim,252,0,0,252,0,0,74,108,133,83,65,32,181,128,153,148,76,52,52
+465,Escavalier-2,Naughty,Quick Claw,Pursuit,Counter,X-Scissor,Swords Dance,HP/Atk,FALSE,Escavalier,Swarm,Shell Armor,Overcoat,252,252,0,0,0,0,70,135,105,60,105,20,177,205,125,80,112,40,40
+466,Accelgor-2,Modest,Weakness Policy,Energy Ball,Sludge Bomb,Bug Buzz,Endure,Spe/SpA,FALSE,Accelgor,Hydration,Sticky Hold,Unburden,0,0,0,252,0,252,80,70,40,100,60,145,155,81,60,167,80,197,197
+467,Salazzle-2,Timid,Bright Powder,Disable,Protect,Encore,Sludge Bomb,Spe/SpA,FALSE,Salazzle,Corrosion,Corrosion,Oblivious,0,0,0,252,0,252,68,64,60,111,60,117,143,75,80,163,80,185,185
+468,Drifblim-2,Mild,Wide Lens,Hex,Thunderbolt,Dream Eater,Hypnosis,Spe/SpA,FALSE,Drifblim,Aftermath,Unburden,Flare Boost,0,0,0,252,0,252,150,80,44,90,54,80,225,100,57,156,74,132,132
+469,Toucannon-2,Adamant,King's Rock,Tailwind,Rock Blast,Bullet Seed,Brave Bird,Atk/Spe,FALSE,Toucannon,Keen Eye,Skill Link,Sheer Force,0,252,0,0,0,252,80,120,75,75,75,60,155,189,95,85,95,112,112
+470,Oranguru-2,Calm,Psychic Seed,Psychic Terrain,Psyshock,Future Sight,Instruct,SpA/SpD,FALSE,Oranguru,Inner Focus,Telepahty,Symbiosis,0,0,0,252,252,0,90,60,80,90,110,60,165,72,100,142,178,80,80
+471,Komala-2,Impish,Quick Claw,Defense Curl,Rollout,Yawn,Thrash,HP/Def,FALSE,Komala,Comatose,Comatose,Comatose,252,0,252,0,0,0,65,115,65,75,95,65,172,135,128,85,115,85,85
+472,Muk (Alola Form)-1,Relaxed,Air Balloon,Minimize,Acid Spray,Rest,Snarl,HP/Def,FALSE,Muk (Alola Form),Poison Touch,Gluttony,Power of Alchemy,252,0,252,0,0,0,105,105,75,65,100,50,212,125,139,85,120,63,63
+473,Gengar-2,Jolly,Expert Belt,Sucker Punch,Fire Punch,Ice Punch,Will-O-Wisp,Atk/Spe,FALSE,Gengar,Cursed Body,Cursed Body,Cursed Body,0,252,0,0,0,252,60,65,60,130,75,110,135,117,80,135,95,178,178
+474,Ampharos-2,Brave,Lum Berry,Brick Break,Thunder Punch,Screech,Odor Sleuth,HP/Atk/Def,FALSE,Ampharos,Static,Static,Plus,170,170,170,0,0,0,90,75,85,115,90,55,186,127,126,135,110,67,67
+475,Politoed-2,Quiet,Damp Rock,Rain Dance,Round,Body Slam,Hydro Pump,SpA/SpD,FALSE,Politoed,Water Absorb,Damp,Drizzle,0,0,0,252,252,0,90,75,75,90,100,70,165,95,95,156,152,81,81
+476,Pinsir-2,Lonely,Rockium Z,Feint,X-Scissor,Stone Edge,Bug Bite,Atk/Spe,FALSE,Pinsir,Hyper Cutter,Mold Breaker,Moxie,0,252,0,0,0,252,65,125,100,55,70,85,140,194,108,75,90,137,137
+477,Scizor-2,Naughty,Psychium Z,Bullet Punch,X-Scissor,Feint,Agility,HP/Atk,FALSE,Scizor,Swarm,Technician,Light Metal,252,252,0,0,0,0,70,130,100,55,80,65,177,200,120,75,90,85,85
+478,Heracross-2,Naughty,Salac Berry,Megahorn,Flail,Endure,Reversal,HP/Spe,FALSE,Heracross,Swarm,Guts,Moxie,252,0,0,0,0,252,80,125,75,40,95,85,187,159,95,60,103,137,137
+479,Ursaring-2,Jolly,Toxic Orb,Facade,Hammer Arm,Scary Face,Yawn,Atk/Spe,FALSE,Ursaring,Guts,Quick Feet,Unnerve,0,252,0,0,0,252,90,130,75,75,75,55,165,182,95,85,95,117,117
+480,Houndoom-2,Hasty,Focus Sash,Counter,Flame Charge,Roar,Protect,Atk/Spe,FALSE,Houndoom,Early Bird,Flash Fire,Unnerve,0,252,0,0,0,252,75,90,50,110,80,95,150,142,63,130,100,161,161
+481,Tsareena-2,Impish,Rocky Helmet,Trop Kick,Synthesis,Play Rough,Captivate,HP/Def,FALSE,Tsareena,Leaf Guard,Queenly Majesty,Sweet Veil,252,0,252,0,0,0,72,120,98,50,98,72,179,140,165,63,118,92,92
+482,Wailord-2,Timid,Quick Claw,Water Spout,Rest,Sleep Talk,Ice Beam,Spe/SpA,FALSE,Wailord,Water Veil,Oblivious,Pressure,0,0,0,252,0,252,170,90,45,90,45,60,245,99,65,142,65,123,123
+483,Passimian-2,Brave,Iron Ball,Seismic Toss,Vital Throw,Fling,Gyro Ball,Atk/Def,FALSE,Passimian,Receiver,Receiver,Defiant,0,252,252,0,0,0,100,120,90,40,60,80,175,189,142,60,80,90,45
+484,Bronzong-2,Quiet,Damp Rock,Rain Dance,Light Screen,Charge Beam,Grass Knot,HP/SpA,FALSE,Bronzong,Levitate,Heatproof,Heavy Metal,252,0,0,252,0,0,67,89,116,79,116,33,174,109,136,144,136,47,47
+485,Drapion-2,Naive,Shuca Berry,Cross Poison,Crunch,Scary Face,Screech,Atk/Spe,FALSE,Drapion,Battle Armor,Sniper,Keen Eye,0,252,0,0,0,252,70,90,110,60,75,95,145,142,130,80,85,161,161
+486,Crabominable-2,Relaxed,Chesto Berry,Rest,Iron Defense,Ice Hammer,Dynamic Punch,HP/Def,FALSE,Crabominable,Hyper Cutter,Iron Fist,Anger Point,252,0,252,0,0,0,97,132,77,62,67,43,204,152,141,82,87,56,56
+487,Ninetales (Alola Form)-1,Timid,Icium Z,Aurora Veil,Hypnosis,Dream Eater,Blizzard,HP/Def,FALSE,Ninetales (Alola Form),Snow Cloak,Snow Cloak,Snow Warning,252,0,252,0,0,0,73,67,75,81,100,109,180,78,127,101,120,141,141
+488,Machamp-2,Brave,Expert Belt,Ice Punch,Cross Chop,Fire Punch,Focus Energy,HP/Atk,FALSE,Machamp,Guts,No Guard,Steadfast,252,252,0,0,0,0,90,130,80,65,85,55,197,200,100,85,105,67,67
+489,Shuckle-2,Bold,Quick Claw,Power Trick,Encore,Rock Slide,Bug Bite,HP/Def,FALSE,Shuckle,Sturdy,Gluttony,Contrary,252,0,252,0,0,0,20,10,230,10,230,5,127,27,310,30,250,25,25
+490,Mimikyu-2,Impish,Leftovers,Curse,Protect,Astonish,Baby-Doll Eyes,HP/Def,FALSE,Mimikyu,Disguise,Disguise,Disguise,252,0,252,0,0,0,55,90,80,50,105,96,162,110,145,63,125,116,116
+491,Honchkrow-2,Brave,Black Glasses,Sucker Punch,Taunt,Pursuit,Protect,Atk/SpD,FALSE,Honchkrow,Insomnia,Super Luck,Moxie,0,252,0,0,252,0,100,125,52,105,52,71,175,194,72,125,104,81,81
+492,Gigalith-2,Naughty,Hard Stone,Iron Defense,Sandstorm,Lock-On,Rock Blast,HP/Def,FALSE,Gigalith,Sturdy,Sand Stream,Sand Force,252,0,252,0,0,0,85,135,130,60,80,25,192,170,182,80,90,45,45
+493,Conkeldurr-2,Brave,Iron Ball,Mach Punch,Hammer Arm,Bulk Up,Fling,Atk/SpD,FALSE,Conkeldurr,Guts,Sheer Force,Iron Fist,0,252,0,0,252,0,105,140,95,55,65,45,180,211,115,75,117,58,29
+494,Excadrill-2,Adamant,Steelium Z,Dig,Metal Sound,Metal Claw,Swords Dance,Atk/Def,FALSE,Excadrill,Sand Rush,Sand Force,Mold Breaker,0,252,252,0,0,0,110,135,60,50,65,88,185,205,112,63,85,108,108
+495,Wishiwashi (School Form)-2,Adamant,Leftovers,Dive,Aqua Ring,Protect,Earthquake,HP/Atk,FALSE,Wishiwashi (School Form),Schooling,Schooling,Schooling,252,252,0,0,0,0,45,140,130,140,135,30,152,211,150,144,155,50,50
+496,Steelix-2,Impish,Enigma Berry,Crunch,Curse,Gyro Ball,Screech,HP/Atk,FALSE,Steelix,Rock Head,Sturdy,Sheer Force,252,252,0,0,0,0,75,85,200,55,65,30,182,137,242,67,85,50,50
+497,Weavile-2,Jolly,Never-Melt Ice,Ice Shard,Ice Punch,Torment,Protect,Atk/Spe,FALSE,Weavile,Pressure,Pressure,Pickpocket,0,252,0,0,0,252,70,120,65,45,85,125,145,172,85,58,105,194,194
+498,Gliscor-2,Impish,Liechi Berry,Agility,Acrobatics,Swords Dance,Baton Pass,HP/Def,FALSE,Gliscor,Hyper Cutter,Sand Veil,Poison Heal,252,0,252,0,0,0,75,95,125,45,75,95,182,115,194,58,95,115,115
+499,Zoroark-2,Timid,Expert Belt,Grass Knot,Shadow Ball,Flamethrower,Nasty Plot,Spe/SpA,FALSE,Zoroark,Illusion,Illusion,Illusion,0,0,0,252,0,252,60,105,60,120,60,105,135,112,80,172,80,172,172
+500,Mandibuzz-2,Mild,Roseli Berry,Dark Pulse,Air Slash,Shadow Ball,Nasty Plot,Spe/SpA,FALSE,Mandibuzz,Big Pecks,Overcoat,Weak Armor,0,0,0,252,0,252,110,65,105,55,95,80,185,85,112,117,115,132,132
+501,Braviary-2,Naughty,Persim Berry,Thrash,Bulk Up,Superpower,U-turn,Atk/Spe,FALSE,Braviary,Keen Eye,Sheer Force,Defiant,0,252,0,0,0,252,100,123,75,57,75,80,175,192,95,77,85,132,132
+502,Tentacruel-2,Hasty,Poisonium Z,Rapid Spin,Poison Jab,Waterfall,Swords Dance,Atk/Spe,FALSE,Tentacruel,Clear Body,Liquid Ooze,Rain Dish,0,252,0,0,0,252,80,70,65,80,120,100,155,122,76,100,140,167,167
+503,Aerodactyl-2,Naive,Passho Berry,Crunch,Rock Slide,Roost,Sky Drop,Atk/Spe,FALSE,Aerodactyl,Rock Head,Pressure,Unnerve,0,252,0,0,0,252,80,105,65,60,75,130,155,157,85,80,85,200,200
+504,Porygon2-2,Calm,Eviolite,Tri Attack,Psychic,Double Team,Recover,HP/Def/SpD,FALSE,Porygon2,Trace,Download,Analytic,170,0,170,0,170,0,85,80,90,105,95,60,181,90,131,125,149,80,80
+505,Palossand-2,Timid,Ghostium Z,Rock Polish,Shadow Ball,Earth Power,Sludge Bomb,Spe/SpA,FALSE,Palossand,Water Compaction,Water Compaction,Sand Veil,0,0,0,252,0,252,85,75,110,100,75,35,160,85,130,152,95,95,95
+506,Yanmega-2,Modest,Sitrus Berry,Psychic,Bug Buzz,Swagger,Substitute,HP/SpA,FALSE,Yanmega,Speed Boost,Tinted Lens,Frisk,252,0,0,252,0,0,86,76,86,116,56,95,193,86,106,184,76,115,115
+507,Gardevoir-2,Timid,Bright Powder,Stored Power,Thunderbolt,Calm Mind,Double Team,Spe/SpA,FALSE,Gardevoir,Synchronize,Trace,Telepathy,0,0,0,252,0,252,68,65,65,125,115,80,143,76,85,177,135,145,145
+508,Gallade-2,Jolly,Scope Lens,Psycho Cut,Leaf Blade,Slash,Protect,Atk/Spe,FALSE,Gallade,Steadfast,Steadfast,Justified,0,252,0,0,0,252,68,125,65,65,115,80,143,177,85,76,135,145,145
+509,Exeggutor (Alola Form)-1,Calm,Sitrus Berry,Dragon Tail,Flamethrower,Hypnosis,Giga Drain,HP/SpD,FALSE,Exeggutor (Alola Form),Frisk,Frisk,Harvest,252,0,0,0,252,0,95,105,85,125,75,45,202,112,105,145,139,65,65
+510,Starmie-2,Modest,Waterium Z,Protect,Psychic,Hydro Pump,Rapid Spin,Spe/SpA,FALSE,Starmie,Illuminate,Natural Cure,Analytic,0,0,0,252,0,252,60,75,85,100,85,115,135,85,105,167,105,167,167
+511,Flygon-2,Naive,Haban Berry,Swagger,Quick Attack,Rock Slide,U-turn,Atk/Spe,FALSE,Flygon,Levitate,Levitate,Levitate,0,252,0,0,0,252,80,100,80,80,80,100,155,152,100,100,90,167,167
+512,Klinklang-2,Mild,Steelium Z,Charge Beam,Metal Sound,Flash Cannon,Autotomize,Spe/SpA,FALSE,Klinklang,Plus,Minus,Clear Body,0,0,0,252,0,252,60,100,115,70,85,90,135,120,121,134,105,142,142
+513,Chandelure-2,Timid,Chesto Berry,Energy Ball,Rest,Heat Wave,Will-O-Wisp,HP/Spe,FALSE,Chandelure,Flash Fire,Flame Body,Infiltrator,252,0,0,0,0,252,60,55,90,145,90,80,167,67,110,165,110,145,145
+514,Vaporeon-2,Modest,Waterium Z,Ice Beam,Hydro Pump,Acid Armor,Aqua Ring,Def/SpA,FALSE,Vaporeon,Water Absorb,Water Absorb,Hydration,0,0,252,252,0,0,130,65,60,110,95,65,205,76,112,178,115,85,85
+515,Jolteon-2,Timid,Damp Rock,Thunder,Protect,Charm,Rain Dance,Spe/SpA,FALSE,Jolteon,Volt Absorb,Volt Absorb,Quick Feet,0,0,0,252,0,252,65,65,60,110,95,130,140,76,80,162,115,200,200
+516,Flareon-2,Impish,Charcoal,Will-O-Wisp,Charm,Flame Charge,Protect,HP/Def,FALSE,Flareon,Flash Fire,Flash Fire,Guts,252,0,252,0,0,0,65,130,60,95,110,65,172,150,123,103,130,85,85
+517,Espeon-2,Timid,Kasib Berry,Psyshock,Grass Knot,Dazzling Gleam,Charm,HP/Spe,FALSE,Espeon,Synchronize,Synchronize,Magic Bounce,252,0,0,0,0,252,65,65,60,130,95,110,172,76,80,150,115,178,178
+518,Umbreon-2,Careful,Normalium Z,Payback,Moonlight,Stored Power,Work Up,HP/Atk,FALSE,Umbreon,Synchronize,Synchronize,Inner Focus,252,252,0,0,0,0,95,65,110,60,130,65,202,117,130,72,165,85,85
+519,Leafeon-2,Naive,Liechi Berry,Leaf Blade,Giga Impact,Substitute,Yawn,Atk/Spe,FALSE,Leafeon,Leaf Guard,Leaf Guard,Chlorophyll,0,252,0,0,0,252,65,110,130,60,65,95,140,162,150,80,76,161,161
+520,Glaceon-2,Bold,Chesto Berry,Frost Breath,Shadow Ball,Rest,Barrier,HP/Def,FALSE,Glaceon,Snow Cloak,Snow Cloak,Ice Body,252,0,252,0,0,0,65,60,110,130,95,65,172,72,178,150,115,85,85
+521,Lucario-2,Jolly,Liechi Berry,Close Combat,Bulk Up,Endure,Reversal,Atk/Spe,FALSE,Lucario,Steadfast,Inner Focus,Justified,0,252,0,0,0,252,70,110,70,115,70,90,145,162,90,121,90,156,156
+522,Hippowdon-2,Lonely,Sitrus Berry,Crunch,Rock Slide,Protect,Curse,HP/Atk,FALSE,Hippowdon,Sand Stream,Sand Stream,Sand Force,252,252,0,0,0,0,108,112,118,68,72,47,215,180,124,88,92,67,67
+523,Liepard-2,Careful,Groundium Z,Sand Attack,Foul Play,Swagger,Play Rough,HP/SpD,FALSE,Liepard,Limber,Unburden,Prankster,252,0,0,0,252,0,64,88,50,88,50,106,171,108,70,97,112,126,126
+524,Dusknoir-2,Brave,Iron Ball,Shadow Sneak,Fire Punch,Fling,Trick Room,HP/Atk,FALSE,Dusknoir,Pressure,Pressure,Frisk,252,252,0,0,0,0,45,100,135,65,135,45,152,167,155,85,155,58,29
+525,Mienshao-2,Jolly,King's Rock,Fake Out,Fling,Acrobatics,High Jump Kick,Atk/Spe,FALSE,Mienshao,Inner Focus,Regenerator,Reckless,0,252,0,0,0,252,65,125,60,95,60,105,140,177,80,103,80,172,172
+526,Beartic-2,Rash,Lax Incense,Hail,Icy Wind,Grass Knot,Blizzard,HP/SpA,FALSE,Beartic,Snow Cloak,Slush Rush,Swift Swim,252,0,0,252,0,0,95,130,80,70,80,50,202,150,100,134,90,70,70
+527,Bouffalant-2,Brave,Chople Berry,Pursuit,Revenge,Head Charge,Swagger,HP/Atk,FALSE,Bouffalant,Reckless,Sap Sipper,Soundproof,252,252,0,0,0,0,95,110,95,40,95,55,202,178,115,60,115,67,67
+528,Aggron-2,Quiet,King's Rock,Surf,Flash Cannon,Focus Blast,Round,Def/SpA,FALSE,Aggron,Sturdy,Rock Head,Heavy Metal,0,0,252,252,0,0,70,110,180,60,60,50,145,130,232,123,80,63,63
+529,Walrein-2,Careful,Metronome,Ice Ball,Earthquake,Encore,Curse,Atk/SpD,FALSE,Walrein,Thick Fat,Ice Body,Oblivious,0,252,0,0,252,0,110,80,90,95,90,65,185,132,110,103,156,85,85
+530,Mamoswine-2,Brave,Zoom Lens,Stone Edge,Bulldoze,Blizzard,Ice Fang,Atk/Def/SpD,FALSE,Mamoswine,Oblivious,Snow Cloak,Thick Fat,0,170,170,0,170,0,110,130,80,70,60,80,185,188,121,90,101,90,90
+531,Lapras-2,Modest,Normalium Z,Surf,Ice Beam,Rest,Sleep Talk,Def/SpA/SpD,FALSE,Lapras,Water Absorb,Shell Armor,Hydration,0,0,170,170,170,0,130,85,80,85,95,60,205,94,121,138,136,80,80
+532,Crobat-2,Timid,Sharp Beak,Air Slash,Shadow Ball,Confuse Ray,Nasty Plot,Spe/SpA,FALSE,Crobat,Inner Focus,Inner Focus,Infiltrator,0,0,0,252,0,252,85,90,80,70,80,130,160,99,100,122,100,200,200
+533,Magnezone-2,Quiet,Shuca Berry,Charge Beam,Thunder Wave,Flash Cannon,Mirror Coat,HP/SpA,FALSE,Magnezone,Magnet Pull,Sturdy,Analytic,252,0,0,252,0,0,70,70,115,130,90,60,177,90,135,200,110,72,72
+534,Rhyperior-2,Lonely,Hard Stone,Rock Wrecker,Rock Polish,,,Atk/Spe,FALSE,Rhyperior,Lightning Rod,Solid Rock,Reckless,0,252,0,0,0,252,115,140,130,55,55,40,190,211,135,75,75,92,92
+535,Tangrowth-2,Naughty,Yache Berry,Wring Out,Tickle,Power Whip,Bulldoze,Atk/Spe,FALSE,Tangrowth,Chlorophyll,Leaf Guard,Regenerator,0,252,0,0,0,252,100,100,125,110,50,50,175,167,145,130,63,102,102
+536,Porygon-Z-2,Modest,Choice Specs,Hyper Beam,,,,Spe/SpA,FALSE,Porygon-Z,Adaptability,Download,Analytic,0,0,0,252,0,252,85,80,70,135,75,90,160,90,90,205,95,142,142
+537,Vanilluxe-2,Lonely,Occa Berry,Avalanche,Ice Shard,Natural Gift,Giga Impact,HP/Atk,FALSE,Vanilluxe,Ice Body,Snow Warning,Weak Armor,252,252,0,0,0,0,71,95,85,110,95,79,178,161,94,130,115,99,99
+538,Eelektross-2,Naughty,Expert Belt,Crunch,Wild Charge,Brick Break,Coil,HP/Atk,FALSE,Eelektross,Levitate,Levitate,Levitate,252,252,0,0,0,0,85,115,80,105,80,50,192,183,100,125,90,70,70
+539,Gyarados-2,Naughty,Normalium Z,Waterfall,Rest,Bulldoze,Giga Impact,Atk/Spe,FALSE,Gyarados,Intimidate,Intimidate,Moxie,0,252,0,0,0,252,95,125,79,60,100,81,170,194,99,80,108,133,133
+540,Snorlax-2,Brave,Sitrus Berry,Return,Protect,Crunch,Belly Drum,Atk/Def,FALSE,Snorlax,Immunity,Thick Fat,Gluttony,0,252,252,0,0,0,160,110,65,65,110,30,235,178,117,85,130,45,45
+541,Kingdra-2,Mild,Haban Berry,Dragon Pulse,Waterfall,Ice Beam,Dragon Dance,HP/Atk/SpA,FALSE,Kingdra,Swift Swim,Sniper,Damp,170,170,0,170,0,0,75,95,95,95,95,85,171,136,103,149,115,105,105
+542,Blissey-2,Modest,Custap Berry,Charge Beam,Shadow Ball,Grass Knot,Thunder Wave,Def/SpA,FALSE,Blissey,Natural Cure,Serene Grace,Healer,0,0,252,252,0,0,255,10,10,75,135,55,330,27,62,139,155,75,75
+543,Milotic-2,Quiet,Leftovers,Hydro Pump,Toxic,Attract,Aqua Ring,HP/Def,FALSE,Milotic,Marvel Scale,Competitive,Cute Charm,252,0,252,0,0,0,95,60,79,100,125,81,202,80,131,132,145,90,90
+544,Malamar-2,Modest,Choice Specs,Thunderbolt,Flamethrower,Psychic,Dark Pulse,Spe/SpA,FALSE,Malamar,Contrary,Suction Cups,Infiltrator,0,0,0,252,0,252,86,92,88,68,75,73,161,100,108,132,95,125,125
+545,Sandslash (Alola Form)-1,Brave,Focus Sash,Counter,Defense Curl,Ice Ball,Gyro Ball,HP/Atk,FALSE,Sandslash (Alola Form),Snow Cloak,Snow Cloak,Slush Rush,252,252,0,0,0,0,75,100,120,25,65,65,182,167,140,45,85,76,76
+546,Haxorus-2,Naughty,Persim Berry,Outrage,Rock Slide,Counter,Dragon Dance,HP/Def/Spe,FALSE,Haxorus,Rivalry,Mold Breaker,Unnerve,170,0,170,0,0,170,76,147,90,60,70,97,172,183,131,80,81,138,138
+547,Togekiss-2,Brave,Liechi Berry,Extreme Speed,Aerial Ace,Steel Wing,Brick Break,HP/Atk,FALSE,Togekiss,Hustle,Serene Grace,Super Luck,252,252,0,0,0,0,85,50,95,120,115,80,192,112,115,140,135,90,90
+548,Volcarona-2,Timid,Lum Berry,Bug Buzz,Flamethrower,Protect,Calm Mind,Spe/SpA,FALSE,Volcarona,Flame Body,Flame Body,Swarm,0,0,0,252,0,252,85,60,65,135,105,100,160,72,85,187,125,167,167
+549,Arcanine-2,Naughty,Weakness Policy,Extreme Speed,Crunch,Overheat,Roar,Atk/Spe,FALSE,Arcanine,Intimidate,Flash Fire,Justified,0,252,0,0,0,252,90,110,80,100,80,95,165,178,100,120,90,147,147
+550,Archeops-2,Mild,Enigma Berry,Earthquake,Earth Power,Endeavor,Ancient Power,Spe/SpA,FALSE,Archeops,Defeatist,Defeatist,Defeatist,0,0,0,252,0,252,75,140,65,112,65,110,150,160,76,180,85,162,162
+551,Dragonite-2,Mild,Salac Berry,Dragon Pulse,Ice Beam,Thunderbolt,Safeguard,Spe/SpA,FALSE,Dragonite,Inner Focus,Inner Focus,Multiscale,0,0,0,252,0,252,91,134,95,100,100,80,166,154,103,167,120,132,132
+552,Tyranitar-2,Hasty,King's Rock,Rock Slide,Crunch,Ice Beam,Dragon Dance,Atk/Spe,FALSE,Tyranitar,Sand Stream,Sand Stream,Unnerve,0,252,0,0,0,252,100,134,110,95,100,61,175,186,117,115,120,124,124
+553,Salamence-2,Lonely,Expert Belt,Dragon Claw,Zen Headbutt,Rock Slide,Dragon Dance,Atk/Spe/SpD,FALSE,Salamence,Intimidate,Intimidate,Moxie,0,170,0,0,170,170,95,135,80,110,80,100,170,193,90,130,121,141,141
+554,Metagross-2,Quiet,Occa Berry,Psychic,Shadow Ball,Meteor Mash,Magnet Rise,HP/Atk/SpA,FALSE,Metagross,Clear Body,Clear Body,Light Metal,170,170,0,170,0,0,80,135,130,95,90,70,176,176,150,149,110,81,81
+555,Garchomp-2,Hasty,Focus Sash,Fire Blast,Dragon Breath,Surf,Sandstorm,Spe/SpA,FALSE,Garchomp,Sand Veil,Sand Veil,Rough Skin,0,0,0,252,0,252,108,130,95,80,85,102,183,150,103,132,105,169,169
+556,Hydreigon-2,Mild,Wide Lens,Focus Blast,Fire Blast,Dragon Rush,Work Up,Atk/Spe/SpA,FALSE,Hydreigon,Levitate,Levitate,Levitate,0,170,0,170,0,170,92,105,90,125,90,98,167,146,99,182,110,139,139
+557,Slaking-2,Jolly,Kee Berry,Crush Claw,Night Slash,Slack Off,Amnesia,Atk/Spe,FALSE,Slaking,Truant,Truant,Truant,0,252,0,0,0,252,150,160,100,95,65,100,225,212,120,103,85,167,167
+558,Venusaur-3,Timid,Salac Berry,Energy Ball,Sludge Bomb,Grass Knot,Protect,Spe/SpA,FALSE,Venusaur,Overgrow,Overgrow,Chlorophyll,0,0,0,252,0,252,80,82,83,100,100,80,155,91,103,152,120,145,145
+559,Charizard-3,Timid,Charizardite Y,Heat Wave,Solar Beam,Air Slash,Focus Blast,Spe/SpA,TRUE,Charizard (Mega Charizard Y),Drought,Drought,Drought,0,0,0,252,0,252,78,104,78,159,115,100,153,111,98,211,135,167,167
+560,Blastoise-3,Adamant,Leftovers,Fake Out,Earthquake,Aqua Tail,Rock Slide,HP/Atk,FALSE,Blastoise,Torrent,Torrent,Rain Dish,252,252,0,0,0,0,79,83,100,85,105,78,186,148,120,94,125,98,98
+561,Meganium-3,Adamant,Light Clay,Petal Blizzard,Earthquake,Reflect,Light Screen,HP/Atk,FALSE,Meganium,Overgrow,Overgrow,Leaf Guard,252,252,0,0,0,0,80,82,100,83,100,80,187,147,120,92,120,100,100
+562,Typhlosion-3,Modest,Choice Scarf,Eruption,Focus Blast,Flamethrower,Extrasensory,Spe/SpA,FALSE,Typhlosion,Blaze,Blaze,Flash Fire,0,0,0,252,0,252,78,84,78,109,85,100,153,93,98,177,105,152,228
+563,Feraligatr-3,Adamant,Lum Berry,Aqua Jet,Waterfall,Earthquake,Ice Punch,HP/Atk,FALSE,Feraligatr,Torrent,Torrent,Sheer Force,252,252,0,0,0,0,85,105,100,79,83,78,192,172,120,89,103,98,98
+564,Sceptile-3,Timid,White Herb,Leaf Storm,Focus Blast,Energy Ball,Detect,Spe/SpA,FALSE,Sceptile,Overgrow,Overgrow,Unburden,0,0,0,252,0,252,70,85,65,105,85,120,145,94,85,157,105,189,189
+565,Blaziken-3,Jolly,Choice Band,Flare Blitz,Shadow Claw,High Jump Kick,Earthquake,Atk/Spe,FALSE,Blaziken,Blaze,Blaze,Speed Boost,0,252,0,0,0,252,80,120,70,110,70,80,155,172,90,117,90,145,145
+566,Swampert-3,Adamant,Swampertite,Earthquake,Rock Slide,Waterfall,Rain Dance,HP/Atk,TRUE,Swampert (Mega Swampert),Swift Swim,Swift Swim,Swift Swim,252,252,0,0,0,0,100,150,110,95,110,70,207,222,130,103,130,90,90
+567,Torterra-3,Adamant,Custap Berry,Earthquake,Crunch,Seed Bomb,Rock Slide,Atk/SpD,FALSE,Torterra,Overgrow,Overgrow,Shell Armor,0,252,0,0,252,0,95,109,105,75,85,56,170,177,125,85,137,76,76
+568,Infernape-3,Hasty,Life Orb,Fake Out,Close Combat,Overheat,Stone Edge,Atk/Spe,FALSE,Infernape,Blaze,Blaze,Iron Fist,0,252,0,0,0,252,76,104,71,104,71,108,151,156,81,124,91,176,176
+569,Empoleon-3,Quiet,Icium Z,Surf,Ice Beam,Mist,Icy Wind,HP/SpA,FALSE,Empoleon,Torrent,Torrent,Defiant,252,0,0,252,0,0,84,86,88,111,101,60,191,106,108,179,121,72,72
+570,Serperior-3,Calm,Bright Powder,Leaf Storm,Substitute,Hyper Beam,Toxic,HP/Def/SpD,FALSE,Serperior,Overgrow,Overgrow,Contrary,170,0,170,0,170,0,75,75,95,75,95,113,171,85,136,95,149,133,133
+571,Emboar-3,Adamant,Quick Claw,Flare Blitz,Brick Break,Flame Charge,Earthquake,Atk/Def/SpD,FALSE,Emboar,Blaze,Blaze,Reckless,0,170,170,0,170,0,110,123,65,100,65,65,185,180,106,108,106,85,85
+572,Samurott-3,Adamant,Custap Berry,Aerial Ace,Waterfall,X-Scissor,Aqua Jet,Atk/Def/SpD,FALSE,Samurott,Torrent,Torrent,Shell Armor,0,170,170,0,170,0,95,100,85,108,70,70,170,155,126,115,111,90,90
+573,Dugtrio-2,Timid,Bright Powder,Fissure,Toxic,Substitute,Sandstorm,HP/Spe,FALSE,Dugtrio,Sand Veil,Arena Trap,Sand Force,252,0,0,0,0,252,35,100,50,50,70,120,142,108,70,70,90,189,189
+574,Marowak-2,Jolly,Thick Club,Earthquake,Stone Edge,Brick Break,Brutal Swing,Atk/Spe,FALSE,Marowak,Rock Head,Lightning Rod,Battle Armor,0,252,0,0,0,252,60,80,110,50,80,45,135,132,130,63,100,106,106
+575,Medicham-3,Jolly,Expert Belt,High Jump Kick,Zen Headbutt,Ice Punch,Bullet Punch,Atk/Spe,FALSE,Medicham,Pure Power,Pure Power,Telepathy,0,252,0,0,0,252,60,60,75,60,75,80,135,112,95,72,95,145,145
+576,Pidgeot-3,Timid,Pidgeotite,Hurricane,Hyper Beam,Tailwind,Quick Attack,Spe/SpA,TRUE,Pidgeot (Mega Pidgeot),No Guard,No Guard,No Guard,0,0,0,252,0,252,83,80,80,135,80,121,158,90,100,187,100,190,190
+577,Mawile-3,Adamant,Mawilite,Play Rough,Iron Head,Sucker Punch,Swords Dance,HP/Atk,TRUE,Mawile (Mega Mawile),Huge Power,Huge Power,Huge Power,252,252,0,0,0,0,50,105,125,55,95,50,157,172,145,67,115,70,70
+578,Banette-3,Adamant,Banettite,Gunk Shot,Shadow Sneak,Will-O-Wisp,Destiny Bond,HP/Atk,TRUE,Banette (Mega Banette),Prankster,Prankster,Prankster,252,252,0,0,0,0,64,165,75,93,83,75,171,238,95,101,103,95,95
+579,Sableye-3,Bold,Sablenite,Foul Play,Recover,Will-O-Wisp,Snarl,HP/Def,TRUE,Sableye (Mega Sableye),Magic Bounce,Magic Bounce,Magic Bounce,252,0,252,0,0,0,50,85,125,85,115,20,157,94,194,105,135,40,40
+580,Lanturn-3,Modest,Petaya Berry,Surf,Discharge,Thunder Wave,Ice Beam,Def/SpA/SpD,FALSE,Lanturn,Volt Absorb,Illuminate,Water Absorb,0,0,170,170,170,0,125,58,58,76,76,67,200,70,99,128,117,87,87
+581,Breloom-3,Jolly,Focus Sash,Spore,Focus Punch,Rock Slide,Seed Bomb,Atk/Spe,FALSE,Breloom,Effect Spore,Poison Heal,Technician,0,252,0,0,0,252,60,130,80,60,60,70,135,182,100,72,80,134,134
+582,Audino-3,Bold,Audinite,Flamethrower,Healing Wish,Calm Mind,Draining Kiss,Def/SpA,TRUE,Audino (Mega Audino),Healer,Healer,Healer,0,0,252,252,0,0,103,60,126,80,126,50,178,72,195,132,146,70,70
+583,Skarmory-3,Jolly,Choice Scarf,Brave Bird,Steel Wing,Night Slash,Rock Slide,Atk/Spe,FALSE,Skarmory,Keen Eye,Sturdy,Weak Armor,0,252,0,0,0,252,65,80,140,40,70,70,140,132,160,54,90,134,201
+584,Absol-3,Jolly,Focus Sash,Night Slash,Zen Headbutt,Sucker Punch,Play Rough,Atk/Spe,FALSE,Absol,Pressure,Super Luck,Justified,0,252,0,0,0,252,65,130,60,75,60,75,140,182,80,85,80,139,139
+585,Sharpedo-3,Adamant,Sharpedonite,Crunch,Ice Fang,Aqua Jet,Poison Jab,Atk/Spe,TRUE,Sharpedo (Mega Sharpedo),Strong Jaw,Strong Jaw,Strong Jaw,0,252,0,0,0,252,70,140,70,110,65,105,145,211,90,117,85,157,157
+586,Hariyama-3,Brave,Flame Orb,Fake Out,Close Combat,Detect,Earthquake,Atk/Def,FALSE,Hariyama,Thick Fat,Guts,Sheer Force,0,252,252,0,0,0,144,120,60,40,60,50,219,189,112,60,80,63,63
+587,Vespiquen-3,Impish,Sitrus Berry,Attack Order,Defend Order,Roost,Confuse Ray,HP/Def/SpD,FALSE,Vespiquen,Pressure,Pressure,Unnerve,170,0,170,0,170,0,70,80,102,80,102,40,166,100,157,90,143,60,60
+588,Raichu (Alola Form)-2,Timid,Focus Sash,Thunderbolt,Psychic,Grass Knot,Nasty Plot,Spe/SpA,FALSE,Raichu (Alola Form),Surge Surfer,Surge Surfer,Surge Surfer,0,0,0,252,0,252,60,85,50,95,85,110,135,94,70,147,105,178,178
+589,Glalie-3,Timid,Leftovers,Substitute,Sheer Cold,Frost Breath,Protect,Def/Spe,FALSE,Glalie,Inner Focus,Ice Body,Moody,0,0,252,0,0,252,80,80,80,80,80,80,155,90,132,100,100,145,145
+590,Manectric-3,Timid,Manectite,Thunderbolt,Overheat,Snarl,Quick Attack,Spe/SpA,TRUE,Manectric (Mega Manectric),Intimidate,Intimidate,Intimidate,0,0,0,252,0,252,70,75,80,135,80,135,145,85,100,187,100,205,205
+591,Staraptor-3,Mild,Choice Band,Close Combat,Brave Bird,U-turn,Giga Impact,Atk/Spe,FALSE,Staraptor,Intimidate,Intimidate,Reckless,0,252,0,0,0,252,85,120,70,50,60,100,160,172,81,77,80,152,152
+592,Gastrodon-3,Quiet,Leftovers,Sandstorm,Mud Bomb,Surf,Recover,Def/SpA,FALSE,Gastrodon,Sticky Hold,Storm Drain,Sand Force,0,0,252,252,0,0,111,83,68,92,82,39,186,103,120,158,102,53,53
+593,Camerupt-3,Quiet,Cameruptite,Earth Power,Ancient Power,Fire Blast,Will-O-Wisp,HP/SpA,TRUE,Camerupt (Mega Camerupt),Sheer Force,Sheer Force,Sheer Force,252,0,0,252,0,0,70,120,100,145,105,20,177,140,120,216,125,36,36
+594,Sawk-3,Jolly,Expert Belt,Close Combat,Payback,Low Sweep,Earthquake,Atk/Spe,FALSE,Sawk,Sturdy,Inner Focus,Mold Breaker,0,252,0,0,0,252,75,125,75,30,75,85,150,177,95,45,95,150,150
+595,Throh-3,Adamant,Expert Belt,Earthquake,Storm Throw,Payback,Rock Slide,Atk/Def/SpD,FALSE,Throh,Guts,Inner Focus,Mold Breaker,0,170,170,0,170,0,120,100,85,30,85,45,195,155,126,45,126,65,65
+596,Unfezant-3,Jolly,Power Herb,Sky Attack,Return,Detect,U-turn,Atk/Spe,FALSE,Unfezant,Big Pecks,Super Luck,Rivalry,0,252,0,0,0,252,80,115,80,65,55,93,155,167,100,76,75,159,159
+597,Pelipper-3,Bold,Flyinium Z,Hurricane,Scald,Roost,Blizzard,HP/Def,FALSE,Pelipper,Keen Eye,Drizzle,Rain Dish,252,0,252,0,0,0,60,50,100,95,70,65,167,63,167,115,90,85,85
+598,Amoonguss-3,Relaxed,Rocky Helmet,Rage Powder,Spore,Giga Drain,Sludge Bomb,HP/Def,FALSE,Amoonguss,Effect Spore,Effect Spore,Regenerator,252,0,252,0,0,0,114,85,70,85,80,30,221,105,134,105,100,45,45
+599,Electrode-3,Timid,Air Balloon,Thunderbolt,Mirror Coat,Thief,Protect,Spe/SpA,FALSE,Electrode,Soundproof,Static,Aftermath,0,0,0,252,0,252,60,50,70,80,80,150,135,63,90,132,100,222,222
+600,Ludicolo-3,Bold,Leftovers,Rain Dance,Leech Seed,Protect,Giga Drain,Def/SpA/SpD,FALSE,Ludicolo,Swift Swim,Rain Dish,Own Tempo,0,0,170,170,170,0,80,70,70,90,100,70,155,81,122,131,141,90,90
+601,Shiftry-3,Modest,Heat Rock,Sunny Day,Solar Beam,Dark Pulse,Explosion,Def/SpA,FALSE,Shiftry,Chlorophyll,Early Bird,Pickpocket,0,0,252,252,0,0,90,100,60,90,60,80,165,108,112,156,80,100,100
+602,Exploud-3,Adamant,Expert Belt,Earthquake,Brick Break,Ice Fang,Crunch,Atk/Def,FALSE,Exploud,Soundproof,Soundproof,Scrappy,0,252,252,0,0,0,104,91,63,91,73,68,179,157,115,99,93,88,88
+603,Lopunny-3,Jolly,Lopunnite,Sweet Kiss,Fake Out,High Jump Kick,Ice Punch,Atk/Spe,TRUE,Lopunny (Mega Lopunny),Scrappy,Scrappy,Scrappy,0,252,0,0,0,252,65,136,94,54,96,135,140,188,114,66,116,205,205
+604,Froslass-3,Timid,Icy Rock,Hail,Blizzard,Ice Shard,Shadow Ball,Spe/SpA,FALSE,Froslass,Snow Cloak,Snow Cloak,Cursed Body,0,0,0,252,0,252,70,80,70,80,70,110,145,90,90,132,90,178,178
+605,Lilligant-3,Bold,Leftovers,Quiver Dance,Energy Ball,Leech Seed,Protect,HP/Def,FALSE,Lilligant,Chlorophyll,Own Tempo,Leaf Guard,252,0,252,0,0,0,70,60,75,110,75,90,177,72,139,130,95,110,110
+606,Darmanitan-3,Sassy,Assault Vest,Psychic,Earthquake,Flare Blitz,Overheat,Def/SpD,FALSE,Darmanitan,Sheer Force,Sheer Force,Zen Mode,0,0,252,0,252,0,105,140,55,30,55,95,180,160,107,50,117,103,103
+607,Ambipom-3,Jolly,Life Orb,Fake Out,Double Hit,Payback,Brick Break,Atk/Spe,FALSE,Ambipom,Technician,Pickup,Skill Link,0,252,0,0,0,252,75,100,66,60,66,115,150,152,86,72,86,183,183
+608,Cofagrigus-3,Quiet,Maranga Berry,Will-O-Wisp,Shadow Ball,Destiny Bond,Trick Room,HP/SpA,FALSE,Cofagrigus,Mummy,Mummy,Mummy,252,0,0,252,0,0,58,50,145,95,105,30,165,70,165,161,125,45,45
+609,Golurk-3,Adamant,Ghostium Z,Dynamic Punch,Shadow Punch,Earthquake,Rock Slide,HP/Atk,FALSE,Golurk,Iron Fist,Klutz,No Guard,252,252,0,0,0,0,89,124,80,55,80,55,196,193,100,67,100,75,75
+610,Durant-3,Jolly,Occa Berry,X-Scissor,Iron Head,Rock Slide,Shadow Claw,Atk/Spe,FALSE,Durant,Swarm,Hustle,Truant,0,252,0,0,0,252,58,109,112,48,48,109,133,161,132,61,68,177,177
+611,Golem-2,Jolly,Focus Sash,Rock Slide,Earthquake,Explosion,Autotomize,HP/Atk,FALSE,Golem,Rock Head,Sturdy,Sand Veil,252,252,0,0,0,0,80,120,130,55,65,45,187,172,150,67,85,71,71
+612,Slowbro-3,Bold,Leftovers,Psychic,Surf,Slack Off,Amnesia,HP/Def,FALSE,Slowbro,Oblivious,Own Tempo,Regenerator,252,0,252,0,0,0,95,75,110,100,80,30,202,85,178,120,100,50,50
+613,Weezing-3,Modest,Black Sludge,Sludge Bomb,Thunder,Fire Blast,Shadow Ball,HP/SpA,FALSE,Weezing,Levitate,Levitate,Levitate,252,0,0,252,0,0,65,90,120,85,70,60,172,99,140,150,90,80,80
+614,Kangaskhan-3,Jolly,Kangaskhanite,Fake Out,Facade,Rock Slide,Sucker Punch,Atk/Spe,TRUE,Kangaskhan (Mega Kangaskhan),Parental Bond,Parental Bond,Parental Bond,0,252,0,0,0,252,105,125,100,60,100,100,180,177,120,72,120,167,167
+615,Tauros-3,Jolly,Life Orb,Thrash,Earthquake,Payback,Giga Impact,Atk/Spe,FALSE,Tauros,Intimidate,Anger Point,Sheer Force,0,252,0,0,0,252,75,100,95,40,70,110,150,152,115,54,90,178,178
+616,Spiritomb-3,Careful,Leftovers,Will-O-Wisp,Shadow Sneak,Swagger,Psych Up,HP/SpD,FALSE,Spiritomb,Pressure,Pressure,Infiltrator,252,0,0,0,252,0,50,92,108,92,108,35,157,112,128,100,176,55,55
+617,Whimsicott-3,Bold,Leftovers,Moonblast,Leech Seed,Substitute,Cotton Guard,HP/Def,FALSE,Whimsicott,Prankster,Infiltrator,Chlorophyll,252,0,252,0,0,0,60,67,85,77,75,116,167,78,150,97,95,136,136
+618,Druddigon-3,Adamant,Quick Claw,Crunch,Dragon Claw,Earthquake,Rock Slide,HP/Atk,FALSE,Druddigon,Rough Skin,Sheer Force,Mold Breaker,252,252,0,0,0,0,77,120,90,60,90,48,184,189,110,72,110,68,68
+619,Musharna-3,Modest,Scope Lens,Psychic,Shadow Ball,Energy Ball,Yawn,Def/SpA,FALSE,Musharna,Forewarn,Synchronize,Telepathy,0,0,252,252,0,0,116,55,85,107,95,29,191,67,137,174,115,49,49
+620,Scrafty-3,Adamant,Fightinium Z,Substitute,Payback,High Jump Kick,Focus Punch,HP/Atk,FALSE,Scrafty,Shed Skin,Moxie,Intimidate,252,252,0,0,0,0,65,90,115,45,115,58,172,156,135,58,135,78,78
+621,Ferrothorn-3,Brave,Custap Berry,Protect,Payback,Explosion,Gyro Ball,HP/Atk,FALSE,Ferrothorn,Iron Barbs,Iron Barbs,Anticipation,252,252,0,0,0,0,74,94,131,54,116,20,181,160,151,74,136,36,36
+622,Alakazam-3,Timid,Alakazite,Psychic,Focus Blast,Shadow Ball,Grass Knot,Spe/SpA,TRUE,Alakazam (Mega Alakazam),Trace,Trace,Trace,0,0,0,252,0,252,55,50,65,175,95,150,130,63,85,227,115,222,222
+623,Slowking-3,Modest,Choice Specs,Psychic,Shadow Ball,Scald,Focus Blast,SpA/SpD,FALSE,Slowking,Oblivious,Own Tempo,Regenerator,0,0,0,252,252,0,95,75,80,100,110,30,170,85,100,167,162,50,50
+624,Jellicent-3,Quiet,Mental Herb,Water Spout,Recover,Will-O-Wisp,Trick Room,Def/SpA,FALSE,Jellicent,Water Absorb,Cursed Body,Damp,0,0,252,252,0,0,100,60,70,85,105,60,175,80,122,150,125,72,72
+625,Altaria-3,Jolly,Altarianite,Dragon Dance,Dragon Rush,Giga Impact,Earthquake,Atk/Spe,TRUE,Altaria (Mega Altaria),Pixilate,Pixilate,Pixilate,0,252,0,0,0,252,75,110,110,110,105,80,150,162,130,117,125,145,145
+626,Toxicroak-3,Modest,Focus Sash,Sludge Bomb,Focus Blast,Shadow Ball,Dark Pulse,Spe/SpA,FALSE,Toxicroak,Anticipation,Dry Skin,Poison Touch,0,0,0,252,0,252,83,106,65,86,65,85,158,113,85,151,85,137,137
+627,Gothitelle-3,Modest,Kee Berry,Charm,Safeguard,Psychic,Charge Beam,HP/SpA,FALSE,Gothitelle,Frisk,Competitive,Shadow Tag,252,0,0,252,0,0,70,55,95,95,110,65,177,67,115,161,130,85,85
+628,Reuniclus-3,Quiet,Colbur Berry,Calm Mind,Psychic,Focus Blast,Shadow Ball,Def/SpA,FALSE,Reuniclus,Overcoat,Magic Guard,Regenerator,0,0,252,252,0,0,110,65,75,125,85,30,185,85,127,194,105,45,45
+629,Bisharp-3,Jolly,Chople Berry,Iron Head,Night Slash,Low Sweep,Sucker Punch,Atk/Spe,FALSE,Bisharp,Defiant,Inner Focus,Pressure,0,252,0,0,0,252,65,125,100,60,70,70,140,177,120,72,90,134,134
+630,Abomasnow-3,Quiet,Focus Sash,Blizzard,Sheer Cold,Focus Blast,Ice Shard,HP/SpA,FALSE,Abomasnow,Snow Warning,Snow Warning,Soundproof,252,0,0,252,0,0,90,92,75,92,85,60,197,112,95,158,105,72,72
+631,Nidoqueen-3,Modest,Black Sludge,Sludge Bomb,Earth Power,Flamethrower,Ice Beam,HP/SpA,FALSE,Nidoqueen,Poison Point,Rivalry,Sheer Force,252,0,0,252,0,0,90,92,87,75,85,76,197,100,107,139,105,96,96
+632,Nidoking-3,Modest,Black Sludge,Earth Power,Sludge Bomb,Protect,Fire Blast,Spe/SpA,FALSE,Nidoking,Poison Point,Rivalry,Sheer Force,0,0,0,252,0,252,81,102,77,85,75,85,156,109,97,150,95,137,137
+633,Cradily-3,Relaxed,Leftovers,Sandstorm,Toxic,Protect,Earthquake,HP/Def,FALSE,Cradily,Suction Cups,Suction Cups,Storm Drain,252,0,252,0,0,0,86,81,97,81,107,43,193,101,163,101,127,56,56
+634,Armaldo-3,Adamant,Life Orb,X-Scissor,Rock Slide,Earthquake,Iron Defense,HP/SpD,FALSE,Armaldo,Battle Armor,Battle Armor,Swift Swim,252,0,0,0,252,0,75,125,100,70,80,45,182,159,120,81,132,65,65
+635,Rampardos-3,Jolly,Choice Scarf,Head Smash,Earthquake,Brick Break,Iron Head,Atk/Spe,FALSE,Rampardos,Mold Breaker,Mold Breaker,Sheer Force,0,252,0,0,0,252,97,165,60,65,50,58,172,217,80,76,70,121,181.5
+636,Bastiodon-3,Careful,Leftovers,Stone Edge,Fissure,Double Team,Iron Defense,HP/SpD,FALSE,Bastiodon,Sturdy,Sturdy,Soundproof,252,0,0,0,252,0,60,52,168,47,138,30,167,72,188,60,209,50,50
+637,Shiinotic-3,Relaxed,Leftovers,Moonblast,Giga Drain,Strength Sap,Spore,HP/Def,FALSE,Shiinotic,Illuminate,Effect Spore,Rain Dish,252,0,252,0,0,0,60,45,80,90,100,30,167,65,145,110,120,45,45
+638,Mismagius-3,Timid,Ghostium Z,Dazzling Gleam,Shadow Ball,Thunderbolt,Destiny Bond,Spe/SpA,FALSE,Mismagius,Levitate,Levitate,Levitate,0,0,0,252,0,252,60,60,60,105,105,105,135,72,80,157,125,172,172
+639,Carracosta-3,Adamant,Damp Rock,Rain Dance,Waterfall,Rock Slide,Earthquake,Atk/Spe,FALSE,Carracosta,Solid Rock,Sturdy,Swift Swim,0,252,0,0,0,252,74,108,133,83,65,32,149,176,153,92,85,84,84
+640,Escavalier-3,Brave,Life Orb,Megahorn,Iron Defense,Poison Jab,Iron Head,HP/Atk,FALSE,Escavalier,Swarm,Shell Armor,Overcoat,252,252,0,0,0,0,70,135,105,60,105,20,177,205,125,80,125,36,36
+641,Accelgor-3,Timid,Focus Sash,U-turn,Bug Buzz,Focus Blast,Final Gambit,HP/Spe,FALSE,Accelgor,Hydration,Sticky Hold,Unburden,252,0,0,0,0,252,80,70,40,100,60,145,187,81,60,120,80,216,216
+642,Salazzle-3,Timid,Focus Sash,Fire Blast,Sludge Bomb,Nasty Plot,Fake Out,Spe/SpA,FALSE,Salazzle,Corrosion,Corrosion,Oblivious,0,0,0,252,0,252,68,64,60,111,60,117,143,75,80,163,80,185,185
+643,Drifblim-3,Timid,Ghostium Z,Shadow Ball,Thunderbolt,Tailwind,Destiny Bond,Def/Spe,FALSE,Drifblim,Aftermath,Unburden,Flare Boost,0,0,252,0,0,252,150,80,44,90,54,80,225,90,96,110,74,145,145
+644,Toucannon-3,Impish,Sitrus Berry,Beak Blast,Roost,Rock Blast,Bullet Seed,HP/Def,FALSE,Toucannon,Keen Eye,Skill Link,Sheer Force,252,0,252,0,0,0,80,120,75,75,75,60,187,140,139,85,95,80,80
+645,Oranguru-3,Sassy,Mental Herb,Psychic,Shadow Ball,Focus Blast,Trick Room,SpA/SpD,FALSE,Oranguru,Inner Focus,Telepahty,Symbiosis,0,0,0,252,252,0,90,60,80,90,110,60,165,80,100,142,178,72,72
+646,Komala-3,Adamant,Focus Sash,Flail,Earthquake,Sucker Punch,Play Rough,Atk/SpD,FALSE,Komala,Comatose,Comatose,Comatose,0,252,0,0,252,0,65,115,65,75,95,65,140,183,85,85,147,85,85
+647,Muk (Alola Form)-2,Adamant,Liechi Berry,Crunch,Belch,Shadow Sneak,Stone Edge,HP/Atk,FALSE,Muk (Alola Form),Poison Touch,Gluttony,Power of Alchemy,252,252,0,0,0,0,105,105,75,65,100,50,212,172,95,76,120,70,70
+648,Gengar-3,Timid,Payapa Berry,Shadow Ball,Energy Ball,Dazzling Gleam,Round,Spe/SpA,FALSE,Gengar,Cursed Body,Cursed Body,Cursed Body,0,0,0,252,0,252,60,65,60,130,75,110,135,76,80,182,95,178,178
+649,Ampharos-3,Modest,Chesto Berry,Thunder Wave,Charge Beam,Hyper Beam,Rest,HP/SpA,FALSE,Ampharos,Static,Static,Plus,252,0,0,252,0,0,90,75,85,115,90,55,197,85,105,183,110,75,75
+650,Politoed-3,Careful,Chesto Berry,Waterfall,Earthquake,Belly Drum,Rest,Atk/SpD,FALSE,Politoed,Water Absorb,Damp,Drizzle,0,252,0,0,252,0,90,75,75,90,100,70,165,127,95,99,167,90,90
+651,Pinsir-3,Jolly,Pinsirite,X-Scissor,Superpower,Stone Edge,Thrash,Atk/Spe,TRUE,Pinsir (Mega Pinsir),Aerilate,Aerilate,Aerilate,0,252,0,0,0,252,65,155,120,65,90,105,140,207,140,76,110,172,172
+652,Scizor-3,Brave,Life Orb,Swords Dance,Bullet Punch,Reversal,U-turn,HP/Atk,FALSE,Scizor,Swarm,Technician,Light Metal,252,252,0,0,0,0,70,130,100,55,80,65,177,200,120,75,100,76,76
+653,Heracross-3,Jolly,Coba Berry,Megahorn,Stone Edge,Facade,Shadow Claw,Atk/Spe,FALSE,Heracross,Swarm,Guts,Moxie,0,252,0,0,0,252,80,125,75,40,95,85,155,177,95,54,115,150,150
+654,Ursaring-3,Adamant,Toxic Orb,Facade,Close Combat,Crunch,Protect,HP/Atk,FALSE,Ursaring,Guts,Quick Feet,Unnerve,252,252,0,0,0,0,90,130,75,75,75,55,197,200,95,85,95,75,75
+655,Houndoom-3,Timid,Air Balloon,Flamethrower,Shadow Ball,Sludge Bomb,Will-O-Wisp,Spe/SpA,FALSE,Houndoom,Early Bird,Flash Fire,Unnerve,0,0,0,252,0,252,75,90,50,110,80,95,150,99,70,162,100,161,161
+656,Tsareena-3,Adamant,Assault Vest,Trop Kick,Payback,High Jump Kick,Play Rough,Atk/SpD,FALSE,Tsareena,Leaf Guard,Queenly Majesty,Sweet Veil,0,252,0,0,252,0,72,120,98,50,98,72,147,189,118,63,150,92,92
+657,Wailord-3,Careful,Leftovers,Waterfall,Fissure,Aqua Ring,Curse,Def/SpD,FALSE,Wailord,Water Veil,Oblivious,Pressure,0,0,252,0,252,0,170,90,45,90,45,60,245,110,97,99,106,80,80
+658,Passimian-3,Adamant,Choice Scarf,Close Combat,Earthquake,U-turn,Rock Slide,Atk/Spe,FALSE,Passimian,Receiver,Receiver,Defiant,0,252,0,0,0,252,100,120,90,40,60,80,175,189,110,54,80,132,198
+659,Bronzong-3,Adamant,Quick Claw,Rock Slide,Gyro Ball,Earthquake,Explosion,HP/Atk,FALSE,Bronzong,Levitate,Heatproof,Heavy Metal,252,252,0,0,0,0,67,89,116,79,116,33,174,155,136,89,136,53,53
+660,Drapion-3,Jolly,Scope Lens,Cross Poison,Night Slash,Fire Fang,Earthquake,Atk/Spe,FALSE,Drapion,Battle Armor,Sniper,Keen Eye,0,252,0,0,0,252,70,90,110,60,75,95,145,142,130,72,95,161,161
+661,Crabominable-3,Careful,Sitrus Berry,Close Combat,Ice Hammer,Stone Edge,Earthquake,HP/Atk,FALSE,Crabominable,Hyper Cutter,Iron Fist,Anger Point,252,252,0,0,0,0,97,132,77,62,67,43,204,184,97,73,95,63,63
+662,Ninetales-2,Timid,Wide Lens,Fire Blast,Dark Pulse,Hypnosis,Energy Ball,Spe/SpA,FALSE,Ninetales,Flash Fire,Flash Fire,Drought,0,0,0,252,0,252,73,76,75,81,100,100,148,86,95,133,120,167,167
+663,Machamp-3,Jolly,Choice Scarf,Dynamic Punch,Ice Punch,Rock Slide,Earthquake,Atk/Spe,FALSE,Machamp,Guts,No Guard,Steadfast,0,252,0,0,0,252,90,130,80,65,85,55,165,182,100,76,105,117,175.5
+664,Shuckle-3,Relaxed,Lax Incense,Gyro Ball,Double Team,Substitute,Power Trick,HP/Def,FALSE,Shuckle,Sturdy,Gluttony,Contrary,252,0,252,0,0,0,20,10,230,10,230,5,127,30,310,30,250,22,22
+665,Mimikyu-3,Jolly,Fairium Z,Play Rough,Shadow Claw,Wood Hammer,Swords Dance,Atk/Spe,FALSE,Mimikyu,Disguise,Disguise,Disguise,0,252,0,0,0,252,55,90,80,50,105,96,130,142,100,63,125,162,162
+666,Honchkrow-3,Modest,Darkinium Z,Psychic,Dark Pulse,Swagger,Shadow Ball,HP/SpA,FALSE,Honchkrow,Insomnia,Super Luck,Moxie,252,0,0,252,0,0,100,125,52,105,52,71,207,130,72,172,72,91,91
+667,Gigalith-3,Adamant,Custap Berry,Stone Edge,Earthquake,Sandstorm,Explosion,HP/Atk,FALSE,Gigalith,Sturdy,Sand Stream,Sand Force,252,252,0,0,0,0,85,135,130,60,80,25,192,205,150,72,100,45,45
+668,Conkeldurr-3,Adamant,Sitrus Berry,Bulk Up,Drain Punch,Payback,Stone Edge,Atk/SpD,FALSE,Conkeldurr,Guts,Sheer Force,Iron Fist,0,252,0,0,252,0,105,140,95,55,65,45,180,211,115,67,117,65,65
+669,Excadrill-3,Adamant,Bright Powder,Sandstorm,Earthquake,Rock Slide,Poison Jab,Atk/Def/SpD,FALSE,Excadrill,Sand Rush,Sand Force,Mold Breaker,0,170,170,0,170,0,110,135,60,50,65,88,185,193,101,63,106,108,108
+670,Wishiwashi (School Form)-3,Brave,Wacan Berry,Earthquake,Aqua Tail,Ice Beam,U-turn,HP/SpA,FALSE,Wishiwashi (School Form),Schooling,Schooling,Schooling,252,0,0,252,0,0,45,140,130,140,135,30,152,176,150,192,155,45,45
+671,Steelix-3,Brave,Quick Claw,Gyro Ball,Earthquake,Rock Slide,Explosion,Atk/SpD,FALSE,Steelix,Rock Head,Sturdy,Sheer Force,0,252,0,0,252,0,75,85,200,55,65,30,150,150,220,75,117,45,45
+672,Weavile-3,Jolly,Focus Sash,Fake Out,Ice Punch,Night Slash,Protect,Atk/Spe,FALSE,Weavile,Pressure,Pressure,Pickpocket,0,252,0,0,0,252,70,120,65,45,85,125,145,172,85,58,105,194,194
+673,Gliscor-3,Adamant,Expert Belt,Aerial Ace,Earthquake,X-Scissor,Stone Edge,Atk/Def,FALSE,Gliscor,Hyper Cutter,Sand Veil,Poison Heal,0,252,252,0,0,0,75,95,125,45,75,95,150,161,177,58,95,115,115
+674,Zoroark-3,Jolly,Sitrus Berry,Swords Dance,Night Slash,U-turn,Sucker Punch,Atk/Spe,FALSE,Zoroark,Illusion,Illusion,Illusion,0,252,0,0,0,252,60,105,60,120,60,105,135,157,80,126,80,172,172
+675,Mandibuzz-3,Modest,Sitrus Berry,Nasty Plot,Dark Pulse,Air Slash,Tailwind,HP/Def/SpD,FALSE,Mandibuzz,Big Pecks,Overcoat,Weak Armor,170,0,170,0,170,0,110,65,105,55,95,80,206,76,146,82,136,100,100
+676,Braviary-3,Adamant,Choice Scarf,Brave Bird,Return,U-turn,Rock Slide,Atk/Spe,FALSE,Braviary,Keen Eye,Sheer Force,Defiant,0,252,0,0,0,252,100,123,75,57,75,80,175,192,95,69,95,132,198
+677,Tentacruel-3,Modest,Focus Sash,Hydro Pump,Sludge Bomb,Blizzard,Mirror Coat,HP/SpA,FALSE,Tentacruel,Clear Body,Liquid Ooze,Rain Dish,252,0,0,252,0,0,80,70,65,80,120,100,187,81,85,145,140,120,120
+678,Aerodactyl-3,Adamant,Aerodactylite,Sky Drop,Iron Head,Fire Fang,Thunder Fang,HP/Atk,TRUE,Aerodactyl (Mega Aerodactyl),Tough Claws,Tough Claws,Tough Claws,252,252,0,0,0,0,80,135,85,70,95,150,187,205,105,81,115,170,170
+679,Porygon2-3,Modest,Eviolite,Tri Attack,Thunderbolt,Psychic,Ice Beam,HP/SpA,FALSE,Porygon2,Trace,Download,Analytic,252,0,0,252,0,0,85,80,90,105,95,60,192,90,110,172,115,80,80
+680,Palossand-3,Modest,Sitrus Berry,Earth Power,Shadow Ball,Ancient Power,Sludge Bomb,HP/SpA,FALSE,Palossand,Water Compaction,Water Compaction,Sand Veil,252,0,0,252,0,0,85,75,110,100,75,35,192,85,130,167,95,55,55
+681,Yanmega-3,Modest,Buginium Z,Silver Wind,Air Slash,Detect,Shadow Ball,Spe/SpA,FALSE,Yanmega,Speed Boost,Tinted Lens,Frisk,0,0,0,252,0,252,86,76,86,116,56,95,161,86,106,184,76,147,147
+682,Gardevoir-3,Timid,Lum Berry,Psychic,Shadow Ball,Energy Ball,Dazzling Gleam,Spe/SpA,FALSE,Gardevoir,Synchronize,Trace,Telepathy,0,0,0,252,0,252,68,65,65,125,115,80,143,76,85,177,135,145,145
+683,Gallade-3,Adamant,Scope Lens,Psycho Cut,Stone Edge,Shadow Sneak,X-Scissor,Atk/Spe,FALSE,Gallade,Steadfast,Steadfast,Justified,0,252,0,0,0,252,68,125,65,65,115,80,143,194,85,76,135,132,132
+684,Exeggutor-2,Modest,Grassium Z,Leaf Storm,Psychic,Sludge Bomb,Grassy Terrain,HP/SpA,FALSE,Exeggutor,Chlorophyll,Chlorophyll,Harvest,252,0,0,252,0,0,95,95,85,125,75,55,202,103,105,194,95,75,75
+685,Starmie-3,Timid,Focus Sash,Surf,Psychic,Power Gem,Dazzling Gleam,Spe/SpA,FALSE,Starmie,Illuminate,Natural Cure,Analytic,0,0,0,252,0,252,60,75,85,100,85,115,135,85,105,152,105,183,183
+686,Flygon-3,Timid,White Herb,Draco Meteor,Earth Power,Flamethrower,U-turn,Spe/SpA,FALSE,Flygon,Levitate,Levitate,Levitate,0,0,0,252,0,252,80,100,80,80,80,100,155,108,100,132,100,167,167
+687,Klinklang-3,Adamant,Steelium Z,Shift Gear,Gear Grind,Volt Switch,Giga Impact,Atk/Spe,FALSE,Klinklang,Plus,Minus,Clear Body,0,252,0,0,0,252,60,100,115,70,85,90,135,167,135,81,105,142,142
+688,Chandelure-3,Modest,White Herb,Overheat,Shadow Ball,Protect,Will-O-Wisp,HP/SpA,FALSE,Chandelure,Flash Fire,Flame Body,Infiltrator,252,0,0,252,0,0,60,55,90,145,90,80,167,67,110,216,110,100,100
+689,Vaporeon-3,Modest,Leftovers,Muddy Water,Blizzard,Aqua Ring,Yawn,HP/SpA,FALSE,Vaporeon,Water Absorb,Water Absorb,Hydration,252,0,0,252,0,0,130,65,60,110,95,65,237,76,80,178,115,85,85
+690,Jolteon-3,Timid,King's Rock,Thunder,Shadow Ball,Rain Dance,Yawn,Spe/SpA,FALSE,Jolteon,Volt Absorb,Volt Absorb,Quick Feet,0,0,0,252,0,252,65,65,60,110,95,130,140,76,80,162,115,200,200
+691,Flareon-3,Brave,Firium Z,Flare Blitz,Return,Will-O-Wisp,Overheat,HP/Atk,FALSE,Flareon,Flash Fire,Flash Fire,Guts,252,252,0,0,0,0,65,130,60,95,110,65,172,200,80,115,130,76,76
+692,Espeon-3,Modest,Lum Berry,Psychic,Shadow Ball,Hyper Beam,Grass Knot,Spe/SpA,FALSE,Espeon,Synchronize,Synchronize,Magic Bounce,0,0,0,252,0,252,65,65,60,130,95,110,140,76,80,200,115,162,162
+693,Umbreon-3,Impish,Sitrus Berry,Feint Attack,Swagger,Psych Up,Screech,HP/Def,FALSE,Umbreon,Synchronize,Synchronize,Inner Focus,252,0,252,0,0,0,95,65,110,60,130,65,202,85,178,72,150,85,85
+694,Leafeon-3,Adamant,Heat Rock,Sunny Day,Leaf Blade,X-Scissor,Synthesis,Atk/Def,FALSE,Leafeon,Leaf Guard,Leaf Guard,Chlorophyll,0,252,252,0,0,0,65,110,130,60,65,95,140,178,182,72,85,115,115
+695,Glaceon-3,Modest,Focus Sash,Hail,Blizzard,Mirror Coat,Hyper Beam,Def/SpA,FALSE,Glaceon,Snow Cloak,Snow Cloak,Ice Body,0,0,252,252,0,0,65,60,110,130,95,65,140,72,162,200,115,85,85
+696,Lucario-3,Jolly,Lucarionite,Close Combat,Rock Slide,Blaze Kick,Bullet Punch,Atk/Spe,TRUE,Lucario (Mega Lucario),Adaptability,Adaptability,Adaptability,0,252,0,0,0,252,70,145,88,140,70,112,145,197,108,144,90,180,180
+697,Hippowdon-3,Adamant,Sitrus Berry,Earthquake,Crunch,Slack Off,Yawn,Atk/SpD,FALSE,Hippowdon,Sand Stream,Sand Stream,Sand Force,0,252,0,0,252,0,108,112,118,68,72,47,183,180,138,79,124,67,67
+698,Liepard-3,Bold,Red Card,Foul Play,Sucker Punch,Sand Attack,Thunder Wave,HP/Def,FALSE,Liepard,Limber,Unburden,Prankster,252,0,252,0,0,0,64,88,50,88,50,106,171,97,112,108,70,126,126
+699,Dusknoir-3,Sassy,Leftovers,Toxic,Will-O-Wisp,Protect,Double Team,HP/SpD,FALSE,Dusknoir,Pressure,Pressure,Frisk,252,0,0,0,252,0,45,100,135,65,135,45,152,120,155,85,205,58,58
+700,Mienshao-3,Jolly,Focus Sash,Low Kick,Fake Out,High Jump Kick,U-turn,Atk/Spe,FALSE,Mienshao,Inner Focus,Regenerator,Reckless,0,252,0,0,0,252,65,125,60,95,60,105,140,177,80,103,80,172,172
+701,Beartic-3,Adamant,Sitrus Berry,Swords Dance,Avalanche,Rock Slide,Brick Break,Atk/Def,FALSE,Beartic,Snow Cloak,Slush Rush,Swift Swim,0,252,252,0,0,0,95,130,80,70,80,50,170,200,132,81,100,70,70
+702,Bouffalant-3,Adamant,Sitrus Berry,Swords Dance,Earthquake,Head Charge,Payback,HP/Atk,FALSE,Bouffalant,Reckless,Sap Sipper,Soundproof,252,252,0,0,0,0,95,110,95,40,95,55,202,178,115,54,115,75,75
+703,Aggron-3,Adamant,Aggronite,Heavy Slam,Dragon Rush,Thunder Wave,Stone Edge,HP/Atk,TRUE,Aggron (Mega Aggron),Filter,Filter,Filter,252,252,0,0,0,0,70,140,230,60,80,50,177,211,250,72,100,70,70
+704,Walrein-3,Modest,Leftovers,Surf,Blizzard,Hail,Signal Beam,HP/SpA,FALSE,Walrein,Thick Fat,Ice Body,Oblivious,252,0,0,252,0,0,110,80,90,95,90,65,217,90,110,161,110,85,85
+705,Mamoswine-3,Adamant,Lax Incense,Hail,Earthquake,Avalanche,Fissure,HP/Atk,FALSE,Mamoswine,Oblivious,Snow Cloak,Thick Fat,252,252,0,0,0,0,110,130,80,70,60,80,217,200,100,81,80,100,100
+706,Lapras-3,Modest,Bright Powder,Surf,Ice Beam,Thunderbolt,Psychic,HP/SpA,FALSE,Lapras,Water Absorb,Shell Armor,Hydration,252,0,0,252,0,0,130,85,80,85,95,60,237,94,100,150,115,80,80
+707,Crobat-3,Jolly,Razor Claw,Cross Poison,Brave Bird,Zen Headbutt,X-Scissor,Atk/Spe,FALSE,Crobat,Inner Focus,Inner Focus,Infiltrator,0,252,0,0,0,252,85,90,80,70,80,130,160,142,100,81,100,200,200
+708,Magnezone-3,Modest,Bright Powder,Charge Beam,Flash Cannon,Magnet Rise,Thunder Wave,Def/SpA,FALSE,Magnezone,Magnet Pull,Sturdy,Analytic,0,0,252,252,0,0,70,70,115,130,90,60,145,81,167,200,110,80,80
+709,Rhyperior-3,Impish,Focus Sash,Horn Drill,Reversal,Payback,Metal Burst,HP/Def,FALSE,Rhyperior,Lightning Rod,Solid Rock,Reckless,252,0,252,0,0,0,115,140,130,55,55,40,222,160,200,67,75,60,60
+710,Tangrowth-3,Modest,Heat Rock,Sunny Day,Solar Beam,Sludge Bomb,Wring Out,Def/SpA,FALSE,Tangrowth,Chlorophyll,Leaf Guard,Regenerator,0,0,252,252,0,0,100,100,125,110,50,50,175,108,177,178,70,70,70
+711,Porygon-Z-3,Modest,Expert Belt,Psychic,Ice Beam,Signal Beam,Charge Beam,HP/SpA,FALSE,Porygon-Z,Adaptability,Download,Analytic,252,0,0,252,0,0,85,80,70,135,75,90,192,90,90,205,95,110,110
+712,Vanilluxe-3,Modest,Leftovers,Hail,Blizzard,Flash Cannon,Sheer Cold,HP/SpA,FALSE,Vanilluxe,Ice Body,Snow Warning,Weak Armor,252,0,0,252,0,0,71,95,85,110,95,79,178,103,105,178,115,99,99
+713,Eelektross-3,Brave,Assault Vest,Brick Break,U-turn,Grass Knot,Wild Charge,HP/Atk,FALSE,Eelektross,Levitate,Levitate,Levitate,252,252,0,0,0,0,85,115,80,105,80,50,192,183,100,125,100,63,63
+714,Gyarados-3,Jolly,Wacan Berry,Dragon Dance,Waterfall,Ice Fang,Earthquake,Atk/Spe,FALSE,Gyarados,Intimidate,Intimidate,Moxie,0,252,0,0,0,252,95,125,79,60,100,81,170,177,99,72,120,146,146
+715,Snorlax-3,Adamant,Life Orb,Double-Edge,Earthquake,Crunch,Protect,Atk/Def,FALSE,Snorlax,Immunity,Thick Fat,Gluttony,0,252,252,0,0,0,160,110,65,65,110,30,235,178,117,76,130,50,50
+716,Kingdra-3,Modest,Maranga Berry,Rain Dance,Hydro Pump,Dragon Pulse,Ice Beam,HP/Spe/SpA,FALSE,Kingdra,Swift Swim,Sniper,Damp,170,0,0,170,0,170,75,95,95,95,95,85,171,103,115,149,115,126,126
+717,Blissey-3,Bold,Leftovers,Thunderbolt,Ice Beam,Counter,Calm Mind,HP/Def,FALSE,Blissey,Natural Cure,Serene Grace,Healer,252,0,252,0,0,0,255,10,10,75,135,55,362,27,68,95,155,75,75
+718,Milotic-3,Calm,Wide Lens,Hydro Pump,Blizzard,Mirror Coat,Recover,SpA/SpD,FALSE,Milotic,Marvel Scale,Competitive,Cute Charm,0,0,0,252,252,0,95,60,79,100,125,81,170,72,99,152,194,101,101
+719,Malamar-3,Jolly,Darkinium Z,Superpower,Psycho Cut,Foul Play,Destiny Bond,Atk/Spe,FALSE,Malamar,Contrary,Suction Cups,Infiltrator,0,252,0,0,0,252,86,92,88,68,75,73,161,144,108,79,95,137,137
+720,Sandslash-2,Adamant,Smooth Rock,Sandstorm,Earthquake,Stone Edge,X-Scissor,HP/Atk,FALSE,Sandslash,Sand Veil,Sand Veil,Sand Rush,252,252,0,0,0,0,75,100,110,45,55,65,182,167,130,58,75,85,85
+721,Haxorus-3,Jolly,Dragonium Z,Outrage,Earthquake,Dragon Claw,Rock Slide,Atk/Spe,FALSE,Haxorus,Rivalry,Mold Breaker,Unnerve,0,252,0,0,0,252,76,147,90,60,70,97,151,199,110,72,90,163,163
+722,Togekiss-3,Timid,King's Rock,Grass Knot,Thunder Wave,Air Slash,Shadow Ball,Spe/SpA,FALSE,Togekiss,Hustle,Serene Grace,Super Luck,0,0,0,252,0,252,85,50,95,120,115,80,160,63,115,172,135,145,145
+723,Volcarona-3,Bold,White Herb,Overheat,Quiver Dance,Bug Buzz,Protect,HP/Def,FALSE,Volcarona,Flame Body,Flame Body,Swarm,252,0,252,0,0,0,85,60,65,135,105,100,192,72,128,155,125,120,120
+724,Arcanine-3,Timid,White Herb,Overheat,Sunny Day,Solar Beam,Extreme Speed,Spe/SpA,FALSE,Arcanine,Intimidate,Flash Fire,Justified,0,0,0,252,0,252,90,110,80,100,80,95,165,117,100,152,100,161,161
+725,Archeops-3,Jolly,Choice Band,Aerial Ace,Earthquake,Head Smash,U-turn,Atk/Spe,FALSE,Archeops,Defeatist,Defeatist,Defeatist,0,252,0,0,0,252,75,140,65,112,65,110,150,192,85,118,85,178,178
+726,Dragonite-3,Adamant,Choice Band,Outrage,Earthquake,Giga Impact,Stone Edge,Atk/SpD,FALSE,Dragonite,Inner Focus,Inner Focus,Multiscale,0,252,0,0,252,0,91,134,95,100,100,80,166,204,115,108,152,100,100
+727,Tyranitar-3,Jolly,Chople Berry,Rock Slide,Crunch,Earthquake,Dragon Dance,Atk/Spe,FALSE,Tyranitar,Sand Stream,Sand Stream,Unnerve,0,252,0,0,0,252,100,134,110,95,100,61,175,186,130,103,120,124,124
+728,Salamence-3,Timid,Yache Berry,Draco Meteor,Fire Blast,Hydro Pump,Protect,Spe/SpA,FALSE,Salamence,Intimidate,Intimidate,Moxie,0,0,0,252,0,252,95,135,80,110,80,100,170,139,100,162,100,167,167
+729,Metagross-3,Adamant,Occa Berry,Earthquake,Meteor Mash,Bullet Punch,Explosion,HP/Atk/SpD,FALSE,Metagross,Clear Body,Clear Body,Light Metal,170,170,0,0,170,0,80,135,130,95,90,70,176,193,150,103,131,90,90
+730,Garchomp-3,Jolly,Choice Scarf,Outrage,Earthquake,Fire Fang,Crunch,Atk/Spe,FALSE,Garchomp,Sand Veil,Sand Veil,Rough Skin,0,252,0,0,0,252,108,130,95,80,85,102,183,182,115,90,105,169,253.5
+731,Hydreigon-3,Timid,Dragonium Z,Draco Meteor,Taunt,Earth Power,Flamethrower,Spe/SpA,FALSE,Hydreigon,Levitate,Levitate,Levitate,0,0,0,252,0,252,92,105,90,125,90,98,167,112,110,177,110,165,165
+732,Slaking-3,Adamant,Choice Band,Giga Impact,Shadow Claw,Hammer Arm,Earthquake,HP/Atk,FALSE,Slaking,Truant,Truant,Truant,252,252,0,0,0,0,150,160,100,95,65,100,257,233,120,103,85,120,120
+733,Venusaur-4,Bold,Venusaurite,Synthesis,Substitute,Sludge Bomb,Giga Drain,HP/Def,TRUE,Venusaur (Mega Venusaur),Thick Fat,Thick Fat,Thick Fat,252,0,252,0,0,0,80,100,123,122,120,80,187,108,192,142,140,100,100
+734,Charizard-4,Jolly,Charizardite X,Dragon Rush,Flare Blitz,Dragon Dance,Rock Slide,Atk/Spe,TRUE,Charizard (Mega Charizard X),Tough Claws,Tough Claws,Tough Claws,0,252,0,0,0,252,78,130,111,130,85,100,153,182,131,135,105,167,167
+735,Blastoise-4,Modest,Custap Berry,Yawn,Hydro Pump,Blizzard,Dark Pulse,HP/SpA,FALSE,Blastoise,Torrent,Torrent,Rain Dish,252,0,0,252,0,0,79,83,100,85,105,78,186,92,120,150,125,98,98
+736,Meganium-4,Bold,Leftovers,Leech Seed,Ingrain,Toxic,Protect,Def/SpD,FALSE,Meganium,Overgrow,Overgrow,Leaf Guard,0,0,252,0,252,0,80,82,100,83,100,80,155,91,167,103,152,100,100
+737,Typhlosion-4,Modest,Power Herb,Extrasensory,Lava Plume,Bulldoze,Solar Beam,Spe/SpA,FALSE,Typhlosion,Blaze,Blaze,Flash Fire,0,0,0,252,0,252,78,84,78,109,85,100,153,93,98,177,105,152,152
+738,Feraligatr-4,Adamant,Liechi Berry,Dragon Dance,Waterfall,Crunch,Substitute,Atk/Spe,FALSE,Feraligatr,Torrent,Torrent,Sheer Force,0,252,0,0,0,252,85,105,100,79,83,78,160,172,120,89,103,130,130
+739,Sceptile-4,Jolly,Sceptilite,Leaf Blade,Dual Chop,Earthquake,Rock Slide,Atk/Spe,TRUE,Sceptile (Mega Sceptile),Lightning Rod,Lightning Rod,Lightning Rod,0,252,0,0,0,252,70,110,75,145,85,145,145,162,95,148,105,216,216
+740,Blaziken-4,Adamant,Blazikenite,Night Slash,Flare Blitz,Stone Edge,Brave Bird,Atk/Spe,TRUE,Blaziken (Mega Blaziken),Speed Boost,Speed Boost,Speed Boost,0,252,0,0,0,252,80,160,80,130,80,100,155,233,100,135,100,152,152
+741,Swampert-4,Careful,Chesto Berry,Curse,Rest,Earthquake,Waterfall,HP/SpD,FALSE,Swampert,Torrent,Torrent,Damp,252,0,0,0,252,0,100,110,90,85,90,60,207,130,110,94,156,80,80
+742,Torterra-4,Careful,Leftovers,Stockpile,Leech Seed,Earthquake,Protect,HP/SpD,FALSE,Torterra,Overgrow,Overgrow,Shell Armor,252,0,0,0,252,0,95,109,105,75,85,56,202,129,125,85,150,76,76
+743,Infernape-4,Jolly,Focus Sash,Fake Out,Encore,Flare Blitz,Close Combat,Atk/Spe,FALSE,Infernape,Blaze,Blaze,Iron Fist,0,252,0,0,0,252,76,104,71,104,71,108,151,156,91,111,91,176,176
+744,Empoleon-4,Calm,Petaya Berry,Surf,Substitute,Blizzard,Whirlpool,HP/SpA,FALSE,Empoleon,Torrent,Torrent,Defiant,252,0,0,252,0,0,84,86,88,111,101,60,191,95,108,163,133,80,80
+745,Serperior-4,Modest,Choice Specs,Leaf Storm,,,,Spe/SpA,FALSE,Serperior,Overgrow,Overgrow,Contrary,0,0,0,252,0,252,75,75,95,75,95,113,150,85,115,139,115,165,165
+746,Emboar-4,Timid,Salac Berry,Substitute,Flamethrower,Focus Blast,Scald,Spe/SpA,FALSE,Emboar,Blaze,Blaze,Reckless,0,0,0,252,0,252,110,123,65,100,65,65,185,128,85,152,85,128,128
+747,Samurott-4,Modest,Salac Berry,Hydro Pump,Ice Beam,Grass Knot,Protect,Def/SpA/SpD,FALSE,Samurott,Torrent,Torrent,Shell Armor,0,0,170,170,170,0,95,100,85,108,70,70,170,108,126,163,111,90,90
+748,Dugtrio (Alola Form)-2,Jolly,Choice Band,Earthquake,Night Slash,Iron Head,Stone Edge,Atk/Spe,FALSE,Dugtrio (Alola Form),Sand Veil,Tangling Hair,Sand Force,0,252,0,0,0,252,35,100,60,50,70,110,110,152,80,63,90,178,178
+749,Marowak (Alola Form)-2,Jolly,Thick Club,Shadow Bone,Flare Blitz,Detect,Stomping Tantrum,Atk/Spe,FALSE,Marowak (Alola Form),Cursed Body,Lightning Rod,Rock Head,0,252,0,0,0,252,60,80,110,50,80,45,135,132,130,63,100,106,106
+750,Medicham-4,Adamant,Medichamite,High Jump Kick,Psycho Cut,Fake Out,Detect,Atk/Spe,TRUE,Medicham (Mega Medicham),Pure Power,Pure Power,Pure Power,0,252,0,0,0,252,60,100,85,80,85,100,135,167,105,90,105,152,152
+751,Pidgeot-4,Modest,Pidgeotite,Hurricane,Feather Dance,Roost,Hyper Beam,Def/SpA,TRUE,Pidgeot (Mega Pidgeot),No Guard,No Guard,No Guard,0,0,252,252,0,0,83,80,80,135,80,121,158,90,132,205,100,141,141
+752,Mawile-4,Adamant,Mawilite,Sucker Punch,Play Rough,Fire Fang,Stone Edge,HP/Atk,TRUE,Mawile (Mega Mawile),Huge Power,Huge Power,Huge Power,252,252,0,0,0,0,50,105,125,55,95,50,157,172,145,67,115,70,70
+753,Banette-4,Impish,Banettite,Shadow Claw,Will-O-Wisp,Sucker Punch,Gunk Shot,HP/Def,TRUE,Banette (Mega Banette),Prankster,Prankster,Prankster,252,0,252,0,0,0,64,165,75,93,83,75,171,185,139,101,103,95,95
+754,Sableye-4,Careful,Focus Sash,Foul Play,Will-O-Wisp,Metal Burst,Fake Out,HP/SpD,FALSE,Sableye,Keen Eye,Stall,Prankster,252,0,0,0,252,0,50,75,75,65,65,50,157,95,95,76,128,70,70
+755,Lanturn-4,Bold,Chesto Berry,Stockpile,Rest,Charge Beam,Ice Beam,Def/SpD,FALSE,Lanturn,Volt Absorb,Illuminate,Water Absorb,0,0,252,0,252,0,125,58,58,76,76,67,200,70,121,96,128,87,87
+756,Breloom-4,Careful,Toxic Orb,Protect,Leech Seed,Substitute,Focus Punch,HP/Def/SpD,FALSE,Breloom,Effect Spore,Poison Heal,Technician,170,0,170,0,170,0,60,130,80,60,60,70,156,150,121,72,111,90,90
+757,Audino-4,Modest,Firium Z,Yawn,Hyper Voice,Trick Room,Fire Blast,Def/SpA,FALSE,Audino,Healer,Regenerator,Klutz,0,0,252,252,0,0,103,60,86,60,86,50,178,72,138,123,106,70,70
+758,Skarmory-4,Careful,Poisonium Z,Spikes,Stealth Rock,Whirlwind,Toxic,HP/SpD,FALSE,Skarmory,Keen Eye,Sturdy,Weak Armor,252,0,0,0,252,0,65,80,140,40,70,70,172,100,160,54,134,90,90
+759,Absol-4,Jolly,Absolite,Sucker Punch,Megahorn,Play Rough,Stone Edge,Atk/Spe,TRUE,Absol (Mega Absol),Magic Bounce,Magic Bounce,Magic Bounce,0,252,0,0,0,252,65,150,60,115,60,115,140,202,80,121,80,183,183
+760,Sharpedo-4,Modest,Focus Sash,Ice Beam,Hydro Pump,Dark Pulse,Protect,Spe/SpA,FALSE,Sharpedo,Rough Skin,Rough Skin,Speed Boost,0,0,0,252,0,252,70,120,40,95,40,95,145,126,60,161,60,147,147
+761,Hariyama-4,Careful,Sitrus Berry,Belly Drum,Brick Break,Counter,Bullet Punch,Def/SpD,FALSE,Hariyama,Thick Fat,Guts,Sheer Force,0,0,252,0,252,0,144,120,60,40,60,50,219,140,112,54,123,70,70
+762,Vespiquen-4,Brave,Custap Berry,Attack Order,U-turn,Aerial Ace,Destiny Bond,HP/Atk,FALSE,Vespiquen,Pressure,Pressure,Unnerve,252,252,0,0,0,0,70,80,102,80,102,40,177,145,122,100,122,54,54
+763,Raichu-2,Jolly,Air Balloon,Fake Out,Volt Tackle,Reversal,Light Screen,Atk/Spe,FALSE,Raichu,Static,Static,Lightning Rod,0,252,0,0,0,252,60,90,55,90,80,110,135,142,75,99,100,178,178
+764,Glalie-4,Naive,Glalitite,Earthquake,Explosion,Protect,Freeze-Dry,Atk/Spe,TRUE,Glalie (Mega Glalie),Refrigerate,Refrigerate,Refrigerate,0,252,0,0,0,252,80,120,80,120,80,100,155,172,100,140,90,167,167
+765,Manectric-4,Timid,Choice Scarf,Switcheroo,Thunder,Volt Switch,Overheat,Spe/SpA,FALSE,Manectric,Static,Lightning Rod,Minus,0,0,0,252,0,252,70,75,60,105,60,105,145,85,80,157,80,172,258
+766,Staraptor-4,Jolly,Flyinium Z,Brave Bird,Double-Edge,Roost,Feather Dance,Atk/Spe,FALSE,Staraptor,Intimidate,Intimidate,Reckless,0,252,0,0,0,252,85,120,70,50,60,100,160,172,90,63,80,167,167
+767,Gastrodon-4,Bold,Leftovers,Amnesia,Curse,Earthquake,Waterfall,Def/SpD,FALSE,Gastrodon,Sticky Hold,Storm Drain,Sand Force,0,0,252,0,252,0,111,83,68,92,82,39,186,92,132,112,134,59,59
+768,Camerupt-4,Quiet,Cameruptite,Earth Power,Heat Wave,Flash Cannon,Protect,HP/SpA,TRUE,Camerupt (Mega Camerupt),Sheer Force,Sheer Force,Sheer Force,252,0,0,252,0,0,70,120,100,145,105,20,177,140,120,216,125,36,36
+769,Sawk-4,Adamant,Life Orb,Close Combat,Earthquake,Stone Edge,Taunt,Atk/Spe,FALSE,Sawk,Sturdy,Inner Focus,Mold Breaker,0,252,0,0,0,252,75,125,75,30,75,85,150,194,95,45,95,137,137
+770,Throh-4,Brave,Flame Orb,Protect,Earthquake,Storm Throw,Payback,Atk/SpD,FALSE,Throh,Guts,Inner Focus,Mold Breaker,0,252,0,0,252,0,120,100,85,30,85,45,195,167,105,50,137,58,58
+771,Unfezant-4,Impish,Bright Powder,Detect,Feather Dance,Toxic,Fly,HP/SpD,FALSE,Unfezant,Big Pecks,Super Luck,Rivalry,252,0,0,0,252,0,80,115,80,65,55,93,187,135,110,76,107,113,113
+772,Pelipper-4,Timid,Waterium Z,Rain Dance,Hurricane,Hydro Pump,Ice Beam,Spe/SpA,FALSE,Pelipper,Keen Eye,Drizzle,Rain Dish,0,0,0,252,0,252,60,50,100,95,70,65,135,63,120,147,90,128,128
+773,Amoonguss-4,Calm,Black Sludge,Giga Drain,Spore,Clear Smog,Synthesis,HP/SpD,FALSE,Amoonguss,Effect Spore,Effect Spore,Regenerator,252,0,0,0,252,0,114,85,70,85,80,30,221,94,90,105,145,50,50
+774,Electrode-4,Timid,Damp Rock,Rain Dance,Thunder,Taunt,Light Screen,Spe/SpA,FALSE,Electrode,Soundproof,Static,Aftermath,0,0,0,252,0,252,60,50,70,80,80,150,135,63,90,132,100,222,222
+775,Ludicolo-4,Modest,Kee Berry,Fake Out,Hydro Pump,Leech Seed,Grass Knot,Spe/SpA,FALSE,Ludicolo,Swift Swim,Rain Dish,Own Tempo,0,0,0,252,0,252,80,70,70,90,100,70,155,81,90,156,120,122,122
+776,Shiftry-4,Adamant,Focus Sash,Fake Out,X-Scissor,Leaf Blade,Protect,Atk/Def,FALSE,Shiftry,Chlorophyll,Early Bird,Pickpocket,0,252,252,0,0,0,90,100,60,90,60,80,165,167,112,99,80,100,100
+777,Exploud-4,Timid,Life Orb,Blizzard,Hyper Voice,Focus Blast,Shadow Ball,Spe/SpA,FALSE,Exploud,Soundproof,Soundproof,Scrappy,0,0,0,252,0,252,104,91,63,91,73,68,179,99,83,143,93,132,132
+778,Lopunny-4,Jolly,Lopunnite,High Jump Kick,Quick Attack,Ice Punch,Double Hit,Atk/Spe,TRUE,Lopunny (Mega Lopunny),Scrappy,Scrappy,Scrappy,0,252,0,0,0,252,65,136,94,54,96,135,140,188,114,66,116,205,205
+779,Froslass-4,Timid,Focus Sash,Blizzard,Icy Wind,Shadow Ball,Destiny Bond,Spe/SpA,FALSE,Froslass,Snow Cloak,Snow Cloak,Cursed Body,0,0,0,252,0,252,70,80,70,80,70,110,145,90,90,132,90,178,178
+780,Lilligant-4,Bold,Grassium Z,Solar Beam,Teeter Dance,Charm,Leech Seed,HP/Def/Spe/SpA,FALSE,Lilligant,Chlorophyll,Own Tempo,Leaf Guard,127,0,127,127,0,127,70,60,75,110,75,90,161,72,122,146,95,126,126
+781,Darmanitan-4,Impish,Choice Scarf,Flare Blitz,Stone Edge,U-turn,Superpower,Atk/Spe,FALSE,Darmanitan,Sheer Force,Sheer Force,Zen Mode,0,252,0,0,0,252,105,140,55,30,55,95,180,192,82,45,75,147,220.5
+782,Ambipom-4,Jolly,King's Rock,Fling,Taunt,Return,Payback,Atk/Spe,FALSE,Ambipom,Technician,Pickup,Skill Link,0,252,0,0,0,252,75,100,66,60,66,115,150,152,86,72,86,183,183
+783,Cofagrigus-4,Bold,Leftovers,Will-O-Wisp,Toxic,Hex,Calm Mind,HP/SpD,FALSE,Cofagrigus,Mummy,Mummy,Mummy,252,0,0,0,252,0,58,50,145,95,105,30,165,63,181,115,157,50,50
+784,Golurk-4,Brave,Iron Ball,Hammer Arm,Earthquake,Shadow Punch,Fling,HP/Atk,FALSE,Golurk,Iron Fist,Klutz,No Guard,252,252,0,0,0,0,89,124,80,55,80,55,196,193,100,75,100,67,33.5
+785,Durant-4,Jolly,Focus Sash,Entrainment,X-Scissor,Iron Head,Protect,HP/Spe,FALSE,Durant,Swarm,Hustle,Truant,252,0,0,0,0,252,58,109,112,48,48,109,165,129,132,61,68,177,177
+786,Golem (Alola Form)-2,Adamant,Air Balloon,Rock Slide,Earthquake,Explosion,Rock Polish,Atk/Spe,FALSE,Golem (Alola Form),Magnet Pull,Sturdy,Galvanize,0,252,0,0,0,252,80,120,130,55,65,45,155,189,150,67,85,97,97
+787,Slowbro-4,Quiet,Slowbronite,Psychic,Surf,Blizzard,Trick Room,HP/SpA,TRUE,Slowbro (Mega Slowbro),Shell Armor,Shell Armor,Shell Armor,252,0,0,252,0,0,95,75,180,130,80,30,202,95,200,200,100,45,45
+788,Weezing-4,Careful,Chesto Berry,Toxic,Will-O-Wisp,Stockpile,Rest,HP/SpD,FALSE,Weezing,Levitate,Levitate,Levitate,252,0,0,0,252,0,65,90,120,85,70,60,172,110,140,94,134,80,80
+789,Kangaskhan-4,Jolly,Kangaskhanite,Fake Out,Double-Edge,Earthquake,Sucker Punch,Atk/Spe,TRUE,Kangaskhan (Mega Kangaskhan),Parental Bond,Parental Bond,Parental Bond,0,252,0,0,0,252,105,125,100,60,100,100,180,177,120,72,120,167,167
+790,Tauros-4,Careful,Sitrus Berry,Toxic,Protect,Double Team,Earthquake,HP/SpD,FALSE,Tauros,Intimidate,Anger Point,Sheer Force,252,0,0,0,252,0,75,100,95,40,70,110,182,120,115,54,134,130,130
+791,Spiritomb-4,Careful,Custap Berry,Will-O-Wisp,Sucker Punch,Substitute,Pain Split,HP/SpD,FALSE,Spiritomb,Pressure,Pressure,Infiltrator,252,0,0,0,252,0,50,92,108,92,108,35,157,112,128,100,176,55,55
+792,Whimsicott-4,Calm,Fairium Z,Moonblast,Tailwind,Swagger,Energy Ball,HP/SpD,FALSE,Whimsicott,Prankster,Infiltrator,Chlorophyll,252,0,0,0,252,0,60,67,85,77,75,116,167,78,105,97,139,136,136
+793,Druddigon-4,Adamant,Choice Band,Outrage,Earthquake,Superpower,Dragon Tail,HP/Atk,FALSE,Druddigon,Rough Skin,Sheer Force,Mold Breaker,252,252,0,0,0,0,77,120,90,60,90,48,184,189,110,72,110,68,68
+794,Musharna-4,Relaxed,Chesto Berry,Stored Power,Calm Mind,Shadow Ball,Rest,Def/SpD,FALSE,Musharna,Forewarn,Synchronize,Telepathy,0,0,252,0,252,0,116,55,85,107,95,29,191,75,150,127,147,44,44
+795,Scrafty-4,Careful,Leftovers,Bulk Up,Payback,Protect,Drain Punch,HP/SpD,FALSE,Scrafty,Shed Skin,Moxie,Intimidate,252,0,0,0,252,0,65,90,115,45,115,58,172,110,135,58,183,78,78
+796,Ferrothorn-4,Sassy,Leftovers,Curse,Seed Bomb,Gyro Ball,Ingrain,HP/SpD,FALSE,Ferrothorn,Iron Barbs,Iron Barbs,Anticipation,252,0,0,0,252,0,74,94,131,54,116,20,181,114,151,74,184,36,36
+797,Alakazam-4,Timid,Choice Specs,Psychic,Focus Blast,Dazzling Gleam,Trick,Spe/SpA,FALSE,Alakazam,Synchronize,Inner Focus,Magic Guard,0,0,0,252,0,252,55,50,45,135,95,120,130,63,65,187,115,189,189
+798,Slowking-4,Quiet,Waterium Z,Psychic,Surf,Ice Beam,Trick Room,HP/SpD,FALSE,Slowking,Oblivious,Own Tempo,Regenerator,252,0,0,0,252,0,95,75,80,100,110,30,202,95,100,132,162,45,45
+799,Jellicent-4,Bold,Sitrus Berry,Scald,Hex,Will-O-Wisp,Recover,HP/Def,FALSE,Jellicent,Water Absorb,Cursed Body,Damp,252,0,252,0,0,0,100,60,70,85,105,60,207,72,134,105,125,80,80
+800,Altaria-4,Calm,Wide Lens,Cotton Guard,Sing,Moonblast,Dream Eater,HP/SpD,FALSE,Altaria,Natural Cure,Natural Cure,Cloud Nine,252,0,0,0,252,0,75,70,90,70,105,80,182,81,110,90,172,100,100
+801,Toxicroak-4,Adamant,Wide Lens,Cross Chop,Sucker Punch,Poison Jab,Taunt,Atk/Spe,FALSE,Toxicroak,Anticipation,Dry Skin,Poison Touch,0,252,0,0,0,252,83,106,65,86,65,85,158,173,85,95,85,137,137
+802,Gothitelle-4,Modest,Bright Powder,Substitute,Flatter,Psych Up,Psychic,HP/SpA,FALSE,Gothitelle,Frisk,Competitive,Shadow Tag,252,0,0,252,0,0,70,55,95,95,110,65,177,67,115,161,130,85,85
+803,Reuniclus-4,Relaxed,Toxic Orb,Trick,Psychic,Focus Blast,Recover,Def/SpD,FALSE,Reuniclus,Overcoat,Magic Guard,Regenerator,0,0,252,0,252,0,110,65,75,125,85,30,185,85,139,145,137,45,45
+804,Bisharp-4,Adamant,Focus Sash,Taunt,Sucker Punch,Metal Burst,Iron Head,HP/Atk,FALSE,Bisharp,Defiant,Inner Focus,Pressure,252,252,0,0,0,0,65,125,100,60,70,70,172,194,120,72,90,90,90
+805,Abomasnow-4,Quiet,Abomasite,Blizzard,Focus Blast,Protect,Ice Shard,HP/SpA,TRUE,Abomasnow (Mega Abomasnow),Snow Warning,Snow Warning,Snow Warning,252,0,0,252,0,0,90,132,105,132,105,30,197,152,125,202,125,45,45
+806,Nidoqueen-4,Adamant,Black Sludge,Poison Jab,Dragon Tail,Bulldoze,Earthquake,HP/Atk,FALSE,Nidoqueen,Poison Point,Rivalry,Sheer Force,252,252,0,0,0,0,90,92,87,75,85,76,197,158,107,85,105,96,96
+807,Nidoking-4,Adamant,Buginium Z,Earthquake,Poison Jab,Megahorn,Protect,Atk/Spe,FALSE,Nidoking,Poison Point,Rivalry,Sheer Force,0,252,0,0,0,252,81,102,77,85,75,85,156,169,97,94,95,137,137
+808,Cradily-4,Sassy,Big Root,Stockpile,Protect,Ingrain,Giga Drain,HP/Def,FALSE,Cradily,Suction Cups,Suction Cups,Storm Drain,252,0,252,0,0,0,86,81,97,81,107,43,193,101,149,101,139,56,56
+809,Armaldo-4,Adamant,Choice Band,Cross Poison,Stone Edge,Earthquake,X-Scissor,HP/Atk,FALSE,Armaldo,Battle Armor,Battle Armor,Swift Swim,252,252,0,0,0,0,75,125,100,70,80,45,182,194,120,81,100,65,65
+810,Rampardos-4,Relaxed,Sitrus Berry,Head Smash,Earthquake,Rock Slide,Protect,Atk/SpD,FALSE,Rampardos,Mold Breaker,Mold Breaker,Sheer Force,0,252,0,0,252,0,97,165,60,65,50,58,172,217,88,85,102,70,70
+811,Bastiodon-4,Brave,Sitrus Berry,Metal Burst,Rock Slide,Wide Guard,Curse,HP/Atk,FALSE,Bastiodon,Sturdy,Sturdy,Soundproof,252,252,0,0,0,0,60,52,168,47,138,30,167,114,188,67,158,45,45
+812,Shiinotic-4,Sassy,Weakness Policy,Moonblast,Grass Knot,Moonlight,Spore,HP/SpD,FALSE,Shiinotic,Illuminate,Effect Spore,Rain Dish,252,0,0,0,252,0,60,45,80,90,100,30,167,65,100,110,167,45,45
+813,Mismagius-4,Bold,Bright Powder,Power Gem,Protect,Perish Song,Mean Look,HP/Def,FALSE,Mismagius,Levitate,Levitate,Levitate,252,0,252,0,0,0,60,60,60,105,105,105,167,72,123,125,125,125,125
+814,Carracosta-4,Adamant,Weakness Policy,Waterfall,Rock Slide,Aqua Jet,Earthquake,Atk/Spe,FALSE,Carracosta,Solid Rock,Sturdy,Swift Swim,0,252,0,0,0,252,74,108,133,83,65,32,149,176,153,92,85,84,84
+815,Escavalier-4,Adamant,Custap Berry,Megahorn,Iron Head,Swagger,Reversal,HP/Atk,FALSE,Escavalier,Swarm,Shell Armor,Overcoat,252,252,0,0,0,0,70,135,105,60,105,20,177,205,125,72,125,40,40
+816,Accelgor-4,Timid,Focus Sash,Bug Buzz,Encore,Focus Blast,Protect,Spe/SpA,FALSE,Accelgor,Hydration,Sticky Hold,Unburden,0,0,0,252,0,252,80,70,40,100,60,145,155,81,60,152,80,216,216
+817,Salazzle-4,Modest,Firium Z,Overheat,Sludge Wave,Dragon Pulse,Fake Out,Spe/SpA,FALSE,Salazzle,Corrosion,Corrosion,Oblivious,0,0,0,252,0,252,68,64,60,111,60,117,143,75,80,179,80,169,169
+818,Drifblim-4,Bold,Custap Berry,Shadow Ball,Thunderbolt,Hypnosis,Destiny Bond,Spe/SpD,FALSE,Drifblim,Aftermath,Unburden,Flare Boost,0,0,0,0,252,252,150,80,44,90,54,80,225,90,70,110,106,132,132
+819,Toucannon-4,Impish,Rocky Helmet,Beak Blast,Roost,Tailwind,Overheat,HP/Def,FALSE,Toucannon,Keen Eye,Skill Link,Sheer Force,252,0,252,0,0,0,80,120,75,75,75,60,187,140,139,85,95,80,80
+820,Oranguru-4,Modest,Electrium Z,Foul Play,Psychic,Focus Blast,Thunder,HP/SpA,FALSE,Oranguru,Inner Focus,Telepahty,Symbiosis,252,0,0,252,0,0,90,60,80,90,110,60,197,72,100,156,130,80,80
+821,Komala-4,Adamant,Normalium Z,Thrash,Play Rough,Wood Hammer,Sucker Punch,HP/Atk,FALSE,Komala,Comatose,Comatose,Comatose,252,252,0,0,0,0,65,115,65,75,95,65,172,183,85,85,115,85,85
+822,Muk-2,Adamant,Quick Claw,Gunk Shot,Shadow Sneak,Brick Break,Explosion,HP/Atk,FALSE,Muk,Stench,Sticky Hold,Poison Touch,252,252,0,0,0,0,105,105,75,65,100,50,212,172,95,76,120,70,70
+823,Gengar-4,Timid,Gengarite,Sludge Bomb,Thunderbolt,Shadow Ball,Destiny Bond,Spe/SpA,TRUE,Gengar (Mega Gengar),Shadow Tag,Shadow Tag,Shadow Tag,0,0,0,252,0,252,60,65,80,170,95,130,135,76,100,222,115,200,200
+824,Ampharos-4,Quiet,Ampharosite,Thunder,Focus Blast,Dragon Pulse,Confuse Ray,HP/SpA,TRUE,Ampharos (Mega Ampharos),Mold Breaker,Mold Breaker,Mold Breaker,252,0,0,252,0,0,90,95,105,165,110,45,197,115,125,238,130,58,58
+825,Politoed-4,Modest,Wide Lens,Hydro Pump,Blizzard,Focus Blast,Hypnosis,SpA/SpD,FALSE,Politoed,Water Absorb,Damp,Drizzle,0,0,0,252,252,0,90,75,75,90,100,70,165,85,95,156,152,90,90
+826,Pinsir-4,Jolly,Choice Scarf,X-Scissor,Earthquake,Close Combat,Guillotine,Atk/Spe,FALSE,Pinsir,Hyper Cutter,Mold Breaker,Moxie,0,252,0,0,0,252,65,125,100,55,70,85,140,177,120,67,90,150,225
+827,Scizor-4,Adamant,Scizorite,X-Scissor,Aerial Ace,Roost,Bullet Punch,HP/Atk,TRUE,Scizor (Mega Scizor),Technician,Technician,Technician,252,252,0,0,0,0,70,150,140,65,100,75,177,222,160,76,120,95,95
+828,Heracross-4,Adamant,Heracronite,Pin Missile,Rock Blast,Bullet Seed,Close Combat,HP/Atk,TRUE,Heracross (Mega Heracross),Skill Link,Skill Link,Skill Link,252,252,0,0,0,0,80,185,115,40,105,75,187,260,135,54,125,95,95
+829,Ursaring-4,Adamant,Quick Claw,Return,Cross Chop,Earthquake,Aerial Ace,HP/Atk,FALSE,Ursaring,Guts,Quick Feet,Unnerve,252,252,0,0,0,0,90,130,75,75,75,55,197,200,95,85,95,75,75
+830,Houndoom-4,Timid,Houndoominite,Fire Blast,Dark Pulse,Solar Beam,Sunny Day,Spe/SpA,TRUE,Houndoom (Mega Houndoom),Solar Power,Solar Power,Solar Power,0,0,0,252,0,252,75,90,90,140,90,115,150,99,110,192,110,183,183
+831,Tsareena-4,Jolly,Choice Scarf,Trop Kick,High Jump Kick,Play Rough,U-turn,Atk/Spe,FALSE,Tsareena,Leaf Guard,Queenly Majesty,Sweet Veil,0,252,0,0,0,252,72,120,98,50,98,72,147,172,118,63,118,136,204
+832,Wailord-4,Modest,Zoom Lens,Hydro Pump,Blizzard,Fissure,Hyper Beam,HP/SpA,FALSE,Wailord,Water Veil,Oblivious,Pressure,252,0,0,252,0,0,170,90,45,90,45,60,277,99,65,156,65,80,80
+833,Passimian-4,Adamant,Hard Stone,Close Combat,Rock Slide,Feint,Fling,Atk/Spe,FALSE,Passimian,Receiver,Receiver,Defiant,0,252,0,0,0,252,100,120,90,40,60,80,175,189,110,54,80,132,132
+834,Bronzong-4,Brave,Steelium Z,Safeguard,Rock Slide,Gyro Ball,Trick Room,HP/Atk,FALSE,Bronzong,Levitate,Heatproof,Heavy Metal,252,252,0,0,0,0,67,89,116,79,116,33,174,155,136,99,136,47,47
+835,Drapion-4,Careful,Razor Claw,Cross Poison,Night Slash,Earthquake,Swords Dance,HP/Atk,FALSE,Drapion,Battle Armor,Sniper,Keen Eye,252,252,0,0,0,0,70,90,110,60,75,95,177,142,130,72,104,115,115
+836,Crabominable-4,Impish,Weakness Policy,Close Combat,Ice Hammer,Rock Slide,Protect,Atk/Def,FALSE,Crabominable,Hyper Cutter,Iron Fist,Anger Point,0,252,252,0,0,0,97,132,77,62,67,43,172,184,141,73,87,63,63
+837,Ninetales (Alola Form)-2,Timid,Psychium Z,Freeze-Dry,Dazzling Gleam,Extrasensory,Ice Shard,HP/Spe,FALSE,Ninetales (Alola Form),Snow Cloak,Snow Cloak,Snow Warning,252,0,0,0,0,252,73,67,75,81,100,109,180,78,95,101,120,177,177
+838,Machamp-4,Adamant,Flame Orb,Protect,Earthquake,Close Combat,Payback,Atk/SpD,FALSE,Machamp,Guts,No Guard,Steadfast,0,252,0,0,252,0,90,130,80,65,85,55,165,200,100,76,137,75,75
+839,Shuckle-4,Relaxed,Leftovers,Toxic,Protect,Sandstorm,Wrap,HP/Def,FALSE,Shuckle,Sturdy,Gluttony,Contrary,252,0,252,0,0,0,20,10,230,10,230,5,127,30,310,30,250,22,22
+840,Mimikyu-4,Adamant,Rocky Helmet,Play Rough,Shadow Claw,Destiny Bond,Shadow Sneak,Atk/Spe,FALSE,Mimikyu,Disguise,Disguise,Disguise,0,252,0,0,0,252,55,90,80,50,105,96,130,156,100,63,125,148,148
+841,Honchkrow-4,Adamant,Life Orb,Night Slash,Drill Peck,Sucker Punch,Thunder Wave,HP/Atk,FALSE,Honchkrow,Insomnia,Super Luck,Moxie,252,252,0,0,0,0,100,125,52,105,52,71,207,194,72,112,72,91,91
+842,Gigalith-4,Quiet,Leftovers,Rock Slide,Stealth Rock,Curse,Earthquake,HP/SpD,FALSE,Gigalith,Sturdy,Sand Stream,Sand Force,252,0,0,0,252,0,85,135,130,60,80,25,192,155,150,88,132,40,40
+843,Conkeldurr-4,Brave,Iron Ball,Fling,Rock Slide,Superpower,Mach Punch,Atk/SpD,FALSE,Conkeldurr,Guts,Sheer Force,Iron Fist,0,252,0,0,252,0,105,140,95,55,65,45,180,211,115,75,117,58,29
+844,Excadrill-4,Adamant,Life Orb,Earthquake,Aerial Ace,Poison Jab,Rock Slide,Atk/Def/SpD,FALSE,Excadrill,Sand Rush,Sand Force,Mold Breaker,0,170,170,0,170,0,110,135,60,50,65,88,185,193,101,63,106,108,108
+845,Wishiwashi (School Form)-4,Quiet,Rindo Berry,Ice Beam,Hydro Pump,U-turn,Endeavor,HP/SpA,FALSE,Wishiwashi (School Form),Schooling,Schooling,Schooling,252,0,0,252,0,0,45,140,130,140,135,30,152,160,150,211,155,45,45
+846,Steelix-4,Adamant,Steelixite,Gyro Ball,Earthquake,Stone Edge,Sandstorm,HP/Atk,TRUE,Steelix (Mega Steelix),Sand Force,Sand Force,Sand Force,252,252,0,0,0,0,75,125,230,55,95,30,182,194,250,67,115,50,50
+847,Weavile-4,Jolly,Focus Sash,Taunt,Ice Punch,Night Slash,Fake Out,Atk/Spe,FALSE,Weavile,Pressure,Pressure,Pickpocket,0,252,0,0,0,252,70,120,65,45,85,125,145,172,85,58,105,194,194
+848,Gliscor-4,Jolly,Focus Sash,Earthquake,Acrobatics,U-turn,Counter,HP/Spe,FALSE,Gliscor,Hyper Cutter,Sand Veil,Poison Heal,252,0,0,0,0,252,75,95,125,45,75,95,182,115,145,58,95,161,161
+849,Zoroark-4,Timid,Focus Band,Protect,Counter,Dark Pulse,Focus Blast,Spe/SpA,FALSE,Zoroark,Illusion,Illusion,Illusion,0,0,0,252,0,252,60,105,60,120,60,105,135,112,80,172,80,172,172
+850,Mandibuzz-4,Careful,Leftovers,Substitute,Swagger,Punishment,Roost,HP/Def/SpD,FALSE,Mandibuzz,Big Pecks,Overcoat,Weak Armor,170,0,170,0,170,0,110,65,105,55,95,80,206,85,146,67,149,100,100
+851,Braviary-4,Adamant,Wacan Berry,Brave Bird,Tailwind,Superpower,Giga Impact,Atk/Spe,FALSE,Braviary,Keen Eye,Sheer Force,Defiant,0,252,0,0,0,252,100,123,75,57,75,80,175,192,95,69,95,132,132
+852,Tentacruel-4,Bold,Black Sludge,Surf,Toxic,Venoshock,Protect,HP/Def,FALSE,Tentacruel,Clear Body,Liquid Ooze,Rain Dish,252,0,252,0,0,0,80,70,65,80,120,100,187,81,128,100,140,120,120
+853,Aerodactyl-4,Jolly,Choice Band,Stone Edge,Aerial Ace,Earthquake,Crunch,Atk/Spe,FALSE,Aerodactyl,Rock Head,Pressure,Unnerve,0,252,0,0,0,252,80,105,65,60,75,130,155,157,85,72,95,200,200
+854,Porygon2-4,Modest,Eviolite,Tri Attack,Thunder Wave,Shadow Ball,Ice Beam,HP/SpA,FALSE,Porygon2,Trace,Download,Analytic,252,0,0,252,0,0,85,80,90,105,95,60,192,90,110,172,115,80,80
+855,Palossand-4,Calm,Weakness Policy,Earth Power,Shadow Ball,Giga Drain,Destiny Bond,HP/SpD,FALSE,Palossand,Water Compaction,Water Compaction,Sand Veil,252,0,0,0,252,0,85,75,110,100,75,35,192,85,130,120,139,55,55
+856,Yanmega-4,Modest,King's Rock,Bug Buzz,Air Slash,Detect,Shadow Ball,Spe/SpA,FALSE,Yanmega,Speed Boost,Tinted Lens,Frisk,0,0,0,252,0,252,86,76,86,116,56,95,161,86,106,184,76,147,147
+857,Gardevoir-4,Modest,Gardevoirite,Psychic,Hyper Beam,Shadow Ball,Focus Blast,HP/SpA,TRUE,Gardevoir (Mega Gardevoir),Pixilate,Pixilate,Pixilate,252,0,0,252,0,0,68,85,65,165,135,100,175,94,85,238,155,120,120
+858,Gallade-4,Jolly,Galladite,Psycho Cut,Close Combat,Rock Slide,Destiny Bond,Atk/Spe,TRUE,Gallade (Mega Gallade),Inner Focus,Inner Focus,Inner Focus,0,252,0,0,0,252,68,165,95,65,115,110,143,217,115,76,135,178,178
+859,Exeggutor (Alola Form)-2,Brave,Assault Vest,Dragon Hammer,Wood Hammer,Earthquake,Brick Break,HP/Atk,FALSE,Exeggutor (Alola Form),Frisk,Frisk,Harvest,252,252,0,0,0,0,95,105,85,125,75,45,202,172,105,145,95,58,58
+860,Starmie-4,Timid,King's Rock,Surf,Psychic,Thunderbolt,Ice Beam,Spe/SpA,FALSE,Starmie,Illuminate,Natural Cure,Analytic,0,0,0,252,0,252,60,75,85,100,85,115,135,85,105,152,105,183,183
+861,Flygon-4,Adamant,Rockium Z,Earthquake,Dragon Rush,Crunch,Stone Edge,Atk/Spe,FALSE,Flygon,Levitate,Levitate,Levitate,0,252,0,0,0,252,80,100,80,80,80,100,155,167,100,90,100,152,152
+862,Klinklang-4,Modest,Leftovers,Flash Cannon,Thunderbolt,Protect,Toxic,Spe/SpA,FALSE,Klinklang,Plus,Minus,Clear Body,0,0,0,252,0,252,60,100,115,70,85,90,135,108,135,134,105,142,142
+863,Chandelure-4,Bold,Leftovers,Calm Mind,Will-O-Wisp,Shadow Ball,Heat Wave,HP/SpD,FALSE,Chandelure,Flash Fire,Flame Body,Infiltrator,252,0,0,0,252,0,60,55,90,145,90,80,167,67,121,165,142,100,100
+864,Vaporeon-4,Modest,Expert Belt,Surf,Ice Beam,Shadow Ball,Baby-Doll Eyes,HP/SpA,FALSE,Vaporeon,Water Absorb,Water Absorb,Hydration,252,0,0,252,0,0,130,65,60,110,95,65,237,76,80,178,115,85,85
+865,Jolteon-4,Timid,Darkinium Z,Thunderbolt,Hyper Beam,Fake Tears,Shadow Ball,Spe/SpA,FALSE,Jolteon,Volt Absorb,Volt Absorb,Quick Feet,0,0,0,252,0,252,65,65,60,110,95,130,140,76,80,162,115,200,200
+866,Flareon-4,Adamant,Firium Z,Bite,Quick Attack,Giga Impact,Flare Blitz,Atk/SpD,FALSE,Flareon,Flash Fire,Flash Fire,Guts,0,252,0,0,252,0,65,130,60,95,110,65,140,200,80,103,162,85,85
+867,Espeon-4,Timid,Expert Belt,Psychic,Shadow Ball,Grass Knot,Dazzling Gleam,Spe/SpA,FALSE,Espeon,Synchronize,Synchronize,Magic Bounce,0,0,0,252,0,252,65,65,60,130,95,110,140,76,80,182,115,178,178
+868,Umbreon-4,Careful,Chesto Berry,Curse,Trump Card,Payback,Rest,HP/Def,FALSE,Umbreon,Synchronize,Synchronize,Inner Focus,252,0,252,0,0,0,95,65,110,60,130,65,202,85,162,72,165,85,85
+869,Leafeon-4,Adamant,Quick Claw,Leaf Blade,X-Scissor,Aerial Ace,Detect,Atk/Def,FALSE,Leafeon,Leaf Guard,Leaf Guard,Chlorophyll,0,252,252,0,0,0,65,110,130,60,65,95,140,178,182,72,85,115,115
+870,Glaceon-4,Modest,Bright Powder,Blizzard,Shadow Ball,Aurora Veil,Detect,Def/SpA,FALSE,Glaceon,Snow Cloak,Snow Cloak,Ice Body,0,0,252,252,0,0,65,60,110,130,95,65,140,72,162,200,115,85,85
+871,Lucario-4,Serious,Weakness Policy,Aura Sphere,Dragon Pulse,Stone Edge,Extreme Speed,Atk/Spe/SpA,FALSE,Lucario,Steadfast,Inner Focus,Justified,0,170,0,170,0,170,70,110,70,115,70,90,145,151,90,156,90,131,131
+872,Hippowdon-4,Sassy,Chesto Berry,Curse,Rest,Earthquake,Crunch,HP/SpD,FALSE,Hippowdon,Sand Stream,Sand Stream,Sand Force,252,0,0,0,252,0,108,112,118,68,72,47,215,132,138,88,136,60,60
+873,Liepard-4,Timid,Focus Sash,Dark Pulse,Shadow Ball,Grass Knot,Nasty Plot,Spe/SpA,FALSE,Liepard,Limber,Unburden,Prankster,0,0,0,252,0,252,64,88,50,88,50,106,139,97,70,140,70,173,173
+874,Dusknoir-4,Relaxed,Ghostium Z,Shadow Sneak,Pain Split,Destiny Bond,Trick Room,HP/SpD,FALSE,Dusknoir,Pressure,Pressure,Frisk,252,0,0,0,252,0,45,100,135,65,135,45,152,120,170,85,187,58,58
+875,Mienshao-4,Impish,Fightinium Z,Feint,Fake Out,High Jump Kick,Wide Guard,HP/Atk,FALSE,Mienshao,Inner Focus,Regenerator,Reckless,252,252,0,0,0,0,65,125,60,95,60,105,172,177,88,103,80,125,125
+876,Beartic-4,Jolly,Icium Z,Icy Wind,Icicle Crash,Rock Slide,Brick Break,Atk/Spe,FALSE,Beartic,Snow Cloak,Slush Rush,Swift Swim,0,252,0,0,0,252,95,130,80,70,80,50,170,182,100,81,100,112,112
+877,Bouffalant-4,Adamant,Life Orb,Earthquake,Head Charge,Payback,Protect,HP/Atk,FALSE,Bouffalant,Reckless,Sap Sipper,Soundproof,252,252,0,0,0,0,95,110,95,40,95,55,202,178,115,54,115,75,75
+878,Aggron-4,Brave,Shuca Berry,Metal Burst,Taunt,Earthquake,Shadow Claw,Atk/SpD,FALSE,Aggron,Sturdy,Rock Head,Heavy Metal,0,252,0,0,252,0,70,110,180,60,60,50,145,178,200,80,112,63,63
+879,Walrein-4,Bold,Lax Incense,Sheer Cold,Fissure,Rest,Sleep Talk,Def/SpD,FALSE,Walrein,Thick Fat,Ice Body,Oblivious,0,0,252,0,252,0,110,80,90,95,90,65,185,90,156,115,142,85,85
+880,Mamoswine-4,Adamant,Life Orb,Earthquake,Ice Fang,Double-Edge,Stone Edge,HP/Atk,FALSE,Mamoswine,Oblivious,Snow Cloak,Thick Fat,252,252,0,0,0,0,110,130,80,70,60,80,217,200,100,81,80,100,100
+881,Lapras-4,Quiet,Psychium Z,Blizzard,Hydro Pump,Psychic,Ice Shard,Def/SpA,FALSE,Lapras,Water Absorb,Shell Armor,Hydration,0,0,252,252,0,0,130,85,80,85,95,60,205,105,132,150,115,72,72
+882,Crobat-4,Jolly,Wide Lens,Hypnosis,Aerial Ace,Cross Poison,Taunt,Atk/Spe,FALSE,Crobat,Inner Focus,Inner Focus,Infiltrator,0,252,0,0,0,252,85,90,80,70,80,130,160,142,100,81,100,200,200
+883,Magnezone-4,Modest,Assault Vest,Thunderbolt,Flash Cannon,Tri Attack,Volt Switch,SpA/SpD,FALSE,Magnezone,Magnet Pull,Sturdy,Analytic,0,0,0,252,252,0,70,70,115,130,90,60,145,81,135,200,142,80,80
+884,Rhyperior-4,Brave,Rockium Z,Rock Slide,Hammer Arm,Earthquake,Protect,HP/Atk,FALSE,Rhyperior,Lightning Rod,Solid Rock,Reckless,252,252,0,0,0,0,115,140,130,55,55,40,222,211,150,75,75,54,54
+885,Tangrowth-4,Adamant,Groundium Z,Power Whip,Earthquake,Aerial Ace,Brick Break,Atk/Def,FALSE,Tangrowth,Chlorophyll,Leaf Guard,Regenerator,0,252,252,0,0,0,100,100,125,110,50,50,175,167,177,117,70,70,70
+886,Porygon-Z-4,Timid,Normalium Z,Tri Attack,Thunderbolt,Shadow Ball,Recover,Spe/SpA,FALSE,Porygon-Z,Adaptability,Download,Analytic,0,0,0,252,0,252,85,80,70,135,75,90,160,90,90,187,95,156,156
+887,Vanilluxe-4,Calm,Maranga Berry,Taunt,Ice Beam,Acid Armor,Mirror Coat,HP/SpD,FALSE,Vanilluxe,Ice Body,Snow Warning,Weak Armor,252,0,0,0,252,0,71,95,85,110,95,79,178,103,105,130,161,99,99
+888,Eelektross-4,Bold,Leftovers,Charge Beam,Grass Knot,Flamethrower,Protect,HP/SpD,FALSE,Eelektross,Levitate,Levitate,Levitate,252,0,0,0,252,0,85,115,80,105,80,50,192,121,110,125,132,70,70
+889,Gyarados-4,Jolly,Gyaradosite,Dragon Dance,Waterfall,Stone Edge,Crunch,Atk/Spe,TRUE,Gyarados (Mega Gyarados),Mold Breaker,Mold Breaker,Mold Breaker,0,252,0,0,0,252,95,155,109,70,130,81,170,207,129,81,150,146,146
+890,Snorlax-4,Careful,Assault Vest,Body Slam,Fissure,Earthquake,Crunch,HP/SpD,FALSE,Snorlax,Immunity,Thick Fat,Gluttony,252,0,0,0,252,0,160,110,65,65,110,30,267,130,85,76,178,50,50
+891,Kingdra-4,Modest,Dragonium Z,Draco Meteor,Surf,Blizzard,Protect,HP/Spe/SpA,FALSE,Kingdra,Swift Swim,Sniper,Damp,170,0,0,170,0,170,75,95,95,95,95,85,171,103,115,149,115,126,126
+892,Blissey-4,Bold,Chople Berry,Toxic,Minimize,Mud Bomb,Soft-Boiled,Def/SpD,FALSE,Blissey,Natural Cure,Serene Grace,Healer,0,0,252,0,252,0,255,10,10,75,135,55,330,27,68,95,187,75,75
+893,Milotic-4,Impish,Leftovers,Ice Beam,Rest,Sleep Talk,Surf,HP/SpD,FALSE,Milotic,Marvel Scale,Competitive,Cute Charm,252,0,0,0,252,0,95,60,79,100,125,81,202,80,108,108,177,101,101
+894,Malamar-4,Careful,Assault Vest,Psycho Cut,Superpower,Rock Slide,Night Slash,Atk/SpD,FALSE,Malamar,Contrary,Suction Cups,Infiltrator,0,252,0,0,252,0,86,92,88,68,75,73,161,144,108,79,139,93,93
+895,Sandslash (Alola Form)-2,Adamant,Icium Z,Hail,Icicle Spear,Iron Head,Aurora Veil,Atk/Spe,FALSE,Sandslash (Alola Form),Snow Cloak,Snow Cloak,Slush Rush,0,252,0,0,0,252,75,100,120,25,65,65,150,167,140,40,85,117,117
+896,Haxorus-4,Jolly,Yache Berry,Dragon Dance,Dragon Claw,Dragon Tail,Earthquake,Atk/Spe,FALSE,Haxorus,Rivalry,Mold Breaker,Unnerve,0,252,0,0,0,252,76,147,90,60,70,97,151,199,110,72,90,163,163
+897,Togekiss-4,Modest,Expert Belt,Aura Sphere,Air Slash,Grass Knot,Dazzling Gleam,Spe/SpA,FALSE,Togekiss,Hustle,Serene Grace,Super Luck,0,0,0,252,0,252,85,50,95,120,115,80,160,63,115,189,135,132,132
+898,Volcarona-4,Bold,Leftovers,Hurricane,Quiver Dance,Bug Buzz,Heat Wave,HP/Def,FALSE,Volcarona,Flame Body,Flame Body,Swarm,252,0,252,0,0,0,85,60,65,135,105,100,192,72,128,155,125,120,120
+899,Arcanine-4,Jolly,Fightinium Z,Close Combat,Flare Blitz,Crunch,Extreme Speed,Atk/Spe,FALSE,Arcanine,Intimidate,Flash Fire,Justified,0,252,0,0,0,252,90,110,80,100,80,95,165,162,100,108,100,161,161
+900,Archeops-4,Jolly,Sitrus Berry,Rock Slide,Earthquake,Aerial Ace,Protect,Atk/Spe,FALSE,Archeops,Defeatist,Defeatist,Defeatist,0,252,0,0,0,252,75,140,65,112,65,110,150,192,85,118,85,178,178
+901,Dragonite-4,Adamant,Snowball,Dragon Rush,Iron Tail,Extreme Speed,Fire Punch,Atk/Spe,FALSE,Dragonite,Inner Focus,Inner Focus,Multiscale,0,252,0,0,0,252,91,134,95,100,100,80,166,204,115,108,120,132,132
+902,Tyranitar-4,Brave,Tyranitarite,Stone Edge,Earthquake,Ice Fang,Payback,HP/Atk,TRUE,Tyranitar (Mega Tyranitar),Sand Stream,Sand Stream,Sand Stream,252,252,0,0,0,0,100,164,150,95,120,71,207,237,170,115,140,81,81
+903,Salamence-4,Jolly,Salamencite,Dragon Rush,Crunch,Earthquake,Double-Edge,Atk/Spe,TRUE,Salamence (Mega Salamence),Aerilate,Aerilate,Aerilate,0,252,0,0,0,252,95,145,130,120,90,120,170,197,150,126,110,189,189
+904,Metagross-4,Jolly,Metagrossite,Zen Headbutt,Meteor Mash,Brick Break,Bullet Punch,Atk/Spe,TRUE,Metagross (Mega Metagross),Tough Claws,Tough Claws,Tough Claws,0,252,0,0,0,252,80,145,150,105,110,110,155,197,170,112,130,178,178
+905,Garchomp-4,Adamant,Garchompite,Sandstorm,Stone Edge,Earthquake,Dragon Claw,HP/Atk,TRUE,Garchomp (Mega Garchomp),Sand Force,Sand Force,Sand Force,252,252,0,0,0,0,108,170,115,120,95,92,215,244,135,126,115,112,112
+906,Hydreigon-4,Jolly,Roseli Berry,Dragon Rush,Earthquake,Crunch,Dragon Tail,Atk/Spe,FALSE,Hydreigon,Levitate,Levitate,Levitate,0,252,0,0,0,252,92,105,90,125,90,98,167,157,110,130,110,165,165
+907,Slaking-4,Jolly,Life Orb,Return,Night Slash,Rock Slide,Aerial Ace,Atk/Spe,FALSE,Slaking,Truant,Truant,Truant,0,252,0,0,0,252,150,160,100,95,65,100,225,212,120,103,85,167,167
+908,Articuno-1,Modest,Icy Rock,Hail,Blizzard,Fly,Roost,HP/SpA,FALSE,Articuno,Pressure,Pressure,Snow Cloak,252,0,0,252,0,0,90,85,100,95,125,85,197,94,120,161,145,105,105
+909,Zapdos-1,Timid,Rockium Z,Thunderbolt,Thunder Wave,U-turn,Ancient Power,Spe/SpA,FALSE,Zapdos,Pressure,Pressure,Static,0,0,0,252,0,252,90,90,85,125,90,100,165,99,105,177,110,167,167
+910,Moltres-1,Modest,White Herb,Overheat,Air Slash,Agility,Will-O-Wisp,Spe/SpA,FALSE,Moltres,Pressure,Pressure,Flame Body,0,0,0,252,0,252,90,100,90,125,85,90,165,108,110,194,105,142,142
+911,Raikou-1,Timid,Shuca Berry,Thunderbolt,Volt Switch,Shadow Ball,Extrasensory,Spe/SpA,FALSE,Raikou,Pressure,Pressure,Inner Focus,0,0,0,252,0,252,90,85,75,115,100,115,165,94,95,167,120,183,183
+912,Entei-1,Lonely,Focus Sash,Overheat,Flame Charge,Fire Fang,Stone Edge,Atk/Spe,FALSE,Entei,Pressure,Pressure,Inner Focus,0,252,0,0,0,252,115,115,85,90,75,100,190,183,94,110,95,152,152
+913,Suicune-1,Bold,Chesto Berry,Calm Mind,Surf,Ice Beam,Rest,HP/Def,FALSE,Suicune,Pressure,Pressure,Inner Focus,252,0,252,0,0,0,100,75,115,90,115,85,207,85,183,110,135,105,105
+914,Regirock-1,Careful,Leftovers,Sandstorm,Curse,Rock Slide,Hammer Arm,HP/SpD,FALSE,Regirock,Clear Body,Clear Body,Sturdy,252,0,0,0,252,0,80,100,200,50,100,50,187,120,220,63,167,70,70
+915,Regice-1,Modest,Sitrus Berry,Thunderbolt,Ice Beam,Focus Blast,Toxic,HP/SpA,FALSE,Regice,Clear Body,Clear Body,Ice Body,252,0,0,252,0,0,80,50,100,100,200,50,187,63,120,167,220,70,70
+916,Registeel-1,Careful,Chesto Berry,Curse,Amnesia,Iron Head,Rest,HP/SpD,FALSE,Registeel,Clear Body,Clear Body,Light Metal,252,0,0,0,252,0,80,75,150,75,150,50,187,95,170,85,222,70,70
+917,Cobalion-1,Bold,Chesto Berry,Focus Blast,Flash Cannon,Calm Mind,Rest,HP/SpD,FALSE,Cobalion,Justified,Justified,Justified,252,0,0,0,252,0,91,90,129,90,72,108,198,99,163,110,124,128,128
+918,Terrakion-1,Jolly,Expert Belt,Close Combat,Earthquake,Stone Edge,Aerial Ace,Atk/Spe,FALSE,Terrakion,Justified,Justified,Justified,0,252,0,0,0,252,91,129,90,72,90,108,166,181,110,82,110,176,176
+919,Virizion-1,Jolly,Fightinium Z,Sacred Sword,Leaf Blade,Taunt,Stone Edge,Atk/Spe,FALSE,Virizion,Justified,Justified,Justified,0,252,0,0,0,252,91,90,72,90,129,108,166,142,92,99,149,176,176
+920,Tornadus (Incarnate Forme)-1,Timid,Flyinium Z,Hurricane,Grass Knot,Focus Blast,Dark Pulse,Spe/SpA,FALSE,Tornadus (Incarnate Forme),Prankster,Prankster,Defiant,0,0,0,252,0,252,79,115,70,125,80,111,154,121,90,177,100,179,179
+921,Thundurus (Incarnate Forme)-1,Bold,Chesto Berry,Thunderbolt,Protect,Toxic,Rest,HP/SpD,FALSE,Thundurus (Incarnate Forme),Prankster,Prankster,Defiant,252,0,0,0,252,0,79,115,70,125,80,111,186,121,99,145,132,131,131
+922,Latias-1,Bold,Lax Incense,Calm Mind,Mist Ball,Dragon Pulse,Recover,HP/Def,FALSE,Latias,Levitate,Levitate,Levitate,252,0,252,0,0,0,80,80,90,110,130,110,187,90,156,130,150,130,130
+923,Latios-1,Bold,Lax Incense,Calm Mind,Luster Purge,Dragon Pulse,Recover,HP/Def,FALSE,Latios,Levitate,Levitate,Levitate,252,0,252,0,0,0,80,90,80,130,110,110,187,99,145,150,130,130,130
+924,Heatran-1,Modest,Focus Sash,Lava Plume,Earth Power,Flash Cannon,Dark Pulse,HP/SpA,FALSE,Heatran,Flash Fire,Flash Fire,Flame Body,252,0,0,252,0,0,91,90,106,130,106,77,198,99,126,200,126,97,97
+925,Cresselia-1,Bold,Chesto Berry,Calm Mind,Psychic,Shadow Ball,Rest,HP/Def,FALSE,Cresselia,Levitate,Levitate,Levitate,252,0,252,0,0,0,120,70,120,75,130,85,227,81,189,95,150,105,105
+926,Landorus (Incarnate Forme)-1,Careful,Bright Powder,Rest,Sleep Talk,Smack Down,Fissure,Def/SpD,FALSE,Landorus (Incarnate Forme),Sand Force,Sand Force,Sheer Force,0,0,252,0,252,0,89,125,90,115,80,101,164,145,142,121,145,121,121
+927,Regigigas-1,Adamant,Leftovers,Confuse Ray,Double Team,Bulldoze,Payback,HP/Atk,FALSE,Regigigas,Slow Start,Slow Start,Slow Start,252,252,0,0,0,0,110,160,110,80,110,100,217,233,130,90,130,120,120
+928,Articuno-2,Bold,Lum Berry,Sheer Cold,Mind Reader,Ice Shard,Ice Beam,HP/SpD,FALSE,Articuno,Pressure,Pressure,Snow Cloak,252,0,0,0,252,0,90,85,100,95,125,85,197,94,132,115,177,105,105
+929,Zapdos-2,Bold,Bright Powder,Charge Beam,Ancient Power,Double Team,Roost,HP/SpD,FALSE,Zapdos,Pressure,Pressure,Static,252,0,0,0,252,0,90,90,85,125,90,100,197,99,115,145,142,120,120
+930,Moltres-2,Naughty,Power Herb,Flame Charge,Sky Attack,Aerial Ace,Fire Blast,Atk/Spe,FALSE,Moltres,Pressure,Pressure,Flame Body,0,252,0,0,0,252,90,100,90,125,85,90,165,167,110,145,94,142,142
+931,Raikou-2,Timid,Electrium Z,Charge Beam,Thunder Wave,Calm Mind,Shadow Ball,Def/Spe,FALSE,Raikou,Pressure,Pressure,Inner Focus,0,0,252,0,0,252,90,85,75,115,100,115,165,94,127,135,120,183,183
+932,Entei-2,Bold,Chesto Berry,Calm Mind,Will-O-Wisp,Flamethrower,Rest,HP/Def/SpD,FALSE,Entei,Pressure,Pressure,Inner Focus,170,0,170,0,170,0,115,115,85,90,75,100,211,121,138,110,116,120,120
+933,Suicune-2,Modest,Sitrus Berry,Hydro Pump,Ice Beam,Shadow Ball,Mirror Coat,HP/SpA,FALSE,Suicune,Pressure,Pressure,Inner Focus,252,0,0,252,0,0,100,75,115,90,115,85,207,85,135,156,135,105,105
+934,Regirock-2,Adamant,Custap Berry,Stone Edge,Hammer Arm,Earthquake,Explosion,HP/Atk,FALSE,Regirock,Clear Body,Clear Body,Sturdy,252,252,0,0,0,0,80,100,200,50,100,50,187,167,220,63,120,70,70
+935,Regice-2,Timid,Chesto Berry,Thunderbolt,Icy Wind,Ice Beam,Rest,HP/Def/Spe,FALSE,Regice,Clear Body,Clear Body,Ice Body,170,0,170,0,0,170,80,50,100,100,200,50,176,63,141,120,220,100,100
+936,Registeel-2,Jolly,Fightinium Z,Rock Polish,Earthquake,Iron Head,Superpower,Atk/Spe,FALSE,Registeel,Clear Body,Clear Body,Light Metal,0,252,0,0,0,252,80,75,150,75,150,50,155,127,170,85,170,112,112
+937,Cobalion-2,Brave,Maranga Berry,Metal Burst,Sacred Sword,Quick Attack,Iron Head,HP/Atk,FALSE,Cobalion,Justified,Justified,Justified,252,252,0,0,0,0,91,90,129,90,72,108,198,156,149,110,92,115,115
+938,Terrakion-2,Adamant,Choice Scarf,Sacred Sword,Earthquake,Stone Edge,Aerial Ace,Atk/Spe,FALSE,Terrakion,Justified,Justified,Justified,0,252,0,0,0,252,91,129,90,72,90,108,166,199,110,82,110,160,240
+939,Virizion-2,Timid,Poisonium Z,Energy Ball,Focus Blast,Calm Mind,Toxic,Def/Spe,FALSE,Virizion,Justified,Justified,Justified,0,0,252,0,0,252,91,90,72,90,129,108,166,99,124,110,149,176,176
+940,Tornadus (Incarnate Forme)-2,Modest,Yache Berry,Substitute,Double Team,Focus Blast,Hurricane,HP/SpA,FALSE,Tornadus (Incarnate Forme),Prankster,Prankster,Defiant,252,0,0,252,0,0,79,115,70,125,80,111,186,121,90,194,100,131,131
+941,Thundurus (Incarnate Forme)-2,Timid,Choice Specs,Thunderbolt,Dark Pulse,Focus Blast,Grass Knot,Spe/SpA,FALSE,Thundurus (Incarnate Forme),Prankster,Prankster,Defiant,0,0,0,252,0,252,79,115,70,125,80,111,154,121,90,177,100,179,179
+942,Latias-2,Timid,White Herb,Draco Meteor,Thunder,Psychic,Mist Ball,Spe/SpA,FALSE,Latias,Levitate,Levitate,Levitate,0,0,0,252,0,252,80,80,90,110,130,110,155,90,110,162,150,178,178
+943,Latios-2,Timid,White Herb,Draco Meteor,Thunderbolt,Psychic,Protect,Spe/SpA,FALSE,Latios,Levitate,Levitate,Levitate,0,0,0,252,0,252,80,90,80,130,110,110,155,99,100,182,130,178,178
+944,Heatran-2,Modest,White Herb,Overheat,Will-O-Wisp,Flash Cannon,Protect,HP/SpA,FALSE,Heatran,Flash Fire,Flash Fire,Flame Body,252,0,0,252,0,0,91,90,106,130,106,77,198,99,126,200,126,97,97
+945,Cresselia-2,Bold,Leftovers,Double Team,Moonlight,Toxic,Protect,HP/SpD,FALSE,Cresselia,Levitate,Levitate,Levitate,252,0,0,0,252,0,120,70,120,75,130,85,227,81,154,95,182,105,105
+946,Landorus (Incarnate Forme)-2,Modest,Choice Scarf,Earth Power,Extrasensory,Focus Blast,Grass Knot,Spe/SpA,FALSE,Landorus (Incarnate Forme),Sand Force,Sand Force,Sheer Force,0,0,0,252,0,252,89,125,90,115,80,101,164,130,110,183,100,153,229.5
+947,Regigigas-2,Quiet,Zoom Lens,Thunder,Toxic,Focus Blast,Confuse Ray,HP/SpA,FALSE,Regigigas,Slow Start,Slow Start,Slow Start,252,0,0,252,0,0,110,160,110,80,110,100,217,180,130,145,130,108,108
+948,Articuno-3,Jolly,Charti Berry,Frost Breath,Reflect,Steel Wing,U-turn,Atk/Spe,FALSE,Articuno,Pressure,Pressure,Snow Cloak,0,252,0,0,0,252,90,85,100,95,125,85,165,137,120,103,145,150,150
+949,Zapdos-3,Naive,Petaya Berry,Thunder,Light Screen,Rain Dance,Drill Peck,Spe/SpA,FALSE,Zapdos,Pressure,Pressure,Static,0,0,0,252,0,252,90,90,85,125,90,100,165,110,105,177,99,167,167
+950,Moltres-3,Timid,Heat Rock,Sunny Day,Solar Beam,Flamethrower,Air Slash,Spe/SpA,FALSE,Moltres,Pressure,Pressure,Flame Body,0,0,0,252,0,252,90,100,90,125,85,90,165,108,110,177,105,156,156
+951,Raikou-3,Timid,Electrium Z,Thunderbolt,Volt Switch,Shadow Ball,Protect,Spe/SpA,FALSE,Raikou,Pressure,Pressure,Inner Focus,0,0,0,252,0,252,90,85,75,115,100,115,165,94,95,167,120,183,183
+952,Entei-3,Timid,Choice Scarf,Eruption,Fire Blast,Extrasensory,Solar Beam,Spe/SpA,FALSE,Entei,Pressure,Pressure,Inner Focus,0,0,0,252,0,252,115,115,85,90,75,100,190,121,105,142,95,167,250.5
+953,Suicune-3,Bold,Leftovers,Surf,Blizzard,Calm Mind,Protect,HP/Def,FALSE,Suicune,Pressure,Pressure,Inner Focus,252,0,252,0,0,0,100,75,115,90,115,85,207,85,183,110,135,105,105
+954,Regirock-3,Adamant,Rockium Z,Thunder Wave,Stone Edge,Hammer Arm,Earthquake,HP/Atk,FALSE,Regirock,Clear Body,Clear Body,Sturdy,252,252,0,0,0,0,80,100,200,50,100,50,187,167,220,63,120,70,70
+955,Regice-3,Bold,Leftovers,Charge Beam,Ice Beam,Amnesia,Protect,HP/Def,FALSE,Regice,Clear Body,Clear Body,Ice Body,252,0,252,0,0,0,80,50,100,100,200,50,187,63,167,120,220,70,70
+956,Registeel-3,Bold,Leftovers,Amnesia,Iron Defense,Charge Beam,Flash Cannon,HP/SpD,FALSE,Registeel,Clear Body,Clear Body,Light Metal,252,0,0,0,252,0,80,75,150,75,150,50,187,85,187,95,202,70,70
+957,Cobalion-3,Jolly,Lax Incense,Swagger,Substitute,Psych Up,Iron Head,Atk/Spe,FALSE,Cobalion,Justified,Justified,Justified,0,252,0,0,0,252,91,90,129,90,72,108,166,142,149,99,92,176,176
+958,Terrakion-3,Jolly,Sitrus Berry,Swords Dance,Sacred Sword,Earthquake,Rock Slide,Atk/Spe,FALSE,Terrakion,Justified,Justified,Justified,0,252,0,0,0,252,91,129,90,72,90,108,166,181,110,82,110,176,176
+959,Virizion-3,Jolly,Coba Berry,Leaf Blade,Stone Edge,Sacred Sword,Protect,Atk/Spe,FALSE,Virizion,Justified,Justified,Justified,0,252,0,0,0,252,91,90,72,90,129,108,166,142,92,99,149,176,176
+960,Tornadus (Incarnate Forme)-3,Bold,Chesto Berry,Rest,Air Slash,Dark Pulse,Focus Blast,HP/SpD,FALSE,Tornadus (Incarnate Forme),Prankster,Prankster,Defiant,252,0,0,0,252,0,79,115,70,125,80,111,186,121,99,145,132,131,131
+961,Thundurus (Incarnate Forme)-3,Jolly,Sitrus Berry,Wild Charge,U-turn,Crunch,Sky Drop,Atk/Spe,FALSE,Thundurus (Incarnate Forme),Prankster,Prankster,Defiant,0,252,0,0,0,252,79,115,70,125,80,111,154,167,90,130,100,179,179
+962,Latias-3,Adamant,Life Orb,Zen Headbutt,Earthquake,Thunder Wave,Dragon Claw,Atk/Spe,FALSE,Latias,Levitate,Levitate,Levitate,0,252,0,0,0,252,80,80,90,110,130,110,155,145,110,117,150,162,162
+963,Latios-3,Timid,Choice Specs,Draco Meteor,Thunder,Psychic,Energy Ball,Spe/SpA,FALSE,Latios,Levitate,Levitate,Levitate,0,0,0,252,0,252,80,90,80,130,110,110,155,99,100,182,130,178,178
+964,Heatran-3,Modest,Shuca Berry,Sunny Day,Fire Blast,Solar Beam,Earth Power,HP/SpA,FALSE,Heatran,Flash Fire,Flash Fire,Flame Body,252,0,0,252,0,0,91,90,106,130,106,77,198,99,126,200,126,97,97
+965,Cresselia-3,Bold,Lum Berry,Future Sight,Moonlight,Double Team,Swagger,HP/SpD,FALSE,Cresselia,Levitate,Levitate,Levitate,252,0,0,0,252,0,120,70,120,75,130,85,227,81,154,95,182,105,105
+966,Landorus (Incarnate Forme)-3,Jolly,Smooth Rock,Sandstorm,Earthquake,Rock Slide,Protect,Atk/Spe,FALSE,Landorus (Incarnate Forme),Sand Force,Sand Force,Sheer Force,0,252,0,0,0,252,89,125,90,115,80,101,164,177,110,121,100,168,168
+967,Regigigas-3,Adamant,Leftovers,Confuse Ray,Knock Off,Thunder Wave,Rock Slide,HP/Atk,FALSE,Regigigas,Slow Start,Slow Start,Slow Start,252,252,0,0,0,0,110,160,110,80,110,100,217,233,130,90,130,120,120
+968,Articuno-4,Modest,Leftovers,Tailwind,Blizzard,Sky Drop,Protect,Spe/SpA,FALSE,Articuno,Pressure,Pressure,Snow Cloak,0,0,0,252,0,252,90,85,100,95,125,85,165,94,120,161,145,137,137
+969,Zapdos-4,Adamant,Flyinium Z,Wild Charge,Drill Peck,Thunder Wave,Roost,HP/Atk,FALSE,Zapdos,Pressure,Pressure,Static,252,252,0,0,0,0,90,90,85,125,90,100,197,156,105,130,110,120,120
+970,Moltres-4,Timid,Firium Z,Heat Wave,Burn Up,Air Slash,Protect,Spe/SpA,FALSE,Moltres,Pressure,Pressure,Flame Body,0,0,0,252,0,252,90,100,90,125,85,90,165,108,110,177,105,156,156
+971,Raikou-4,Timid,Air Balloon,Thunder,Discharge,Reflect,Extrasensory,Spe/SpA,FALSE,Raikou,Pressure,Pressure,Inner Focus,0,0,0,252,0,252,90,85,75,115,100,115,165,94,95,167,120,183,183
+972,Entei-4,Adamant,Life Orb,Sacred Fire,Bulldoze,Stone Edge,Protect,HP/Atk,FALSE,Entei,Pressure,Pressure,Inner Focus,252,252,0,0,0,0,115,115,85,90,75,100,222,183,105,99,95,120,120
+973,Suicune-4,Timid,Lum Berry,Snarl,Surf,Blizzard,Protect,Spe/SpA,FALSE,Suicune,Pressure,Pressure,Inner Focus,0,0,0,252,0,252,100,75,115,90,115,85,175,85,135,142,135,150,150
+974,Regirock-4,Jolly,Sitrus Berry,Rock Polish,Rock Slide,Superpower,Explosion,Atk/Spe,FALSE,Regirock,Clear Body,Clear Body,Sturdy,0,252,0,0,0,252,80,100,200,50,100,50,155,152,220,63,120,112,112
+975,Regice-4,Impish,Zoom Lens,Thunder,Blizzard,Focus Blast,Thunder Wave,HP/SpD,FALSE,Regice,Clear Body,Clear Body,Ice Body,252,0,0,0,252,0,80,50,100,100,200,50,187,70,132,108,252,70,70
+976,Registeel-4,Adamant,Leftovers,Toxic,Double Team,Earthquake,Protect,HP/Atk,FALSE,Registeel,Clear Body,Clear Body,Light Metal,252,252,0,0,0,0,80,75,150,75,150,50,187,139,170,85,170,70,70
+977,Cobalion-4,Jolly,Life Orb,Iron Head,Close Combat,Quick Guard,Protect,Atk/Spe,FALSE,Cobalion,Justified,Justified,Justified,0,252,0,0,0,252,91,90,129,90,72,108,166,142,149,99,92,176,176
+978,Terrakion-4,Jolly,King's Rock,Bulldoze,Rock Slide,Earthquake,Sacred Sword,Atk/Spe,FALSE,Terrakion,Justified,Justified,Justified,0,252,0,0,0,252,91,129,90,72,90,108,166,181,110,82,110,176,176
+979,Virizion-4,Impish,Chesto Berry,Leaf Blade,Swords Dance,Sacred Sword,Rest,HP/Def,FALSE,Virizion,Justified,Justified,Justified,252,0,252,0,0,0,91,90,72,90,129,108,198,110,136,99,149,128,128
+980,Tornadus (Incarnate Forme)-4,Timid,Damp Rock,Hurricane,Focus Blast,Taunt,Rain Dance,Spe/SpA,FALSE,Tornadus (Incarnate Forme),Prankster,Prankster,Defiant,0,0,0,252,0,252,79,115,70,125,80,111,154,121,90,177,100,179,179
+981,Thundurus (Incarnate Forme)-4,Timid,Electrium Z,Discharge,Focus Blast,Volt Switch,Taunt,Spe/SpA,FALSE,Thundurus (Incarnate Forme),Prankster,Prankster,Defiant,0,0,0,252,0,252,79,115,70,125,80,111,154,121,90,177,100,179,179
+982,Latias-4,Modest,Latiasite,Dragon Pulse,Roost,Thunder Wave,Psychic,HP/SpA,TRUE,Latias (Mega Latias),Levitate,Levitate,Levitate,252,0,0,252,0,0,80,100,120,140,150,110,187,108,140,211,170,130,130
+983,Latios-4,Adamant,Latiosite,Zen Headbutt,Earthquake,Dragon Dance,Dragon Claw,Atk/Spe,TRUE,Latios (Mega Latios),Levitate,Levitate,Levitate,0,252,0,0,0,252,80,130,100,160,120,110,155,200,120,162,140,162,162
+984,Heatran-4,Timid,Choice Scarf,Magma Storm,Earth Power,Dark Pulse,Flash Cannon,Spe/SpA,FALSE,Heatran,Flash Fire,Flash Fire,Flame Body,0,0,0,252,0,252,91,90,106,130,106,77,166,99,126,182,126,141,211.5
+985,Cresselia-4,Quiet,Iron Ball,Psychic,Shadow Ball,Moonblast,Trick Room,Def/SpA,FALSE,Cresselia,Levitate,Levitate,Levitate,0,0,252,252,0,0,120,70,120,75,130,85,195,90,172,139,150,94,47
+986,Landorus (Incarnate Forme)-4,Adamant,White Herb,Hammer Arm,Earthquake,Explosion,U-turn,Atk/Def,FALSE,Landorus (Incarnate Forme),Sand Force,Sand Force,Sheer Force,0,252,252,0,0,0,89,125,90,115,80,101,164,194,142,121,100,121,121
+987,Regigigas-4,Careful,Leftovers,Wide Guard,Double Team,Confuse Ray,Toxic,HP/Def,FALSE,Regigigas,Slow Start,Slow Start,Slow Start,252,0,252,0,0,0,110,160,110,80,110,100,217,180,162,90,143,120,120
+988,Rotom (Wash Rotom)-4,Modest,Sitrus Berry,Hydro Pump,Thunder,Will-O-Wisp,Shadow Ball,HP/SpA,FALSE,Rotom (Wash Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+989,Rotom (Mow Rotom)-4,Modest,White Herb,Leaf Storm,Thunder,Thunder Wave,Dark Pulse,HP/SpA,FALSE,Rotom (Mow Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+990,Rotom (Frost Rotom)-4,Modest,Zoom Lens,Blizzard,Thunder,Will-O-Wisp,Shadow Ball,HP/SpA,FALSE,Rotom (Frost Rotom),Levitate,Levitate,Levitate,252,0,0,252,0,0,50,65,107,105,107,86,157,76,127,172,127,106,106
+991,Rotom (Fan Rotom)-4,Timid,Choice Scarf,Air Slash,Thunder,Dark Pulse,Trick,Spe/SpA,FALSE,Rotom (Fan Rotom),Levitate,Levitate,Levitate,0,0,0,252,0,252,50,65,107,105,107,86,125,76,127,157,127,151,226.5
+992,Electivire-4,Adamant,Shuca Berry,Wild Charge,Feint,Ice Punch,Cross Chop,HP/Atk,FALSE,Electivire,Motor Drive,Motor Drive,Vital Spirit,252,252,0,0,0,0,75,123,67,95,85,95,182,192,87,103,105,115,115
+993,Magmortar-4,Modest,Air Balloon,Fire Blast,Psychic,Will-O-Wisp,Focus Blast,HP/SpA,FALSE,Magmortar,Flame Body,Flame Body,Vital Spirit,252,0,0,252,0,0,75,95,67,125,95,83,182,103,87,194,115,103,103
+994,Probopass-4,Calm,Sitrus Berry,Tri Attack,Power Gem,Flash Cannon,Dazzling Gleam,HP/SpD,FALSE,Probopass,Sturdy,Magnet Pull,Sand Force,252,0,0,0,252,0,60,55,145,75,150,40,167,67,165,95,222,60,60
+995,Lickilicky-4,Adamant,Normalium Z,Explosion,Brutal Swing,Hammer Arm,Dragon Tail,HP/Atk,FALSE,Lickilicky,Own Tempo,Oblivious,Cloud Nine,252,252,0,0,0,0,110,85,95,80,95,50,217,150,115,90,115,70,70

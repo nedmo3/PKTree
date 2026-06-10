@@ -184,6 +184,37 @@ def is_opponent(battle, split_msg):
     return not split_msg[2].startswith(battle.user.name)
 
 
+def get_active_pokemon_for_position(side, position_str):
+    """
+    Get the correct active Pokemon based on position identifier.
+    
+    In doubles battles, Showdown uses position identifiers like:
+    - "p1a" = left Pokemon (active)
+    - "p2a" = right Pokemon (active_right)
+    - "p3b" = opponent left Pokemon
+    - "p4b" = opponent right Pokemon
+    
+    Note: position_str may include the Pokemon name, e.g., "p1b: Zoroarkhisui"
+    
+    Args:
+        side: The Battler object (user or opponent)
+        position_str: The position identifier from the message (e.g., "p1", "p1b: Name", "p3a")
+    
+    Returns:
+        The correct active Pokemon (active or active_right)
+    """
+    # Extract just the position part (before the colon if present)
+    position_code = position_str.split(":")[0].strip()
+    
+    if position_code == "p1a" or position_code == "p2a":
+        return side.active
+    elif position_code == "p3b" or position_code == "p4b":
+        return side.active_right
+    else:
+        logger.warning(f"Unknown position code '{position_code}' in message: '{position_str}'")
+        return side.active  # Default to active if we can't determine
+
+
 def get_move_information(m):
     # Given a |move| line from the PS protocol, extract the user of the move and the move object
     try:
@@ -514,7 +545,20 @@ def switch_or_drag(battle, split_msg, switch_or_drag="switch"):
     if side.active is not None and pkmn != side.active:
         side.reserve.append(side.active)
 
-    side.active = pkmn
+    # For doubles battles, determine which active slot this switch is for (position 'a' or 'b')
+    position_code = split_msg[2].split(":")[0].strip()
+    is_right_position = position_code.endswith("b")
+    
+    if is_right_position:
+        # Position 'b' = right Pokemon (active_right)
+        if side.active_right is not None and pkmn != side.active_right:
+            side.reserve.append(side.active_right)
+        side.active_right = pkmn
+        logger.debug(f"Updated active_right to {pkmn.name} (position {position_code})")
+    else:
+        # Position 'a' or no suffix = left Pokemon (active)
+        side.active = pkmn
+        logger.debug(f"Updated active to {pkmn.name} (position {position_code})")
 
     # zacian-crowned is technically still zacian before switching in for the first time
     # this is handled by set-prediction for the opponent, but for the bot's pkmn we
@@ -596,11 +640,11 @@ def switch_or_drag(battle, split_msg, switch_or_drag="switch"):
 def sethp(battle, split_msg):
     # |-sethp|p2a: Jellicent|317/403|[from] move: Pain Split|[silent]
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
         new_hp_percentage = float(split_msg[3].split("/")[0]) / 100
         pkmn.hp = int(pkmn.max_hp * new_hp_percentage)
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
         pkmn.hp = int(split_msg[3].split("/")[0])
         pkmn.max_hp = int(split_msg[3].split("/")[1].split()[0])
 
@@ -609,7 +653,7 @@ def heal_or_damage(battle, split_msg):
     if is_opponent(battle, split_msg):
         side = battle.opponent
         other_side = battle.user
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
         if len(split_msg) == 5 and split_msg[4] == "[from] move: Revival Blessing":
             nickname = Pokemon.extract_nickname_from_pokemonshowdown_string(
                 split_msg[2]
@@ -626,7 +670,7 @@ def heal_or_damage(battle, split_msg):
     else:
         side = battle.user
         other_side = battle.opponent
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
         if len(split_msg) == 5 and split_msg[4] == "[from] move: Revival Blessing":
             nickname = Pokemon.extract_nickname_from_pokemonshowdown_string(
                 split_msg[2]
@@ -745,11 +789,17 @@ def fail(battle, split_msg):
 def move(battle, split_msg):
     if is_opponent(battle, split_msg):
         side = battle.opponent
-        pkmn = battle.opponent.active
+        # Get the correct active Pokemon based on position (handles doubles)
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
+        # For doubles, attacking Pokemon could target either user active Pokemon
+        # In most cases it's the left one (user.active), unless position indicates otherwise
+        # For now, always use left since we don't have target info in the message
         opposing_pkmn = battle.user.active
     else:
         side = battle.user
-        pkmn = battle.user.active
+        # Get the correct active Pokemon based on position (handles doubles)
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
+        # Opponent Pokemon - similar logic
         opposing_pkmn = battle.opponent.active
 
     move_name = normalize_name(split_msg[3].strip().lower())
@@ -757,28 +807,6 @@ def move(battle, split_msg):
     zoroark_from_reserves = side.find_pokemon_in_reserves(
         "zoroark"
     ) or side.find_pokemon_in_reserves("zoroarkhisui")
-
-    # in battle factory we can deduce that there is a zoroark in front of us
-    # if we see a move that is not in the known moveset and a zoroark is in the reserves
-    if (
-        is_opponent(battle, split_msg)
-        and zoroark_from_reserves is not None
-        and "transform" not in pkmn.volatile_statuses
-        and battle.battle_type
-        in [BattleType.BATTLE_FACTORY, BattleType.STANDARD_BATTLE]
-        and move_name not in TeamDatasets.get_all_possible_moves(pkmn)
-        and move_name in TeamDatasets.get_all_possible_moves(zoroark_from_reserves)
-        and "from" not in split_msg[-1]
-    ):
-        logger.info(
-            "{} using {} means it is {}".format(
-                pkmn.name, move_name, zoroark_from_reserves.name
-            )
-        )
-        _switch_active_with_zoroark_from_reserves(side, zoroark_from_reserves)
-
-        # the rest of this function uses `pkmn`, so we need to set it to the correct pkmn
-        pkmn = zoroark_from_reserves
 
     # in randombattles we can deduce that there is a zoroark in front of us
     # if we see a move that is not in the known moveset, even if there is no
@@ -1093,9 +1121,9 @@ def move(battle, split_msg):
 
 def setboost(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     stat = constants.STAT_ABBREVIATION_LOOKUPS[split_msg[3].strip()]
     amount = int(split_msg[4].strip())
@@ -1105,9 +1133,9 @@ def setboost(battle, split_msg):
 
 def boost(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     stat = constants.STAT_ABBREVIATION_LOOKUPS[split_msg[3].strip()]
     amount = int(split_msg[4].strip())
@@ -1122,9 +1150,9 @@ def boost(battle, split_msg):
 
 def unboost(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     stat = constants.STAT_ABBREVIATION_LOOKUPS[split_msg[3].strip()]
     amount = int(split_msg[4].strip())
@@ -1140,9 +1168,9 @@ def unboost(battle, split_msg):
 def status(battle, split_msg):
     if is_opponent(battle, split_msg):
         other_side = battle.user
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
         other_side = battle.opponent
 
     if len(split_msg) > 4 and "item: " in split_msg[4]:
@@ -1182,10 +1210,10 @@ def status(battle, split_msg):
 
 def activate(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
         other_pkmn = battle.user.active
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
         other_pkmn = battle.opponent.active
 
     if (
@@ -1239,9 +1267,9 @@ def activate(battle, split_msg):
 
 def anim(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     anim_name = normalize_name(split_msg[3].strip())
     if anim_name in pkmn.volatile_statuses:
@@ -1255,9 +1283,9 @@ def anim(battle, split_msg):
 
 def prepare(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     being_prepared = normalize_name(split_msg[3])
     if being_prepared in pkmn.volatile_statuses:
@@ -1273,9 +1301,9 @@ def prepare(battle, split_msg):
 
 def terastallize(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
 
     pkmn.terastallized = True
     pkmn.tera_type = normalize_name(split_msg[3])
@@ -1288,10 +1316,10 @@ def terastallize(battle, split_msg):
 
 def start_volatile_status(battle, split_msg):
     if is_opponent(battle, split_msg):
-        pkmn = battle.opponent.active
+        pkmn = get_active_pokemon_for_position(battle.opponent, split_msg[2])
         side = battle.opponent
     else:
-        pkmn = battle.user.active
+        pkmn = get_active_pokemon_for_position(battle.user, split_msg[2])
         side = battle.user
 
     volatile_status = normalize_name(split_msg[3].split(":")[-1])
@@ -2186,8 +2214,11 @@ def cant(battle, split_msg):
         other_side = battle.opponent
         opponent = False
 
+    # Get the correct active Pokemon based on position (handles doubles)
+    pkmn = get_active_pokemon_for_position(side, split_msg[2])
+
     side.last_used_move = LastUsedMove(
-        pokemon_name=side.active.name,
+        pokemon_name=pkmn.name,
         move=side.last_used_move.move,
         turn=battle.turn,
     )
@@ -2196,58 +2227,58 @@ def cant(battle, split_msg):
     if len(split_msg) == 4 and split_msg[3] == "ability: Truant":
         logger.info(
             "{} got 'cant' from truant, removing truant volatile".format(
-                side.active.name
+                pkmn.name
             )
         )
-        remove_volatile(side.active, "truant")
+        remove_volatile(pkmn, "truant")
 
     # |cant|p2a: Tauros|recharge
     if len(split_msg) == 4 and split_msg[3] == "recharge":
         logger.info(
             "{} got 'cant' from recharge, removing mustrecharge volatile".format(
-                side.active.name
+                pkmn.name
             )
         )
-        if opponent and "mustrecharge" not in side.active.volatile_statuses:
+        if opponent and "mustrecharge" not in pkmn.volatile_statuses:
             logger.warning(
-                "{} did not have mustrecharge but recharged".format(side.active.name)
+                "{} did not have mustrecharge but recharged".format(pkmn.name)
             )
 
-        remove_volatile(side.active, "mustrecharge")
+        remove_volatile(pkmn, "mustrecharge")
 
     # |cant|p2a: Politoed|move: Taunt|Toxic
     if len(split_msg) == 4 and split_msg[3].startswith("move: "):
         move_name = normalize_name(split_msg[3].split(":")[-1])
-        move_object = side.active.get_move(move_name)
+        move_object = pkmn.get_move(move_name)
         if move_object is None:
-            side.active.add_move(move_name)
+            pkmn.add_move(move_name)
             logger.info(
                 "Adding {} to {}'s moves from 'cant'".format(
-                    move_name, side.active.name
+                    move_name, pkmn.name
                 )
             )
 
     if len(split_msg) == 4 and split_msg[3] == constants.SLEEP:
-        logger.info("{} got 'cant' from sleep".format(side.active.name))
-        if side.active.rest_turns > 1:
-            side.active.rest_turns -= 1
+        logger.info("{} got 'cant' from sleep".format(pkmn.name))
+        if pkmn.rest_turns > 1:
+            pkmn.rest_turns -= 1
             logger.info(
                 "Decrementing {}'s rest_turns to {}".format(
-                    side.active.name, side.active.rest_turns
+                    pkmn.name, pkmn.rest_turns
                 )
             )
-        elif side.active.rest_turns == 1:
+        elif pkmn.rest_turns == 1:
             logger.critical(
                 "{} has rest_turns==1 and got 'cant' from sleep".format(
-                    side.active.name
+                    pkmn.name
                 )
             )
             exit(1)
         else:
-            side.active.sleep_turns += 1
+            pkmn.sleep_turns += 1
             logger.info(
                 "Incrementing {}'s sleep_turns to {}".format(
-                    side.active.name, side.active.sleep_turns
+                    pkmn.name, pkmn.sleep_turns
                 )
             )
 
@@ -2263,7 +2294,7 @@ def cant(battle, split_msg):
         )
     ):
         logger.info(
-            f"{side.active.name} got 'cant' while target {other_side.active.name} was partially trapped, "
+            f"{pkmn.name} got 'cant' while target {other_side.active.name} was partially trapped, "
             f"removing partiallytrapped volatile from {other_side.active.name}"
         )
         remove_volatile(other_side.active, constants.PARTIALLY_TRAPPED)

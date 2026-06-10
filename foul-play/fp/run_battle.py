@@ -19,10 +19,96 @@ from fp.websocket_client import PSWebsocketClient
 logger = logging.getLogger(__name__)
 
 
+def convert_mcts_choice_to_move_name(mcts_choice: str, active_pokemon) -> str:
+    """
+    Convert an MCTS choice string to an actual move name.
+    
+    MCTS can return choices in multiple formats:
+    - Move names directly: "sacredsword", "thunderbolt", etc. (most common)
+    - Move indices: "move 0", "move 1", "move 2", "move 3" (rare)
+    - Move indices with modifiers: "move 0-mega", "move 1-tera"
+    - Switches: "switch 1", "switch 2", etc.
+    
+    Args:
+        mcts_choice: String from MCTS results
+        active_pokemon: The Pokemon object whose moves to validate against
+        
+    Returns:
+        Valid move name (e.g., "thunderbolt") or switch command
+    """
+    # Handle switches - pass through as-is
+    if mcts_choice.startswith(constants.SWITCH_STRING):
+        return mcts_choice
+    
+    # Extract modifiers (-tera, -mega) early
+    modifiers = ""
+    choice_for_processing = mcts_choice
+    if mcts_choice.endswith("-tera"):
+        modifiers = "-tera"
+        choice_for_processing = mcts_choice[:-5]
+    elif mcts_choice.endswith("-mega"):
+        modifiers = "-mega"
+        choice_for_processing = mcts_choice[:-5]
+    
+    # Case 1: Already a move name (most common from MCTS)
+    # Move names don't start with "move ", and they're not all digits
+    if not choice_for_processing.startswith("move "):
+        # Assume it's already a move name - validate it exists on the active Pokemon
+        if active_pokemon is None:
+            logger.error(f"ERROR: No active Pokemon provided to validate move '{choice_for_processing}' - returning struggle")
+            return "struggle"
+        
+        # Check if this move exists in the active Pokemon's moveset
+        move_names = [m.name for m in active_pokemon.moves]
+        if choice_for_processing in move_names:
+            logger.info(f"MCTS move '{choice_for_processing}' validated for {active_pokemon.name}")
+            return choice_for_processing + modifiers
+        else:
+            # Move not in this Pokemon's moveset - try to find any valid move
+            logger.warning(
+                f"MCTS returned move '{choice_for_processing}' but {active_pokemon.name} "
+                f"doesn't have it. Available: {move_names}"
+            )
+            if move_names:
+                fallback_move = move_names[0]
+                logger.warning(f"Using fallback move: {fallback_move}")
+                return fallback_move + modifiers
+            else:
+                logger.error(f"{active_pokemon.name} has NO MOVES! Returning struggle")
+                return "struggle"
+    
+    # Case 2: Index format "move X"
+    try:
+        move_index = int(choice_for_processing.split()[1])
+    except (ValueError, IndexError):
+        logger.warning(f"Could not parse move from: {mcts_choice}")
+        return "struggle"
+    
+    # Look up the actual move name from the active Pokemon's moveset
+    if active_pokemon is None:
+        logger.warning(f"No active Pokemon to look up move index {move_index}")
+        return "struggle"
+    
+    if move_index < 0 or move_index >= len(active_pokemon.moves):
+        logger.warning(
+            f"Move index {move_index} out of range for {active_pokemon.name} "
+            f"(has {len(active_pokemon.moves)} moves)"
+        )
+        return "struggle"
+    
+    move_name = active_pokemon.moves[move_index].name
+    logger.debug(f"Converted MCTS 'move {move_index}' to '{move_name}' for {active_pokemon.name}")
+    
+    return move_name + modifiers
+
+
 def format_decision(battle, decision):
     # Formats a decision for communication with Pokemon-Showdown
-    # If the move can be used as a Z-Move, it will be
-
+    # Handles singles moves (str) for individual bots
+    # For doubles battles, the move selection is split in async_pick_move()
+    # so each bot only receives and formats its own single move
+    
+    # Handle singles (and extracted doubles moves)
     if decision.startswith(constants.SWITCH_STRING + " "):
         switch_pokemon = decision.split("switch ")[-1]
         for pkmn in battle.user.reserve:
@@ -32,6 +118,11 @@ def format_decision(battle, decision):
         else:
             raise ValueError("Tried to switch to: {}".format(switch_pokemon))
     else:
+        # Safety check: ensure we have an active Pokemon before formatting a move choice
+        if battle.user.active is None:
+            logger.warning(f"No active Pokemon available; defaulting to pass")
+            return ["/pass", str(battle.rqid)]
+            
         tera = False
         mega = False
         if decision.endswith("-tera"):
@@ -56,7 +147,9 @@ def format_decision(battle, decision):
         if tera:
             message = "{} {}".format(message, constants.TERASTALLIZE)
 
-        if battle.user.active.get_move(decision).can_z:
+        # Check if the move exists and has Z-move capability
+        move = battle.user.active.get_move(decision)
+        if move and move.can_z:
             message = "{} {}".format(message, constants.ZMOVE)
 
     return [message, str(battle.rqid)]
@@ -78,7 +171,7 @@ def extract_battle_factory_tier_from_msg(msg):
     return normalize_name(tier_name)
 
 
-async def async_pick_move(battle):
+async def async_pick_move(battle, ps_websocket_client: PSWebsocketClient):
     battle_copy = deepcopy(battle)
     if not battle_copy.team_preview:
         battle_copy.user.update_from_request_json(battle_copy.request_json)
@@ -86,11 +179,61 @@ async def async_pick_move(battle):
     loop = asyncio.get_event_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
         best_move = await loop.run_in_executor(pool, find_best_move, battle_copy)
-    battle.user.last_selected_move = LastUsedMove(
-        battle.user.active.name,
-        best_move.removesuffix("-tera").removesuffix("-mega"),
-        battle.turn,
-    )
+    
+    # Handle both singles (str) and doubles (tuple) return types
+    if isinstance(best_move, tuple):
+        # Doubles battles: MCTS returns (left_move_index, right_move_index) tuple
+        # Each bot acts independently, so extract the move for THIS bot
+        left_move_index, right_move_index = best_move
+        
+        # Determine which move belongs to this bot based on username
+        # Bot1 controls left active, other username controls right active
+        is_this_bot1 = ps_websocket_client.username == FoulPlayConfig.bot1username
+        
+        if is_this_bot1:
+            # This bot is Bot1 (left side), use left active Pokemon
+            selected_move_index = left_move_index
+            active_pokemon = battle_copy.user.active
+            bot_position = "left (p1)"
+        else:
+            # This bot is the other player (right side), use right active Pokemon
+            selected_move_index = right_move_index
+            active_pokemon = battle_copy.user.active_right
+            bot_position = "right (p4)"
+        
+        # Convert move index string to actual move name
+        # MCTS returns strings like "move 0", "move 1", "switch 2", etc.
+        logger.info(f"Converting MCTS choice '{selected_move_index}' for {active_pokemon.name if active_pokemon else 'NONE'} on {bot_position}")
+        selected_move = convert_mcts_choice_to_move_name(selected_move_index, active_pokemon)
+        
+        # For logging, also convert the other player's move index
+        other_active = battle_copy.user.active_right if is_this_bot1 else battle_copy.user.active
+        other_move = convert_mcts_choice_to_move_name(
+            right_move_index if is_this_bot1 else left_move_index, 
+            other_active
+        )
+        
+        # Log both moves for transparency
+        logger.info(f"Doubles move pair from MCTS: {left_move_index}, {right_move_index}")
+        logger.info(f"Bot {bot_position} selected: {selected_move} (opponent selecting: {other_move})")
+        
+        # Track the selected move for this bot
+        battle.user.last_selected_move = LastUsedMove(
+            active_pokemon.name if active_pokemon else "unknown",
+            selected_move.removesuffix("-tera").removesuffix("-mega"),
+            battle.turn,
+        )
+        
+        best_move = selected_move
+    else:
+        # Singles: original behavior - convert move index to move name
+        best_move = convert_mcts_choice_to_move_name(best_move, battle_copy.user.active)
+        battle.user.last_selected_move = LastUsedMove(
+            battle.user.active.name,
+            best_move.removesuffix("-tera").removesuffix("-mega"),
+            battle.turn,
+        )
+    
     return format_decision(battle_copy, best_move)
 
 
@@ -100,7 +243,7 @@ async def handle_team_preview(battle, ps_websocket_client):
     battle_copy.opponent.active = Pokemon.get_dummy()
     battle_copy.team_preview = True
 
-    best_move = await async_pick_move(battle_copy)
+    best_move = await async_pick_move(battle_copy, ps_websocket_client)
 
     # because we copied the battle before sending it in, we need to update the last selected move here
     pkmn_name = battle.user.reserve[int(best_move[0].split()[1]) - 1].name
@@ -208,7 +351,7 @@ async def start_random_battle(
     # apply the messages that were held onto
     process_battle_updates(battle)
 
-    best_move = await async_pick_move(battle)
+    best_move = await async_pick_move(battle, ps_websocket_client)
     await ps_websocket_client.send_message(battle.battle_tag, best_move)
 
     return battle
@@ -253,7 +396,7 @@ async def start_standard_battle(
         # apply the messages that were held onto
         process_battle_updates(battle)
 
-        best_move = await async_pick_move(battle)
+        best_move = await async_pick_move(battle, ps_websocket_client)
         await ps_websocket_client.send_message(battle.battle_tag, best_move)
 
     else:
@@ -346,5 +489,5 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dict):
         else:
             action_required = await async_update_battle(battle, msg)
             if action_required and not battle.wait:
-                best_move = await async_pick_move(battle)
+                best_move = await async_pick_move(battle, ps_websocket_client)
                 await ps_websocket_client.send_message(battle.battle_tag, best_move)

@@ -41,9 +41,9 @@ def check_dictionaries_are_unmodified(original_pokedex, original_move_json):
         logger.debug("Pokedex JSON unmodified!")
 
 
-async def bot_challenger(original_pokedex, original_move_json):
-    """Bot 1 that challenges Bot 2 and plays the battle"""
-    logger.info("Bot 1 (Challenger) starting...")
+async def bot_challenger(original_pokedex, original_move_json, command_queue):
+    """Bot 1 (Master) that challenges Bot 2 and makes all battle decisions"""
+    logger.info("Bot 1 (Challenger/Master) starting...")
     
     ps_websocket_client = await PSWebsocketClient.create(
         FoulPlayConfig.bot1username, FoulPlayConfig.bot1password, FoulPlayConfig.websocket_uri
@@ -68,9 +68,9 @@ async def bot_challenger(original_pokedex, original_move_json):
         FoulPlayConfig.pokemon_format,
     )
     
-    # Play the battle
+    # Play the battle, coordinating with Bot 2 via the command queue
     winner = await pokemon_battle(
-        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dict
+        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dict, command_queue
     )
     
     if winner == FoulPlayConfig.bot1username:
@@ -78,13 +78,16 @@ async def bot_challenger(original_pokedex, original_move_json):
     else:
         logger.info("Bot 1: Lost with team: {}".format(team_file_name))
     
+    # Signal Bot 2 to stop
+    await command_queue.put(None)
+    
     check_dictionaries_are_unmodified(original_pokedex, original_move_json)
     await ps_websocket_client.close()
 
 
-async def bot_accepter(original_pokedex, original_move_json):
-    """Bot 2 that accepts Bot 1's challenge and plays the battle"""
-    logger.info("Bot 2 (Accepter) starting...")
+async def bot_accepter(original_pokedex, original_move_json, command_queue):
+    """Bot 2 (Worker) that accepts the challenge and waits for commands from Bot 1"""
+    logger.info("Bot 2 (Accepter/Worker) starting...")
     
     ps_websocket_client = await PSWebsocketClient.create(
         FoulPlayConfig.bot2username, FoulPlayConfig.bot2password, FoulPlayConfig.websocket_uri
@@ -103,21 +106,34 @@ async def bot_accepter(original_pokedex, original_move_json):
     else:
         await ps_websocket_client.update_team("None")
     
-    # Accept the challenge from Bot 1 and get the battle tag
+    # Accept the challenge from Bot 1
     await ps_websocket_client.accept_challenge(
         FoulPlayConfig.pokemon_format,
         FoulPlayConfig.room_name
     )
     
-    # Play the battle
-    winner = await pokemon_battle(
-        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dict
-    )
+    logger.info("Bot 2: Challenge accepted, waiting for commands from Bot 1...")
     
-    if winner == FoulPlayConfig.bot2username:
-        logger.info("Bot 2: Won with team: {}".format(team_file_name))
-    else:
-        logger.info("Bot 2: Lost with team: {}".format(team_file_name))
+    # Wait for commands from the master thread and send them to the server
+    while True:
+        try:
+            # Wait for a command with a timeout (5 minutes)
+            command = await asyncio.wait_for(command_queue.get(), timeout=300.0)
+            
+            if command is None:  # Signal to stop
+                logger.info("Bot 2: Received stop signal, closing...")
+                break
+            
+            logger.info(f"Bot 2: Sending command to server: {command}")
+            await ps_websocket_client.send_message(command)
+            
+        except asyncio.TimeoutError:
+            logger.warning("Bot 2: Timeout waiting for command (300s), closing...")
+            break
+        except Exception as e:
+            logger.error(f"Bot 2: Error while sending command: {e}")
+            traceback.print_exc()
+            break
     
     check_dictionaries_are_unmodified(original_pokedex, original_move_json)
     await ps_websocket_client.close()
@@ -131,10 +147,13 @@ async def run_foul_play_multi():
     original_pokedex = deepcopy(pokedex)
     original_move_json = deepcopy(all_move_json)
     
+    # Create a queue for the master thread to send commands to the worker thread
+    command_queue = asyncio.Queue()
+    
     # Run both bots concurrently
     await asyncio.gather(
-        bot_challenger(original_pokedex, original_move_json),
-        bot_accepter(original_pokedex, original_move_json),
+        bot_challenger(original_pokedex, original_move_json, command_queue),
+        bot_accepter(original_pokedex, original_move_json, command_queue),
     )
 
 

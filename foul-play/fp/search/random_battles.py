@@ -166,6 +166,9 @@ def populate_randombattle_unrevealed_pkmn(battle: Battle):
     if battle.opponent.active is not None:
         existing_pkmn.append(battle.opponent.active)
         num_revealed_pkmn += 1
+    if battle.opponent.active_right is not None:
+        existing_pkmn.append(battle.opponent.active_right)
+        num_revealed_pkmn += 1
 
     if num_revealed_pkmn == 6:
         return

@@ -155,12 +155,19 @@ def battler_to_poke_engine_side(
                     )
                 )
 
+    # Build the Pokemon list: active, active_right (if doubles), and reserves
+    # For doubles battles, active_right must be included so moves tracked for both active Pokemon
+    # are properly represented when building the battle state
+    pokemon_list = [pokemon_to_poke_engine_pkmn(battler.active)]
+    if battler.active_right is not None:
+        pokemon_list.append(pokemon_to_poke_engine_pkmn(battler.active_right))
+    pokemon_list += [pokemon_to_poke_engine_pkmn(p) for p in battler.reserve]
+
     side = PokeEngineSide(
         active_index="0",
         baton_passing=battler.baton_passing,
         shed_tailing=battler.shed_tailing,
-        pokemon=[pokemon_to_poke_engine_pkmn(battler.active)]
-        + [pokemon_to_poke_engine_pkmn(p) for p in battler.reserve],
+        pokemon=pokemon_list,
         side_conditions=PokeEngineSideConditions(
             aurora_veil=battler.side_conditions[constants.AURORA_VEIL],
             crafty_shield=battler.side_conditions["craftyshield"],

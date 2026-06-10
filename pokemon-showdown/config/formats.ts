@@ -70,6 +70,16 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Illusion Level Mod',
 		],
 	},
+	{ // For SM Battle Tree 
+		name: "[Gen 7] Multi Battle",
+		mod: 'gen7',
+		searchShow: true,
+		rated: false,
+		ruleset: [
+			'Max Team Size = 2',
+
+		],
+	},
 	{
 		name: "[Gen 9] OU",
 		mod: 'gen9',

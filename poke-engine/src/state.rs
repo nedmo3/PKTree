@@ -17,6 +17,9 @@ pub enum SideReference {
     SideTwo_2,
 }
 impl SideReference {
+    /// The slot "directly across" from this one (1:1 diagonal mapping).
+    /// In doubles this is only one of the two opponents; most multi-target or
+    /// chosen-target logic should use `get_other_sides` / an explicit target.
     pub fn get_other_side(&self) -> SideReference {
         match self {
             SideReference::SideOne_1 => SideReference::SideTwo_1,
@@ -24,6 +27,55 @@ impl SideReference {
             SideReference::SideOne_2 => SideReference::SideTwo_2,
             SideReference::SideTwo_2 => SideReference::SideOne_2,
         }
+    }
+
+    /// The ally slot on the same team.
+    pub fn get_ally(&self) -> SideReference {
+        match self {
+            SideReference::SideOne_1 => SideReference::SideOne_2,
+            SideReference::SideOne_2 => SideReference::SideOne_1,
+            SideReference::SideTwo_1 => SideReference::SideTwo_2,
+            SideReference::SideTwo_2 => SideReference::SideTwo_1,
+        }
+    }
+
+    /// Both opposing slots (the full opposing team).
+    pub fn get_other_sides(&self) -> Vec<SideReference> {
+        match self {
+            SideReference::SideOne_1 | SideReference::SideOne_2 => {
+                vec![SideReference::SideTwo_1, SideReference::SideTwo_2]
+            }
+            SideReference::SideTwo_1 | SideReference::SideTwo_2 => {
+                vec![SideReference::SideOne_1, SideReference::SideOne_2]
+            }
+        }
+    }
+
+    /// Both slots on this side's own team (self + ally).
+    pub fn get_own_sides(&self) -> Vec<SideReference> {
+        match self {
+            SideReference::SideOne_1 | SideReference::SideOne_2 => {
+                vec![SideReference::SideOne_1, SideReference::SideOne_2]
+            }
+            SideReference::SideTwo_1 | SideReference::SideTwo_2 => {
+                vec![SideReference::SideTwo_1, SideReference::SideTwo_2]
+            }
+        }
+    }
+
+    /// True if the two references are on the same team.
+    pub fn is_allied_with(&self, other: &SideReference) -> bool {
+        matches!(
+            (self, other),
+            (SideReference::SideOne_1, SideReference::SideOne_1)
+                | (SideReference::SideOne_1, SideReference::SideOne_2)
+                | (SideReference::SideOne_2, SideReference::SideOne_1)
+                | (SideReference::SideOne_2, SideReference::SideOne_2)
+                | (SideReference::SideTwo_1, SideReference::SideTwo_1)
+                | (SideReference::SideTwo_1, SideReference::SideTwo_2)
+                | (SideReference::SideTwo_2, SideReference::SideTwo_1)
+                | (SideReference::SideTwo_2, SideReference::SideTwo_2)
+        )
     }
 }
 

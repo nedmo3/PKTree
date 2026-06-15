@@ -31,7 +31,7 @@ use super::items::{
     item_before_move, item_end_of_turn, item_modify_attack_against, item_modify_attack_being_used,
     item_on_switch_in, Items,
 };
-use super::state::{MoveChoice, PokemonVolatileStatus, Terrain, Weather};
+use super::state::{MoveChoice, PokemonVolatileStatus, RelativeTarget, Terrain, Weather};
 use crate::choices::{Choice, MoveCategory};
 use crate::instruction::{
     ChangeStatusInstruction, DamageInstruction, Instruction, StateInstructions, SwitchInstruction,
@@ -535,9 +535,11 @@ fn generate_instructions_from_increment_side_condition(
 ) {
     let affected_side_refs;
     match side_condition.target {
-        MoveTarget::Opponent | Opponents => affected_side_refs = attacking_side_reference.get_other_sides(),
+        MoveTarget::Opponent | MoveTarget::Opponents => {
+            affected_side_refs = attacking_side_reference.get_other_sides()
+        }
         MoveTarget::User => affected_side_refs = attacking_side_reference.get_own_sides(),
-        MoveTarget::All=> return, 
+        MoveTarget::All => return,
     }
 
     let max_layers = match side_condition.condition {
@@ -569,9 +571,11 @@ fn generate_instructions_from_duration_side_conditions(
 ) {
     let affected_side_refs;
     match side_condition.target {
-        MoveTarget::Opponent | Opponents => affected_side_refs = attacking_side_reference.get_other_sides(),
+        MoveTarget::Opponent | MoveTarget::Opponents => {
+            affected_side_refs = attacking_side_reference.get_other_sides()
+        }
         MoveTarget::User => affected_side_refs = attacking_side_reference.get_own_sides(),
-        MoveTarget::All=> return, 
+        MoveTarget::All => return,
     }
     if side_condition.condition == PokemonSideCondition::AuroraVeil
         && !state.weather_is_active(&Weather::HAIL)
@@ -638,38 +642,47 @@ fn get_instructions_from_volatile_statuses(
     attacking_side_reference: &SideReference,
     incoming_instructions: &mut StateInstructions,
 ) {
-    let target_side: SideReference;
-    match volatile_status.target {
-        MoveTarget::Opponent => target_side = attacking_side_reference.get_other_side(),
-        MoveTarget::User => target_side = *attacking_side_reference,
-        MoveTarget::All | Opponents => !todo(), // TODO 
-    }
+    // TODO(doubles/targeting): `Opponent` currently maps to the diagonal opponent.
+    // Once MoveChoice carries an explicit target (Step 3), single-target volatile
+    // statuses should be applied to the chosen slot instead.
+    let target_sides: Vec<SideReference> = match volatile_status.target {
+        MoveTarget::Opponent => vec![attacking_side_reference.get_other_side()],
+        MoveTarget::User => vec![*attacking_side_reference],
+        MoveTarget::Opponents => attacking_side_reference.get_other_sides(),
+        MoveTarget::All => {
+            let mut v = attacking_side_reference.get_own_sides();
+            v.extend(attacking_side_reference.get_other_sides());
+            v
+        }
+    };
 
-    if volatile_status.volatile_status == PokemonVolatileStatus::YAWN
-        && immune_to_status(
-            state,
-            &MoveTarget::Opponent,
-            &target_side,
-            &PokemonStatus::SLEEP,
-        )
-    {
-        return;
-    }
-    let side = state.get_side(&target_side);
-    let affected_pkmn = side.get_active_immutable();
-    if affected_pkmn.volatile_status_can_be_applied(
-        &volatile_status.volatile_status,
-        &side.volatile_statuses,
-        attacker_choice.first_move,
-    ) {
-        let ins = Instruction::ApplyVolatileStatus(ApplyVolatileStatusInstruction {
-            side_ref: target_side,
-            volatile_status: volatile_status.volatile_status,
-        });
+    for target_side in target_sides {
+        if volatile_status.volatile_status == PokemonVolatileStatus::YAWN
+            && immune_to_status(
+                state,
+                &MoveTarget::Opponent,
+                &target_side,
+                &PokemonStatus::SLEEP,
+            )
+        {
+            continue;
+        }
+        let side = state.get_side(&target_side);
+        let affected_pkmn = side.get_active_immutable();
+        if affected_pkmn.volatile_status_can_be_applied(
+            &volatile_status.volatile_status,
+            &side.volatile_statuses,
+            attacker_choice.first_move,
+        ) {
+            let ins = Instruction::ApplyVolatileStatus(ApplyVolatileStatusInstruction {
+                side_ref: target_side,
+                volatile_status: volatile_status.volatile_status,
+            });
 
-        side.volatile_statuses
-            .insert(volatile_status.volatile_status);
-        incoming_instructions.instruction_list.push(ins);
+            side.volatile_statuses
+                .insert(volatile_status.volatile_status);
+            incoming_instructions.instruction_list.push(ins);
+        }
     }
 }
 
@@ -1105,7 +1118,11 @@ fn get_instructions_from_secondaries(
                             MoveTarget::User => {
                                 secondary_target_side_ref = *side_reference;
                             }
-                            MoveTarget::All | MoveTarget::Opponents => return, // TODO
+                            // TODO(doubles/targeting): spread secondary effects should hit
+                            // all relevant targets; for now fall back to the diagonal opponent.
+                            MoveTarget::All | MoveTarget::Opponents => {
+                                secondary_target_side_ref = side_reference.get_other_side();
+                            }
                         }
                         let target_pkmn = state.get_side(&secondary_target_side_ref).get_active();
                         secondary_hit_instructions
@@ -2586,99 +2603,50 @@ fn modify_choice_priority(state: &State, side_reference: &SideReference, choice:
     }
 }
 
-fn moves_first(
+/// Build the order in which the four acting slots move this turn (index 0 acts first).
+///
+/// Scheme (deliberately simplified): each slot gets a sort key of
+/// `bracket * SPEED_SCALE + speed`, where `bracket` is the move's priority (switches use a
+/// large bracket so they always resolve before moves) and `speed` is the effective speed.
+/// Under Trick Room the speed term is negated so slower acts first. The list is sorted by
+/// descending key; speed ties are broken deterministically by a fixed slot order (no
+/// probability branching). Pursuit is treated as a normal-priority move.
+fn move_order(
     state: &State,
     side_one_1_choice: &Choice,
-    side_two_1_choice: &Choice,
     side_one_2_choice: &Choice,
+    side_two_1_choice: &Choice,
     side_two_2_choice: &Choice,
-    incoming_instructions: &mut StateInstructions,
-) -> SideMovesFirst {
-    // TODO forget pursuit, just add 1000* priority to each thing and choose max/min (trick room)
-    SideMovesFirst::SideOne_1
-    // let side_one_1_effective_speed = get_effective_speed(&state, &SideReference::SideOne_1);
-    // let side_two_1_effective_speed = get_effective_speed(&state, &SideReference::SideTwo_1);
-    // let side_one_2_effective_speed = get_effective_speed(&state, &SideReference::SideOne_2);
-    // let side_two_2_effective_speed = get_effective_speed(&state, &SideReference::SideTwo_2);
+) -> Vec<SideReference> {
+    const SPEED_SCALE: i64 = 100_000;
+    const SWITCH_BRACKET: i64 = 1_000;
 
-    // if side_one_choice.category == MoveCategory::Switch
-    //     && side_two_choice.category == MoveCategory::Switch
-    // {
-    //     return if side_one_effective_speed > side_two_effective_speed {
-    //         SideMovesFirst::SideOne
-    //     } else if side_one_effective_speed == side_two_effective_speed {
-    //         SideMovesFirst::SpeedTie
-    //     } else {
-    //         SideMovesFirst::SideTwo
-    //     };
-    // } else if side_one_choice.category == MoveCategory::Switch {
-    //     return if side_two_choice.move_id != Choices::PURSUIT {
-    //         SideMovesFirst::SideOne
-    //     } else {
-    //         SideMovesFirst::SideTwo
-    //     };
-    // } else if side_two_choice.category == MoveCategory::Switch {
-    //     return if side_one_choice.move_id == Choices::PURSUIT {
-    //         SideMovesFirst::SideOne
-    //     } else {
-    //         SideMovesFirst::SideTwo
-    //     };
-    // }
+    let trick_room = state.trick_room.active;
+    let entries = [
+        (SideReference::SideOne_1, side_one_1_choice),
+        (SideReference::SideOne_2, side_one_2_choice),
+        (SideReference::SideTwo_1, side_two_1_choice),
+        (SideReference::SideTwo_2, side_two_2_choice),
+    ];
 
-    // let side_one_active = state.side_one.get_active_immutable();
-    // let side_two_active = state.side_two.get_active_immutable();
-    // if side_one_choice.priority == side_two_choice.priority {
-    //     if side_one_active.item == Items::CUSTAPBERRY
-    //         && side_one_active.hp < side_one_active.maxhp / 4
-    //     {
-    //         incoming_instructions
-    //             .instruction_list
-    //             .push(Instruction::ChangeItem(ChangeItemInstruction {
-    //                 side_ref: SideReference::SideOne,
-    //                 new_item: Items::NONE,
-    //                 current_item: Items::CUSTAPBERRY,
-    //             }));
-    //         return SideMovesFirst::SideOne;
-    //     } else if side_two_active.item == Items::CUSTAPBERRY
-    //         && side_two_active.hp < side_two_active.maxhp / 4
-    //     {
-    //         incoming_instructions
-    //             .instruction_list
-    //             .push(Instruction::ChangeItem(ChangeItemInstruction {
-    //                 side_ref: SideReference::SideTwo,
-    //                 new_item: Items::NONE,
-    //                 current_item: Items::CUSTAPBERRY,
-    //             }));
-    //         return SideMovesFirst::SideTwo;
-    //     }
+    let mut keyed: Vec<(SideReference, i64)> = entries
+        .iter()
+        .map(|(side_ref, choice)| {
+            let bracket = if choice.category == MoveCategory::Switch {
+                SWITCH_BRACKET
+            } else {
+                choice.priority as i64
+            };
+            let speed = get_effective_speed(state, side_ref) as i64;
+            let speed_component = if trick_room { -speed } else { speed };
+            (*side_ref, bracket * SPEED_SCALE + speed_component)
+        })
+        .collect();
 
-    //     if side_one_effective_speed == side_two_effective_speed {
-    //         return SideMovesFirst::SpeedTie;
-    //     }
-
-    //     match state.trick_room.active {
-    //         true => {
-    //             if side_one_effective_speed < side_two_effective_speed {
-    //                 SideMovesFirst::SideOne
-    //             } else {
-    //                 SideMovesFirst::SideTwo
-    //             }
-    //         }
-    //         false => {
-    //             if side_one_effective_speed > side_two_effective_speed {
-    //                 SideMovesFirst::SideOne
-    //             } else {
-    //                 SideMovesFirst::SideTwo
-    //             }
-    //         }
-    //     }
-    // } else {
-    //     if side_one_choice.priority > side_two_choice.priority {
-    //         SideMovesFirst::SideOne
-    //     } else {
-    //         SideMovesFirst::SideTwo
-    //     }
-    // }
+    // Stable sort by descending key. Stability preserves the fixed slot order as the
+    // deterministic speed-tie break.
+    keyed.sort_by(|a, b| b.1.cmp(&a.1));
+    keyed.into_iter().map(|(side_ref, _)| side_ref).collect()
 }
 
 fn get_active_protosynthesis(side: &Side) -> Option<PokemonVolatileStatus> {
@@ -3691,7 +3659,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
-                                        .side_two
+                                        .side_two_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3703,7 +3671,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
-                                        .side_two
+                                        .side_two_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3744,7 +3712,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
-                                        .side_one
+                                        .side_one_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3756,7 +3724,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
-                                        .side_one
+                                        .side_one_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3797,7 +3765,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
-                                        .side_two
+                                        .side_two_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3809,7 +3777,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
-                                        .side_two
+                                        .side_two_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3850,7 +3818,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
-                                        .side_one
+                                        .side_one_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3862,7 +3830,7 @@ fn run_move(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
-                                        .side_one
+                                        .side_one_1
                                         .switch_out_move_second_saved_move,
                                 },
                             ),
@@ -3926,43 +3894,58 @@ fn after_move_finish(state: &mut State, final_instructions: &mut Vec<StateInstru
     }
 }
 
-fn handle_both_moves(
+/// Execute the four slots' actions in `order`, threading instruction branches the way the
+/// old two-action `handle_both_moves` did. For each action, every current branch is fed
+/// through `generate_instructions_from_move` (which applies the branch's instructions to the
+/// state internally), then `after_move_finish` runs once over the produced branches before
+/// moving to the next action.
+fn run_actions_in_order(
     state: &mut State,
-    first_move_side_choice: &mut Choice,
-    second_move_side_choice: &mut Choice,
-    first_move_side_ref: SideReference,
+    order: &[SideReference],
+    choices: &[(SideReference, Choice)],
     incoming_instructions: StateInstructions,
     state_instructions_vec: &mut Vec<StateInstructions>,
     branch_on_damage: bool,
 ) {
-    generate_instructions_from_move(
-        state,
-        first_move_side_choice,
-        second_move_side_choice,
-        first_move_side_ref,
-        incoming_instructions,
-        state_instructions_vec,
-        branch_on_damage,
-    );
-    after_move_finish(state, state_instructions_vec);
+    let lookup = |side_ref: SideReference| -> &Choice {
+        &choices
+            .iter()
+            .find(|(s, _)| *s == side_ref)
+            .expect("choice for side missing")
+            .1
+    };
 
-    let mut i = 0;
-    let vec_len = state_instructions_vec.len();
-    second_move_side_choice.first_move = false;
-    while i < vec_len {
-        let state_instruction = state_instructions_vec.remove(0);
-        generate_instructions_from_move(
-            state,
-            &mut second_move_side_choice.clone(), // this clone is needed because the choice may be modified in this loop
-            first_move_side_choice,
-            first_move_side_ref.get_other_side(),
-            state_instruction,
-            state_instructions_vec,
-            branch_on_damage,
-        );
-        after_move_finish(state, state_instructions_vec);
-        i += 1;
+    let mut current: Vec<StateInstructions> = vec![incoming_instructions];
+    for (i, acting_side) in order.iter().enumerate() {
+        let acting_side = *acting_side;
+        let mut attacker_choice = lookup(acting_side).clone();
+        attacker_choice.first_move = i == 0;
+
+        // Best-effort defender choice: the slot this action is aimed at. Switches keep the
+        // diagonal opponent (used only for a few switch-time interactions).
+        let defender_side = if attacker_choice.category == MoveCategory::Switch {
+            acting_side.get_other_side()
+        } else {
+            attacker_choice.target_side
+        };
+        let defender_choice = lookup(defender_side).clone();
+
+        let mut produced: Vec<StateInstructions> = Vec::with_capacity(current.len());
+        for branch in current.drain(..) {
+            generate_instructions_from_move(
+                state,
+                &mut attacker_choice.clone(),
+                &defender_choice,
+                acting_side,
+                branch,
+                &mut produced,
+                branch_on_damage,
+            );
+        }
+        after_move_finish(state, &mut produced);
+        current = produced;
     }
+    state_instructions_vec.extend(current);
 }
 
 fn mega_evolve(state: &mut State, side_ref: SideReference, instructions: &mut StateInstructions) {
@@ -4039,18 +4022,21 @@ pub fn generate_instructions_from_move_pair(
             side_one_1_choice.switch_id = *switch_id;
             side_one_1_choice.category = MoveCategory::Switch;
         }
-        MoveChoice::Move(move_index) => {
+        MoveChoice::Move(move_index, target) => {
             side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
             side_one_1_choice.move_index = *move_index;
+            side_one_1_choice.target_side = target.resolve(SideReference::SideOne_1);
         }
-        MoveChoice::MoveTera(move_index) => {
+        MoveChoice::MoveTera(move_index, target) => {
             side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
             side_one_1_choice.move_index = *move_index;
+            side_one_1_choice.target_side = target.resolve(SideReference::SideOne_1);
             s1_1_tera = true;
         }
-        MoveChoice::MoveMega(move_index) => {
+        MoveChoice::MoveMega(move_index, target) => {
             side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
             side_one_1_choice.move_index = *move_index;
+            side_one_1_choice.target_side = target.resolve(SideReference::SideOne_1);
             s1_1_mega = true;
         }
         MoveChoice::None => {
@@ -4070,18 +4056,21 @@ pub fn generate_instructions_from_move_pair(
             side_one_2_choice.switch_id = *switch_id;
             side_one_2_choice.category = MoveCategory::Switch;
         }
-        MoveChoice::Move(move_index) => {
+        MoveChoice::Move(move_index, target) => {
             side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
             side_one_2_choice.move_index = *move_index;
+            side_one_2_choice.target_side = target.resolve(SideReference::SideOne_2);
         }
-        MoveChoice::MoveTera(move_index) => {
+        MoveChoice::MoveTera(move_index, target) => {
             side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
             side_one_2_choice.move_index = *move_index;
+            side_one_2_choice.target_side = target.resolve(SideReference::SideOne_2);
             s1_2_tera = true;
         }
-        MoveChoice::MoveMega(move_index) => {
+        MoveChoice::MoveMega(move_index, target) => {
             side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
             side_one_2_choice.move_index = *move_index;
+            side_one_2_choice.target_side = target.resolve(SideReference::SideOne_2);
             s1_2_mega = true;
         }
         MoveChoice::None => {
@@ -4102,18 +4091,21 @@ pub fn generate_instructions_from_move_pair(
             side_two_1_choice.switch_id = *switch_id;
             side_two_1_choice.category = MoveCategory::Switch;
         }
-        MoveChoice::Move(move_index) => {
+        MoveChoice::Move(move_index, target) => {
             side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
             side_two_1_choice.move_index = *move_index;
+            side_two_1_choice.target_side = target.resolve(SideReference::SideTwo_1);
         }
-        MoveChoice::MoveTera(move_index) => {
+        MoveChoice::MoveTera(move_index, target) => {
             side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
             side_two_1_choice.move_index = *move_index;
+            side_two_1_choice.target_side = target.resolve(SideReference::SideTwo_1);
             s2_1_tera = true;
         }
-        MoveChoice::MoveMega(move_index) => {
+        MoveChoice::MoveMega(move_index, target) => {
             side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
             side_two_1_choice.move_index = *move_index;
+            side_two_1_choice.target_side = target.resolve(SideReference::SideTwo_1);
             s2_1_mega = true;
         }
         MoveChoice::None => {
@@ -4133,18 +4125,21 @@ pub fn generate_instructions_from_move_pair(
             side_two_2_choice.switch_id = *switch_id;
             side_two_2_choice.category = MoveCategory::Switch;
         }
-        MoveChoice::Move(move_index) => {
+        MoveChoice::Move(move_index, target) => {
             side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
             side_two_2_choice.move_index = *move_index;
+            side_two_2_choice.target_side = target.resolve(SideReference::SideTwo_2);
         }
-        MoveChoice::MoveTera(move_index) => {
+        MoveChoice::MoveTera(move_index, target) => {
             side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
             side_two_2_choice.move_index = *move_index;
+            side_two_2_choice.target_side = target.resolve(SideReference::SideTwo_2);
             s2_2_tera = true;
         }
-        MoveChoice::MoveMega(move_index) => {
+        MoveChoice::MoveMega(move_index, target) => {
             side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
             side_two_2_choice.move_index = *move_index;
+            side_two_2_choice.target_side = target.resolve(SideReference::SideTwo_2);
             s2_2_mega = true;
         }
         MoveChoice::None => {
@@ -4200,16 +4195,16 @@ pub fn generate_instructions_from_move_pair(
             ));
     }
     if s1_1_mega {
-        mega_evolve(state, SideReference::SideOne, &mut incoming_instructions);
+        mega_evolve(state, SideReference::SideOne_1, &mut incoming_instructions);
     }
     if s2_1_mega {
-        mega_evolve(state, SideReference::SideTwo, &mut incoming_instructions);
+        mega_evolve(state, SideReference::SideTwo_1, &mut incoming_instructions);
     }
     if s1_2_mega {
-        mega_evolve(state, SideReference::SideOne, &mut incoming_instructions);
+        mega_evolve(state, SideReference::SideOne_2, &mut incoming_instructions);
     }
     if s2_2_mega {
-        mega_evolve(state, SideReference::SideTwo, &mut incoming_instructions);
+        mega_evolve(state, SideReference::SideTwo_2, &mut incoming_instructions);
     }
 
     modify_choice_priority(&state, &SideReference::SideOne_1, &mut side_one_1_choice);
@@ -4220,110 +4215,49 @@ pub fn generate_instructions_from_move_pair(
     // reverse instructions because mega-evolving might've added some
     state.reverse_instructions(&incoming_instructions.instruction_list);
 
-    match moves_first(
-        &state,
-        &side_one_choice,
-        &side_two_choice,
-        &mut incoming_instructions,
-    ) {
-        SideMovesFirst::SideOne => {
-            handle_both_moves(
-                state,
-                &mut side_one_choice,
-                &mut side_two_choice,
-                SideReference::SideOne,
-                incoming_instructions,
-                &mut state_instructions_vec,
-                branch_on_damage,
-            );
+    // Determine the order all four slots act in this turn (switches first, then priority
+    // bracket, then effective speed; Trick Room flips the speed comparison). Speed ties are
+    // broken deterministically by slot order (no probability branching).
+    let order = move_order(
+        state,
+        &side_one_1_choice,
+        &side_one_2_choice,
+        &side_two_1_choice,
+        &side_two_2_choice,
+    );
 
-            for state_instruction in state_instructions_vec.iter_mut() {
-                state.apply_instructions(&state_instruction.instruction_list);
-                if !(s1_replacing_fainted_pkmn
-                    || s2_replacing_fainted_pkmn
-                    || state.side_one.force_switch
-                    || state.side_two.force_switch)
-                {
-                    add_end_of_turn_instructions(state, state_instruction, &SideReference::SideOne);
-                }
-                state.reverse_instructions(&state_instruction.instruction_list);
-            }
+    let choices = [
+        (SideReference::SideOne_1, side_one_1_choice),
+        (SideReference::SideOne_2, side_one_2_choice),
+        (SideReference::SideTwo_1, side_two_1_choice),
+        (SideReference::SideTwo_2, side_two_2_choice),
+    ];
+
+    run_actions_in_order(
+        state,
+        &order,
+        &choices,
+        incoming_instructions,
+        &mut state_instructions_vec,
+        branch_on_damage,
+    );
+
+    let any_replacing_fainted = s1_1_replacing_fainted_pkmn
+        || s1_2_replacing_fainted_pkmn
+        || s2_1_replacing_fainted_pkmn
+        || s2_2_replacing_fainted_pkmn;
+    let first_move_side = order[0];
+    for state_instruction in state_instructions_vec.iter_mut() {
+        state.apply_instructions(&state_instruction.instruction_list);
+        if !(any_replacing_fainted
+            || state.side_one_1.force_switch
+            || state.side_one_2.force_switch
+            || state.side_two_1.force_switch
+            || state.side_two_2.force_switch)
+        {
+            add_end_of_turn_instructions(state, state_instruction, &first_move_side);
         }
-        SideMovesFirst::SideTwo => {
-            handle_both_moves(
-                state,
-                &mut side_two_choice,
-                &mut side_one_choice,
-                SideReference::SideTwo,
-                incoming_instructions,
-                &mut state_instructions_vec,
-                branch_on_damage,
-            );
-            for state_instruction in state_instructions_vec.iter_mut() {
-                state.apply_instructions(&state_instruction.instruction_list);
-                if !(s1_replacing_fainted_pkmn
-                    || s2_replacing_fainted_pkmn
-                    || state.side_one.force_switch
-                    || state.side_two.force_switch)
-                {
-                    add_end_of_turn_instructions(state, state_instruction, &SideReference::SideTwo);
-                }
-                state.reverse_instructions(&state_instruction.instruction_list);
-            }
-        }
-        SideMovesFirst::SpeedTie => {
-            let mut side_one_moves_first_instruction = incoming_instructions.clone();
-            incoming_instructions.update_percentage(0.5);
-            side_one_moves_first_instruction.update_percentage(0.5);
-
-            // side_one moves first
-            handle_both_moves(
-                state,
-                &mut side_one_choice,
-                &mut side_two_choice,
-                SideReference::SideOne,
-                side_one_moves_first_instruction,
-                &mut state_instructions_vec,
-                branch_on_damage,
-            );
-            for state_instruction in state_instructions_vec.iter_mut() {
-                state.apply_instructions(&state_instruction.instruction_list);
-                if !(s1_replacing_fainted_pkmn
-                    || s2_replacing_fainted_pkmn
-                    || state.side_one.force_switch
-                    || state.side_two.force_switch)
-                {
-                    add_end_of_turn_instructions(state, state_instruction, &SideReference::SideOne);
-                }
-                state.reverse_instructions(&state_instruction.instruction_list);
-            }
-
-            // side_two moves first
-            let mut side_two_moves_first_si = Vec::with_capacity(4);
-            handle_both_moves(
-                state,
-                &mut side_two_choice,
-                &mut side_one_choice,
-                SideReference::SideTwo,
-                incoming_instructions,
-                &mut side_two_moves_first_si,
-                branch_on_damage,
-            );
-            for state_instruction in side_two_moves_first_si.iter_mut() {
-                state.apply_instructions(&state_instruction.instruction_list);
-                if !(s1_replacing_fainted_pkmn
-                    || s2_replacing_fainted_pkmn
-                    || state.side_one.force_switch
-                    || state.side_two.force_switch)
-                {
-                    add_end_of_turn_instructions(state, state_instruction, &SideReference::SideTwo);
-                }
-                state.reverse_instructions(&state_instruction.instruction_list);
-            }
-
-            // combine both vectors into the final vector
-            state_instructions_vec.extend(side_two_moves_first_si);
-        }
+        state.reverse_instructions(&state_instruction.instruction_list);
     }
     state_instructions_vec
 }
@@ -4441,13 +4375,13 @@ pub fn calculate_both_damage_rolls(
 
     let damages_dealt_s1 = calculate_damage_rolls(
         state.clone(),
-        &SideReference::SideOne,
+        &SideReference::SideOne_1,
         s1_choice.clone(),
         &s2_choice,
     );
     let damages_dealt_s2 = calculate_damage_rolls(
         state.clone(),
-        &SideReference::SideTwo,
+        &SideReference::SideTwo_1,
         s2_choice,
         &s1_choice,
     );

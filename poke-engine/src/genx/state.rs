@@ -1,7 +1,7 @@
 use super::abilities::Abilities;
 use super::choice_effects::charge_volatile_to_choice;
 use super::items::Items;
-use crate::choices::{Choices, MoveCategory};
+use crate::choices::{Choices, MoveCategory, MoveTarget};
 use crate::define_enum_with_from_str;
 use crate::instruction::BoostInstruction;
 use crate::instruction::{
@@ -41,27 +41,125 @@ fn multiply_boost(boost_num: i8, stat_value: i16) -> i16 {
     }
 }
 
+/// Which slot a chosen move is aimed at, relative to the user. Resolved to an absolute
+/// `SideReference` at move-resolution time. `DiagonalOpponent` is the slot directly across
+/// (the singles default); for non-`Opponent` moves the value is a don't-care and execution
+/// derives real targets from the move's `MoveTarget`.
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
+pub enum RelativeTarget {
+    DiagonalOpponent,
+    OtherOpponent,
+    Ally,
+    User,
+}
+
+impl Default for RelativeTarget {
+    fn default() -> Self {
+        RelativeTarget::DiagonalOpponent
+    }
+}
+
+impl RelativeTarget {
+    /// Resolve to the absolute slot being targeted, given the attacker's slot.
+    pub fn resolve(&self, attacker: SideReference) -> SideReference {
+        match self {
+            RelativeTarget::DiagonalOpponent => attacker.get_other_side(),
+            RelativeTarget::OtherOpponent => attacker.get_other_side().get_ally(),
+            RelativeTarget::Ally => attacker.get_ally(),
+            RelativeTarget::User => attacker,
+        }
+    }
+    /// Short token used in `to_string`/`from_string`. `DiagonalOpponent` serializes to
+    /// the empty string so the common (singles-equivalent) case displays unchanged.
+    pub fn serialize(&self) -> &'static str {
+        match self {
+            RelativeTarget::DiagonalOpponent => "",
+            RelativeTarget::OtherOpponent => "opp2",
+            RelativeTarget::Ally => "ally",
+            RelativeTarget::User => "self",
+        }
+    }
+    pub fn deserialize(s: &str) -> Option<RelativeTarget> {
+        match s {
+            "" | "opp" => Some(RelativeTarget::DiagonalOpponent),
+            "opp2" => Some(RelativeTarget::OtherOpponent),
+            "ally" => Some(RelativeTarget::Ally),
+            "self" => Some(RelativeTarget::User),
+            _ => None,
+        }
+    }
+}
+
+/// The relative target options to offer for a move with the given inherent `MoveTarget`,
+/// considering which opponents are alive. Single-target `Opponent` moves yield one option
+/// per living opponent; everything else collapses to a single don't-care target.
+fn relative_targets_for(
+    move_target: &MoveTarget,
+    diag_opp_alive: bool,
+    other_opp_alive: bool,
+) -> Vec<RelativeTarget> {
+    match move_target {
+        MoveTarget::Opponent => {
+            let mut targets = Vec::with_capacity(2);
+            if diag_opp_alive {
+                targets.push(RelativeTarget::DiagonalOpponent);
+            }
+            if other_opp_alive {
+                targets.push(RelativeTarget::OtherOpponent);
+            }
+            // If neither opponent is alive the move can't pick a target; fall back to the
+            // diagonal so a (failing) option still exists.
+            if targets.is_empty() {
+                targets.push(RelativeTarget::DiagonalOpponent);
+            }
+            targets
+        }
+        // User / Opponents / All: no per-target choice. Execution derives the real
+        // target(s) from the move's `MoveTarget`; the stored value is a don't-care.
+        MoveTarget::User | MoveTarget::Opponents | MoveTarget::All => {
+            vec![RelativeTarget::DiagonalOpponent]
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
 pub enum MoveChoice {
-    MoveTera(PokemonMoveIndex),
-    MoveMega(PokemonMoveIndex),
-    Move(PokemonMoveIndex),
+    MoveTera(PokemonMoveIndex, RelativeTarget),
+    MoveMega(PokemonMoveIndex, RelativeTarget),
+    Move(PokemonMoveIndex, RelativeTarget),
     Switch(PokemonIndex),
     None,
 }
 
 impl MoveChoice {
+    fn target_suffix(target: &RelativeTarget) -> String {
+        let token = target.serialize();
+        if token.is_empty() {
+            String::new()
+        } else {
+            format!(" {}", token)
+        }
+    }
     pub fn to_string(&self, side: &Side) -> String {
         match self {
-            MoveChoice::MoveTera(index) => {
-                format!("{}-tera", side.get_active_immutable().moves[&index].id).to_lowercase()
-            }
-            MoveChoice::MoveMega(index) => {
-                format!("{}-mega", side.get_active_immutable().moves[&index].id).to_lowercase()
-            }
-            MoveChoice::Move(index) => {
-                format!("{}", side.get_active_immutable().moves[&index].id).to_lowercase()
-            }
+            MoveChoice::MoveTera(index, target) => format!(
+                "{}-tera{}",
+                side.get_active_immutable().moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
+            MoveChoice::MoveMega(index, target) => format!(
+                "{}-mega{}",
+                side.get_active_immutable().moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
+            MoveChoice::Move(index, target) => format!(
+                "{}{}",
+                side.get_active_immutable().moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
             MoveChoice::Switch(index) => format!("{}", side.pokemon[*index].id).to_lowercase(),
             MoveChoice::None => "No Move".to_string(),
         }
@@ -71,6 +169,16 @@ impl MoveChoice {
         if s == "none" {
             return Some(MoveChoice::None);
         }
+
+        // Split off a trailing relative-target token if present
+        // (e.g. "tackle opp2" -> move "tackle", target OtherOpponent).
+        let (s, target) = match s.rsplit_once(' ') {
+            Some((rest, last)) => match RelativeTarget::deserialize(last) {
+                Some(t) => (rest.to_string(), t),
+                None => (s, RelativeTarget::DiagonalOpponent),
+            },
+            None => (s, RelativeTarget::DiagonalOpponent),
+        };
 
         let mut pkmn_iter = side.pokemon.into_iter();
         while let Some(pkmn) = pkmn_iter.next() {
@@ -90,20 +198,20 @@ impl MoveChoice {
             move_name = move_name[..move_name.len() - 5].to_string();
             while let Some(mv) = move_iter.next() {
                 if format!("{:?}", mv.id).to_lowercase() == move_name {
-                    return Some(MoveChoice::MoveTera(move_iter.pokemon_move_index));
+                    return Some(MoveChoice::MoveTera(move_iter.pokemon_move_index, target));
                 }
             }
         } else if move_name.ends_with("-mega") {
             move_name = move_name[..move_name.len() - 5].to_string();
             while let Some(mv) = move_iter.next() {
                 if format!("{:?}", mv.id).to_lowercase() == move_name {
-                    return Some(MoveChoice::MoveMega(move_iter.pokemon_move_index));
+                    return Some(MoveChoice::MoveMega(move_iter.pokemon_move_index, target));
                 }
             }
         } else {
             while let Some(mv) = move_iter.next() {
                 if format!("{:?}", mv.id).to_lowercase() == move_name {
-                    return Some(MoveChoice::Move(move_iter.pokemon_move_index));
+                    return Some(MoveChoice::Move(move_iter.pokemon_move_index, target));
                 }
             }
         }
@@ -336,7 +444,10 @@ impl Pokemon {
         encored: bool,
         taunted: bool,
         can_tera: bool,
+        diag_opp_alive: bool,
+        other_opp_alive: bool,
     ) {
+        let can_mega = self.can_mega_evolve();
         let mut iter = self.moves.into_iter();
         while let Some(p) = iter.next() {
             if !p.disabled && p.pp > 0 {
@@ -362,12 +473,18 @@ impl Pokemon {
                 {
                     continue;
                 }
-                vec.push(MoveChoice::Move(iter.pokemon_move_index));
-                if can_tera {
-                    vec.push(MoveChoice::MoveTera(iter.pokemon_move_index));
-                }
-                if self.can_mega_evolve() {
-                    vec.push(MoveChoice::MoveMega(iter.pokemon_move_index));
+                let mv_index = iter.pokemon_move_index;
+                // In doubles a single-target move can be aimed at either living opponent;
+                // spread/self/field moves collapse to one (don't-care) target.
+                for target in relative_targets_for(&p.choice.target, diag_opp_alive, other_opp_alive)
+                {
+                    vec.push(MoveChoice::Move(mv_index, target));
+                    if can_tera {
+                        vec.push(MoveChoice::MoveTera(mv_index, target));
+                    }
+                    if can_mega {
+                        vec.push(MoveChoice::MoveMega(mv_index, target));
+                    }
                 }
             }
         }
@@ -377,7 +494,10 @@ impl Pokemon {
         let mut iter = self.moves.into_iter();
         while let Some(p) = iter.next() {
             if p.id == choice {
-                vec.push(MoveChoice::Move(iter.pokemon_move_index));
+                vec.push(MoveChoice::Move(
+                    iter.pokemon_move_index,
+                    RelativeTarget::DiagonalOpponent,
+                ));
             }
         }
     }
@@ -869,7 +989,7 @@ impl State {
 
         if self.side_one_1.force_trapped {
             s1_1_options.retain(|x| match x {
-                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Move(..) | MoveChoice::MoveTera(..) | MoveChoice::MoveMega(..) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
@@ -890,11 +1010,13 @@ impl State {
                 encored,
                 taunted,
                 self.side_one_1.can_use_tera(),
+                self.side_two_1.get_active_immutable().hp > 0,
+                self.side_two_2.get_active_immutable().hp > 0,
             );
         }
         if self.side_one_2.force_trapped {
             s1_2_options.retain(|x| match x {
-                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Move(..) | MoveChoice::MoveTera(..) | MoveChoice::MoveMega(..) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
@@ -915,12 +1037,14 @@ impl State {
                 encored,
                 taunted,
                 self.side_one_2.can_use_tera(),
+                self.side_two_2.get_active_immutable().hp > 0,
+                self.side_two_1.get_active_immutable().hp > 0,
             );
         }
 
         if self.side_two_1.force_trapped {
             s2_1_options.retain(|x| match x {
-                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Move(..) | MoveChoice::MoveTera(..) | MoveChoice::MoveMega(..) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
@@ -941,11 +1065,13 @@ impl State {
                 encored,
                 taunted,
                 self.side_two_1.can_use_tera(),
+                self.side_one_1.get_active_immutable().hp > 0,
+                self.side_one_2.get_active_immutable().hp > 0,
             );
         }
         if self.side_two_2.force_trapped {
             s2_2_options.retain(|x| match x {
-                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Move(..) | MoveChoice::MoveTera(..) | MoveChoice::MoveMega(..) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
@@ -966,6 +1092,8 @@ impl State {
                 encored,
                 taunted,
                 self.side_two_2.can_use_tera(),
+                self.side_one_2.get_active_immutable().hp > 0,
+                self.side_one_1.get_active_immutable().hp > 0,
             );
         }
 
@@ -1144,27 +1272,31 @@ impl State {
             return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
         }
 
-        add_actions_for_slot(
+        Self::add_actions_for_slot(
             &self.side_one_1,
             &self.side_two_1,
+            &self.side_two_2,
             &mut side_one_1_options,
         );
 
-        add_actions_for_slot(
+        Self::add_actions_for_slot(
             &self.side_one_2,
             &self.side_two_2,
+            &self.side_two_1,
             &mut side_one_2_options,
         );
 
-        add_actions_for_slot(
+        Self::add_actions_for_slot(
             &self.side_two_1,
             &self.side_one_1,
+            &self.side_one_2,
             &mut side_two_1_options,
         );
 
-        add_actions_for_slot(
+        Self::add_actions_for_slot(
             &self.side_two_2,
             &self.side_one_2,
+            &self.side_one_1,
             &mut side_two_2_options,
         );
 
@@ -1173,17 +1305,21 @@ impl State {
 
     fn add_actions_for_slot(
         slot: &Side,
-        opponent_1: &Side,
-        opponent_2: &Side,
+        diagonal_opp: &Side,
+        other_opp: &Side,
         options: &mut Vec<MoveChoice>,
     ) {
+        let diag_opp_alive = diagonal_opp.get_active_immutable().hp > 0;
+        let other_opp_alive = other_opp.get_active_immutable().hp > 0;
         if slot
             .volatile_statuses
             .contains(&PokemonVolatileStatus::MUSTRECHARGE)
         {
             options.push(MoveChoice::None);
         } else if let Some(mv_index) = slot.active_is_charging_move() {
-            options.push(MoveChoice::Move(mv_index));
+            // A locked-in charging move keeps the target it was launched at; we don't
+            // track that yet, so default to the diagonal opponent.
+            options.push(MoveChoice::Move(mv_index, RelativeTarget::DiagonalOpponent));
         } else {
             let encored = slot
                 .volatile_statuses
@@ -1199,9 +1335,13 @@ impl State {
                 encored,
                 taunted,
                 slot.can_use_tera(),
+                diag_opp_alive,
+                other_opp_alive,
             );
 
-            if !(slot.trapped(opponent_1.get_active_immutable()) || slot.trapped(opponent_2.get_active_immutable())) {
+            if !(slot.trapped(diagonal_opp.get_active_immutable())
+                || slot.trapped(other_opp.get_active_immutable()))
+            {
                 slot.add_switches(options);
             }
         }

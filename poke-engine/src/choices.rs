@@ -2,7 +2,7 @@ use crate::define_enum_with_from_str;
 use crate::engine::state::PokemonVolatileStatus;
 use crate::state::{
     PokemonBoostableStat, PokemonIndex, PokemonMoveIndex, PokemonSideCondition, PokemonStatus,
-    PokemonType,
+    PokemonType, SideReference,
 };
 use std::collections::HashMap;
 use std::fmt;
@@ -1699,7 +1699,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
             base_power: 140.0,
             category: MoveCategory::Special,
             move_type: PokemonType::NORMAL,
-            target: MoveTarget::All
+            target: MoveTarget::All,
             flags: Flags {
                 protect: true,
                 sound: true,
@@ -20522,6 +20522,11 @@ pub struct Choice {
 
     pub target: MoveTarget,
 
+    /// The resolved defending slot chosen for this move this turn (doubles targeting).
+    /// Set at move-resolution time from the player's `RelativeTarget`; defaults to the
+    /// diagonal opponent. Spread/field moves ignore this and derive targets from `target`.
+    pub target_side: SideReference,
+
     pub first_move: bool,
     pub sleep_talk_move: bool,
 }
@@ -20651,6 +20656,7 @@ impl Default for Choice {
             side_condition: None,
             secondaries: None,
             target: MoveTarget::Opponent,
+            target_side: SideReference::SideTwo_1,
             first_move: true,
             sleep_talk_move: false,
         }

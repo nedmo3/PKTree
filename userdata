@@ -1,0 +1,6 @@
+sudo apt update
+sudo apt -y install nodejs npm git
+git clone https://github.com/nedmo3/PKTree.git
+cd PKTree/pokemon-showdown
+mkdir -p logs/{chat,repl,ladder,modlog}
+node pokemon-showdown

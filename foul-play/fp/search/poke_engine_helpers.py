@@ -155,19 +155,12 @@ def battler_to_poke_engine_side(
                     )
                 )
 
-    # Build the Pokemon list: active, active_right (if doubles), and reserves
-    # For doubles battles, active_right must be included so moves tracked for both active Pokemon
-    # are properly represented when building the battle state
-    pokemon_list = [pokemon_to_poke_engine_pkmn(battler.active)]
-    if battler.active_right is not None:
-        pokemon_list.append(pokemon_to_poke_engine_pkmn(battler.active_right))
-    pokemon_list += [pokemon_to_poke_engine_pkmn(p) for p in battler.reserve]
-
     side = PokeEngineSide(
         active_index="0",
         baton_passing=battler.baton_passing,
         shed_tailing=battler.shed_tailing,
-        pokemon=pokemon_list,
+        pokemon=[pokemon_to_poke_engine_pkmn(battler.active)]
+        + [pokemon_to_poke_engine_pkmn(p) for p in battler.reserve],
         side_conditions=PokeEngineSideConditions(
             aurora_veil=battler.side_conditions[constants.AURORA_VEIL],
             crafty_shield=battler.side_conditions["craftyshield"],
@@ -303,32 +296,44 @@ def battle_to_poke_engine_state(battle: Battle, swap=False):
     # this is toggled to True if we did, and signifies to the engine that the opponent has
     # selected a move and that should be accounted for in the search
     opponent_switchout_move_stayed_in = False
-    bot_lum = battle.user.last_used_move
-    opp_lum = battle.opponent.last_used_move
-    if bot_lum.move in constants.SWITCH_OUT_MOVES and opp_lum.turn != bot_lum.turn:
+    bot_lum_1 = battle.user_1.last_used_move
+    bot_lum_2 = battle.user_2.last_used_move
+    opp_lum_1 = battle.opponent_1.last_used_move
+    opp_lum_2 = battle.opponent_2.last_used_move
+    if bot_lum_1.move in constants.SWITCH_OUT_MOVES and opp_lum_1.turn != bot_lum_1.turn:
+        opponent_switchout_move_stayed_in = True
+    elif bot_lum_2.move in constants.SWITCH_OUT_MOVES and opp_lum_2.turn != bot_lum_2.turn:
         opponent_switchout_move_stayed_in = True
 
-    if battle.opponent.last_used_move.move == constants.HIDDEN_POWER:
-        replace_hidden_power_last_used_move(battle.opponent)
-    elif battle.opponent.last_used_move.move == "return":
-        replace_return_last_used_move(battle.opponent)
+    if battle.opponent_1.last_used_move.move == constants.HIDDEN_POWER:
+        replace_hidden_power_last_used_move(battle.opponent_1)
+    elif battle.opponent_1.last_used_move.move == "return":
+        replace_return_last_used_move(battle.opponent_1)
+    if battle.opponent_2.last_used_move.move == constants.HIDDEN_POWER:
+        replace_hidden_power_last_used_move(battle.opponent_2)
+    elif battle.opponent_2.last_used_move.move == "return":
+        replace_return_last_used_move(battle.opponent_2)
 
-    if battle.user.last_used_move.move == constants.HIDDEN_POWER:
-        replace_hidden_power_last_used_move(battle.user)
-    if battle.user.last_used_move.move == "return":
-        replace_return_last_used_move(battle.user)
+    if battle.user_1.last_used_move.move == constants.HIDDEN_POWER:
+        replace_hidden_power_last_used_move(battle.user_1)
+    elif battle.user_1.last_used_move.move == "return":
+        replace_return_last_used_move(battle.user_1)
+    if battle.user_2.last_used_move.move == constants.HIDDEN_POWER:
+        replace_hidden_power_last_used_move(battle.user_2)
+    elif battle.user_2.last_used_move.move == "return":
+        replace_return_last_used_move(battle.user_2)
 
     side_one = battler_to_poke_engine_side(
-        battle.user, force_switch=battle.force_switch
+        battle.user_1, force_switch=battle.force_switch
     )
     side_two = battler_to_poke_engine_side(
-        battle.opponent, stayed_in_on_switchout_move=opponent_switchout_move_stayed_in
+        battle.opponent_1, stayed_in_on_switchout_move=opponent_switchout_move_stayed_in
     )
 
     if swap:
         side_one, side_two = side_two, side_one
 
-    state = PokeEngineState(
+    state = PokeEngineState( #TODO pokeEngineState may need revamped to account for doubles
         side_one=side_one,
         side_two=side_two,
         weather=get_weather_string(battle.weather),

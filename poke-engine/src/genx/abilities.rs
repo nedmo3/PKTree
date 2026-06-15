@@ -347,6 +347,10 @@ define_enum_with_from_str! {
         WELLBAKEDBODY,
         WINDPOWER,
         ZEROTOHERO,
+        MEGASOL,
+        DRAGONIZE,
+        SPICYSPRAY,
+        PIERCINGDRILL,
     },
     default = NONE
 }
@@ -977,7 +981,7 @@ pub fn ability_after_damage_hit(
         }
         Abilities::PERISHBODY => {
             if damage_dealt > 0 && choice.flags.contact {
-                for side_ref in [SideReference::SideOne, SideReference::SideTwo] {
+                for side_ref in [SideReference::SideOne_1, SideReference::SideOne_2, SideReference::SideTwo_1, SideReference::SideTwo_2] {
                     let side = state.get_side(&side_ref);
                     let pkmn = side.get_active();
                     if pkmn.hp != 0
@@ -1664,77 +1668,149 @@ pub fn ability_on_switch_in(
             }
         }
         Abilities::SCREENCLEANER => {
-            if state.side_one.side_conditions.reflect > 0 {
+            if state.side_one_1.side_conditions.reflect > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideOne,
+                            side_ref: SideReference::SideOne_1,
                             side_condition: PokemonSideCondition::Reflect,
-                            amount: -1 * state.side_one.side_conditions.reflect,
+                            amount: -1 * state.side_one_1.side_conditions.reflect,
                         },
                     ));
-                state.side_one.side_conditions.reflect = 0;
+                state.side_one_1.side_conditions.reflect = 0;
             }
-            if state.side_two.side_conditions.reflect > 0 {
+            if state.side_one_2.side_conditions.reflect > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideTwo,
+                            side_ref: SideReference::SideOne_2,
                             side_condition: PokemonSideCondition::Reflect,
-                            amount: -1 * state.side_two.side_conditions.reflect,
+                            amount: -1 * state.side_one_2.side_conditions.reflect,
                         },
                     ));
-                state.side_two.side_conditions.reflect = 0;
+                state.side_one_2.side_conditions.reflect = 0;
             }
-            if state.side_one.side_conditions.light_screen > 0 {
+            if state.side_two_1.side_conditions.reflect > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideOne,
+                            side_ref: SideReference::SideTwo_1,
+                            side_condition: PokemonSideCondition::Reflect,
+                            amount: -1 * state.side_two_1.side_conditions.reflect,
+                        },
+                    ));
+                state.side_two_1.side_conditions.reflect = 0;
+            }
+            if state.side_two_2.side_conditions.reflect > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideTwo_2,
+                            side_condition: PokemonSideCondition::Reflect,
+                            amount: -1 * state.side_two_2.side_conditions.reflect,
+                        },
+                    ));
+                state.side_two_2.side_conditions.reflect = 0;
+            }
+            if state.side_one_1.side_conditions.light_screen > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideOne_1,
                             side_condition: PokemonSideCondition::LightScreen,
-                            amount: -1 * state.side_one.side_conditions.light_screen,
+                            amount: -1 * state.side_one_1.side_conditions.light_screen,
                         },
                     ));
-                state.side_one.side_conditions.light_screen = 0;
+                state.side_one_1.side_conditions.light_screen = 0;
             }
-            if state.side_two.side_conditions.light_screen > 0 {
+            if state.side_one_2.side_conditions.light_screen > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideTwo,
+                            side_ref: SideReference::SideOne_2,
                             side_condition: PokemonSideCondition::LightScreen,
-                            amount: -1 * state.side_two.side_conditions.light_screen,
+                            amount: -1 * state.side_one_2.side_conditions.light_screen,
                         },
                     ));
-                state.side_two.side_conditions.light_screen = 0;
+                state.side_one_2.side_conditions.light_screen = 0;
             }
-            if state.side_one.side_conditions.aurora_veil > 0 {
+            if state.side_two_1.side_conditions.light_screen > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideOne,
-                            side_condition: PokemonSideCondition::AuroraVeil,
-                            amount: -1 * state.side_one.side_conditions.aurora_veil,
+                            side_ref: SideReference::SideTwo_1,
+                            side_condition: PokemonSideCondition::LightScreen,
+                            amount: -1 * state.side_two_1.side_conditions.light_screen,
                         },
                     ));
-                state.side_one.side_conditions.aurora_veil = 0;
+                state.side_two_1.side_conditions.light_screen = 0;
             }
-            if state.side_two.side_conditions.aurora_veil > 0 {
+            if state.side_two_2.side_conditions.light_screen > 0 {
                 instructions
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: SideReference::SideTwo,
-                            side_condition: PokemonSideCondition::AuroraVeil,
-                            amount: -1 * state.side_two.side_conditions.aurora_veil,
+                            side_ref: SideReference::SideTwo_2,
+                            side_condition: PokemonSideCondition::LightScreen,
+                            amount: -1 * state.side_two_2.side_conditions.light_screen,
                         },
                     ));
-                state.side_two.side_conditions.aurora_veil = 0;
+                state.side_two_2.side_conditions.light_screen = 0;
+            }
+            if state.side_one_1.side_conditions.aurora_veil > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideOne_1,
+                            side_condition: PokemonSideCondition::AuroraVeil,
+                            amount: -1 * state.side_one_1.side_conditions.aurora_veil,
+                        },
+                    ));
+                state.side_one_1.side_conditions.aurora_veil = 0;
+            }
+            if state.side_one_2.side_conditions.aurora_veil > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideOne_2,
+                            side_condition: PokemonSideCondition::AuroraVeil,
+                            amount: -1 * state.side_one_2.side_conditions.aurora_veil,
+                        },
+                    ));
+                state.side_one_2.side_conditions.aurora_veil = 0;
+            }
+            if state.side_two_1.side_conditions.aurora_veil > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideTwo_1,
+                            side_condition: PokemonSideCondition::AuroraVeil,
+                            amount: -1 * state.side_two_1.side_conditions.aurora_veil,
+                        },
+                    ));
+                state.side_two_1.side_conditions.aurora_veil = 0;
+            }
+            if state.side_two_2.side_conditions.aurora_veil > 0 {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSideCondition(
+                        ChangeSideConditionInstruction {
+                            side_ref: SideReference::SideTwo_2,
+                            side_condition: PokemonSideCondition::AuroraVeil,
+                            amount: -1 * state.side_two_2.side_conditions.aurora_veil,
+                        },
+                    ));
+                state.side_two_2.side_conditions.aurora_veil = 0;
             }
         }
         Abilities::SNOWWARNING => {
@@ -1971,6 +2047,9 @@ pub fn ability_modify_attack_being_used(
             if attacker_choice.crash.is_some() || attacker_choice.recoil.is_some() {
                 attacker_choice.base_power *= 1.2;
             }
+        }
+        Abilities::ROCKHEAD => {
+            attacker_choice.recoil = None;
         }
         Abilities::HUGEPOWER => {
             if attacker_choice.category == MoveCategory::Physical {

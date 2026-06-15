@@ -73,6 +73,7 @@ ULTRA_BURST = "ultra"
 MEGA = "mega"
 
 ACTIVE = "active"
+ALLY = "ally"
 
 PRIORITY = "priority"
 STATS = "stats"

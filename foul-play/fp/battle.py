@@ -60,8 +60,10 @@ boost_multiplier_lookup = {
 class Battle:
     def __init__(self, battle_tag):
         self.battle_tag = battle_tag
-        self.user = Battler()
-        self.opponent = Battler()
+        self.user_1 = Battler()
+        self.user_2 = Battler()
+        self.opponent_1 = Battler()
+        self.opponent_2 = Battler()
         self.weather = None
         self.weather_turns_remaining = -1
         self.weather_source = ""
@@ -89,8 +91,10 @@ class Battle:
         self.msg_list = []
 
     def initialize_team_preview(self, opponent_pokemon, battle_type):
-        self.user.reserve.insert(0, self.user.active)
-        self.user.active = None
+        self.user_1.reserve.insert(0, self.user_1.active)
+        self.user_1.active = None
+        self.user_2.reserve.insert(0, self.user_2.active)
+        self.user_2.active = None
 
         for pkmn_string in opponent_pokemon:
             pokemon = Pokemon.from_switch_string(pkmn_string)
@@ -107,18 +111,19 @@ class Battle:
             elif pkmn_string.endswith("-*"):
                 pokemon.unknown_forme = True
 
-            self.opponent.reserve.append(pokemon)
+            self.opponent_1.reserve.append(pokemon)
 
         self.started = True
 
     def during_team_preview(self): ...
 
     def start_non_team_preview_battle(self, user_json, opponent_switch_string):
-        self.user.initialize_first_turn_user_from_json(user_json)
+        self.user_1.initialize_first_turn_user_from_json(user_json)
+        self.user_2.initialize_first_turn_user_from_json(user_json, ally=True)
 
         pkmn_information = opponent_switch_string.split("|")[3]
         pkmn = Pokemon.from_switch_string(pkmn_information)
-        self.opponent.active = pkmn
+        self.opponent_1.active = pkmn
 
         self.started = True
         self.rqid = user_json[constants.RQID]
@@ -181,7 +186,6 @@ class Battle:
 class Battler:
     def __init__(self):
         self.active = None
-        self.active_right = None  # For doubles battles: second active Pokemon
         self.reserve = []
         self.side_conditions = defaultdict(lambda: 0)
 
@@ -202,16 +206,6 @@ class Battler:
         #   a move but gets knocked out before it can use it
         self.last_selected_move = LastUsedMove("", "", 0)
         self.last_used_move = LastUsedMove("", "", 0)
-    
-    def is_doubles(self):
-        """Check if this is a doubles battle (has two active Pokemon)."""
-        return self.active_right is not None
-    
-    def get_active_pokemon(self):
-        """Get list of active Pokemon (1 for singles, 2 for doubles)."""
-        if self.active_right is not None:
-            return [self.active, self.active_right]
-        return [self.active] if self.active else []
 
     def possible_mega_evolutions(self):
         result = {}
@@ -312,86 +306,88 @@ class Battler:
         self.taunt_lock_moves()
         self.locked_move_lock()
 
-    def _initialize_pokemon_moves_from_request_json(self, pokemon, request_json, active_index):
-        """
-        Initialize moves and abilities for a specific active Pokemon.
+    def get_active_json(self, request_json, ally=False) :
+        active_pkmn = None
+        if not ally :
+            active_pkmn = request_json[constants.ACTIVE][0]
+        else :
+            pkmn = request_json[constants.ALLY][constants.POKEMON]
+            for p in pkmn : 
+                if p[constants.ACTIVE] :
+                    active_pkmn = p
+                    break
+        return active_pkmn
+
+    def _initialize_user_active_from_request_json(self, request_json, ally=False):
+
+        active_pkmn = self.get_active_json(request_json, ally)
+        logger.debug("Initializing active pokemon from request JSON: {}".format(active_pkmn))
         
-        Args:
-            pokemon: The Pokemon object to update (self.active or self.active_right)
-            request_json: The full request JSON from the server
-            active_index: Which active Pokemon (0 for left/active, 1 for right/active_right)
-        """
-        if active_index >= len(request_json[constants.ACTIVE]):
-            logger.warning(
-                f"Requested active index {active_index} but only {len(request_json[constants.ACTIVE])} active Pokemon in request JSON"
-            )
-            return
-            
-        active_data = request_json[constants.ACTIVE][active_index]
-        
-        pokemon.can_mega_evo = active_data.get(constants.CAN_MEGA_EVO, False)
-        pokemon.can_ultra_burst = active_data.get(constants.CAN_ULTRA_BURST, False)
-        pokemon.can_dynamax = active_data.get(constants.CAN_DYNAMAX, False)
-        pokemon.can_terastallize = active_data.get(constants.CAN_TERASTALLIZE, False)
+        self.active.can_mega_evo = active_pkmn.get(
+            constants.CAN_MEGA_EVO, False
+        )
+        self.active.can_ultra_burst = active_pkmn.get(
+            constants.CAN_ULTRA_BURST, False
+        )
+        self.active.can_dynamax = active_pkmn.get(
+            constants.CAN_DYNAMAX, False
+        )
+        self.active.can_terastallize = active_pkmn.get(
+            constants.CAN_TERASTALLIZE, False
+        )
 
         # request JSON gives detailed information about the moves
         # available to the active pkmn. Take those as the source of truth
-        pokemon.moves.clear()
-        for index, move in enumerate(active_data[constants.MOVES]):
-            # hidden power's ID is always 'hiddenpower' regardless of the type
-            # parse it separately from the 'move' key
-            if move[constants.ID] == constants.HIDDEN_POWER:
-                pokemon.add_move(normalize_name(move["move"]))
-            else:
-                pokemon.add_move(move[constants.ID])
-            pokemon.moves[-1].disabled = move.get(constants.DISABLED, False)
-            pokemon.moves[-1].current_pp = move.get(constants.PP, 1)
+        self.active.moves.clear()
+        for index, move in enumerate(
+            active_pkmn[constants.MOVES]
+        ):
+            if not ally: 
+                # hidden power's ID is always 'hiddenpower' regardless of the type
+                # parse it separately from the 'move' key
+                logger.debug("Parsing move from request JSON: {}".format(move))
+                if move[constants.ID] == constants.HIDDEN_POWER:
+                    self.active.add_move(normalize_name(move["move"]))
+                else:
+                    self.active.add_move(move[constants.ID])
+                self.active.moves[-1].disabled = move.get(constants.DISABLED, False)
+                self.active.moves[-1].current_pp = move.get(constants.PP, 1)
+            else : # get less info in JSON about your ally pokemon's moves. hopefully it's not that important
+                self.active.add_move(move)
 
             # PokemonShowdown disables these moves in the protocol after they are used once,
             # but poke-engine does not expect them to be disabled
             # poke-engine deals with this by not allowing these moves to be selected if they are the last used move
             if self.last_used_move.move in ["gigatonhammer", "bloodmoon"]:
-                for m in pokemon.moves:
+                for m in self.active.moves:
                     if m.name == self.last_used_move.move and m.disabled:
                         m.disabled = False
 
             try:
-                pokemon.moves[index].can_z = active_data[constants.CAN_Z_MOVE][index]
-            except (KeyError, IndexError):
+                self.active.moves[index].can_z = active_pkmn[
+                    constants.CAN_Z_MOVE
+                ][index]
+            except KeyError:
                 pass
-        
-        logger.debug(f"Initialized {pokemon.name} (active_index={active_index}) with {len(pokemon.moves)} moves: {[m.name for m in pokemon.moves]}")
 
-    def update_from_request_json(self, request_json):
+    def update_from_request_json(self, request_json, ally=False):
         """
         Updates the battler's information based on the request JSON
         This should be called with a cloned battle/battler so that the original is not modified
-        Handles both singles (1 active) and doubles (2 actives)
         """
+        active_pkmn = self.get_active_json(request_json, ally)
+
         try:
-            trapped = request_json[constants.ACTIVE][0].get(constants.TRAPPED, False)
-            maybe_trapped = request_json[constants.ACTIVE][0].get(
+            trapped = active_pkmn.get(constants.TRAPPED, False)
+            maybe_trapped = active_pkmn.get(
                 constants.MAYBE_TRAPPED, False
             )
             self.trapped = trapped or maybe_trapped
         except KeyError:
             self.trapped = False
 
-        # Build a mapping of Pokemon name to their active indices in the request JSON
-        # This is more robust than relying on ordering
-        active_pkmn_by_index = {}
-        for pkmn_dict in request_json[constants.SIDE][constants.POKEMON]:
-            if pkmn_dict[constants.ACTIVE]:
-                switch_string_pkmn = Pokemon.from_switch_string(
-                    pkmn_dict[constants.DETAILS]
-                )
-                pkmn_name = switch_string_pkmn.name
-                # Store which active index this Pokemon is at
-                active_index = len(active_pkmn_by_index)  # 0 for first active, 1 for second
-                active_pkmn_by_index[pkmn_name] = active_index
-        
         for index, pkmn_dict in enumerate(
-            request_json[constants.SIDE][constants.POKEMON]
+            request_json[constants.SIDE][constants.POKEMON] if not ally else request_json[constants.ALLY][constants.POKEMON]
         ):
             switch_string_pkmn = Pokemon.from_switch_string(
                 pkmn_dict[constants.DETAILS]
@@ -399,70 +395,30 @@ class Battler:
             pkmn_name = switch_string_pkmn.name
             pkmn_level = switch_string_pkmn.level
             pkmn_status = switch_string_pkmn.status
-            
             if pkmn_dict[constants.ACTIVE]:
-                # Get the active index for this Pokemon from our mapping
-                active_index = active_pkmn_by_index.get(pkmn_name, 0)
-                
-                if active_index == 0:  # Left/first active Pokemon
-                    if self.active is None:
-                        raise ValueError(f"Expected self.active to be set, but it's None")
-                    if self.active.name != pkmn_name and self.active.base_name != pkmn_name:
-                        logger.warning(
-                            f"Active Pokemon mismatch for slot 0: expected {self.active.name} or {self.active.base_name}, "
-                            f"got {pkmn_name} from request. Using request Pokemon."
+                if self.active.name != pkmn_name and self.active.base_name != pkmn_name:
+                    raise ValueError(
+                        "Active pokemon mismatch: expected {} or {}, got {}".format(
+                            self.active.name, self.active.base_name, pkmn_name
                         )
+                    )
 
-                    if constants.ACTIVE in request_json:
-                        self._initialize_pokemon_moves_from_request_json(
-                            self.active, request_json, active_index
-                        )
+                if constants.ACTIVE in request_json:
+                    self._initialize_user_active_from_request_json(request_json)
 
-                    pkmn = self.active
-                    logger.debug(f"Updated active (slot 0): {pkmn.name}")
-                    
-                else:  # Right/second active Pokemon (doubles)
-                    if self.active_right is None:
-                        raise ValueError(
-                            f"Expected self.active_right for slot {active_index}, but it's None. "
-                            f"This may be a game format mismatch."
-                        )
-                    if self.active_right.name != pkmn_name and self.active_right.base_name != pkmn_name:
-                        logger.warning(
-                            f"Active right Pokemon mismatch for slot {active_index}: expected {self.active_right.name} or {self.active_right.base_name}, "
-                            f"got {pkmn_name} from request. Using request Pokemon."
-                        )
-
-                    if constants.ACTIVE in request_json:
-                        self._initialize_pokemon_moves_from_request_json(
-                            self.active_right, request_json, active_index
-                        )
-
-                    pkmn = self.active_right
-                    logger.debug(f"Updated active_right (slot {active_index}): {pkmn.name}")
+                pkmn = self.active
             else:
                 pkmn = self.find_pokemon_in_reserves(pkmn_name)
-                if pkmn is None:
-                    logger.error(
-                        f"Could not find {pkmn_name} in reserves. Available reserves: "
-                        f"{[p.name for p in self.reserve]}"
-                    )
-                    raise ValueError(f"Pokemon {pkmn_name} not found in reserves")
                 for move_name in pkmn_dict[constants.MOVES]:
                     if not pkmn.get_move(move_name):
                         pkmn.add_move(move_name)
-                logger.debug(f"Updated reserve: {pkmn.name}")
 
             pkmn.index = index + 1
             pkmn.level = pkmn_level
             pkmn.status = pkmn_status
-            
-            # Handle nickname extraction (use first active Pokemon's method if available)
-            if self.active:
-                pkmn.nickname = self.active.extract_nickname_from_pokemonshowdown_string(
-                    pkmn_dict[constants.IDENT]
-                )
-            
+            pkmn.nickname = self.active.extract_nickname_from_pokemonshowdown_string(
+                pkmn_dict[constants.IDENT]
+            )
             pkmn.reviving = pkmn_dict.get(constants.REVIVING, False)
             pkmn.hp, pkmn.max_hp, pkmn.status = get_pokemon_info_from_condition(
                 pkmn_dict[constants.CONDITION]
@@ -472,7 +428,7 @@ class Battler:
             for stat, number in pkmn_dict[constants.STATS].items():
                 pkmn.stats[constants.STAT_ABBREVIATION_LOOKUPS[stat]] = number
 
-    def re_initialize_active_pokemon_from_request_json(self, request_json):
+    def re_initialize_active_pokemon_from_request_json(self, request_json, ally=False):
         """
         Re-initializes the active pokemon based on the last request JSON that was received
         This is useful when the bot's active pkmn has mega-evolved. We need to get the new stats/hp
@@ -480,7 +436,7 @@ class Battler:
         pokedex_name = normalize_name(pokedex[self.active.name][constants.NAME])
         request_json_active_pkmn = [
             p
-            for p in request_json["side"]["pokemon"]
+            for p in request_json["side" if not ally else "ally"]["pokemon"]
             if normalize_name(p[constants.DETAILS]).split(",")[0] == pokedex_name
             or normalize_name(p[constants.DETAILS]).split(",")[0]
             == self.active.base_name
@@ -488,7 +444,7 @@ class Battler:
         if pokedex_name == "terapagosstellar" and len(request_json_active_pkmn) == 0:
             request_json_active_pkmn = [
                 p
-                for p in request_json["side"]["pokemon"]
+                for p in request_json["side" if not ally else "ally"]["pokemon"]
                 if normalize_name(p[constants.DETAILS]).split(",")[0]
                 == "terapagosterastal"
                 or normalize_name(p[constants.DETAILS]).split(",")[0]
@@ -504,24 +460,26 @@ class Battler:
             pkmn_info[constants.CONDITION]
         )
 
-    def initialize_first_turn_user_from_json(self, request_json):
+    def initialize_first_turn_user_from_json(self, request_json, ally=False):
         """
         Similar to `update_from_request_json`, but meant to be used on the first `request_json` that is seen
         This function differs in that it adds new pokemon to the Side rather than modifying existing ones
         """
+        active_pkmn = self.get_active_json(request_json, ally)
+
         try:
-            trapped = request_json[constants.ACTIVE][0].get(constants.TRAPPED, False)
-            maybe_trapped = request_json[constants.ACTIVE][0].get(
+            trapped = active_pkmn.get(constants.TRAPPED, False)
+            maybe_trapped = active_pkmn.get(
                 constants.MAYBE_TRAPPED, False
             )
             self.trapped = trapped or maybe_trapped
         except KeyError:
             self.trapped = False
 
-        self.name = request_json[constants.SIDE][constants.ID]
+        self.name = request_json[constants.SIDE if not ally else "ally"][constants.ID]
         self.reserve.clear()
         for index, pkmn_dict in enumerate(
-            request_json[constants.SIDE][constants.POKEMON]
+            request_json[constants.SIDE if not ally else "ally"][constants.POKEMON]
         ):
             nickname = pkmn_dict[constants.IDENT]
             pkmn_details = pkmn_dict[constants.DETAILS]
@@ -548,13 +506,7 @@ class Battler:
                 pkmn.tera_type = normalize_name(pkmn_dict[constants.TERA_TYPE])
 
             if pkmn_dict[constants.ACTIVE]:
-                # For doubles, there can be two active Pokemon
-                # Assign to self.active first, then self.active_right
-                if self.active is None:
-                    self.active = pkmn
-                else:
-                    # Doubles: second active Pokemon
-                    self.active_right = pkmn
+                self.active = pkmn
             else:
                 self.reserve.append(pkmn)
 
@@ -581,7 +533,7 @@ class Battler:
 
         # if there is an active pokemon, we want to look through it's moves
         if constants.ACTIVE in request_json:
-            self._initialize_pokemon_moves_from_request_json(self.active, request_json, 0)
+            self._initialize_user_active_from_request_json(request_json, ally)
 
         # if a team_dict exists, meaning we are playing a format where we selected our own team,
         # set the nature/evs for each pokmeon

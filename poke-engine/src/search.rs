@@ -7,11 +7,6 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-#[cfg(feature = "doubles")]
-use crate::engine::generate_instructions::generate_instructions_from_doubles_action_pair;
-#[cfg(feature = "doubles")]
-use crate::engine::state::DoublesAction;
-
 enum IterativeDeependingThreadMessage {
     Stop((Vec<MoveChoice>, Vec<MoveChoice>, Vec<f32>, i8)),
 }
@@ -19,18 +14,23 @@ enum IterativeDeependingThreadMessage {
 pub fn expectiminimax_search(
     state: &mut State,
     mut depth: i8,
-    side_one_options: Vec<MoveChoice>,
-    side_two_options: Vec<MoveChoice>,
+    side_one_1_options: Vec<MoveChoice>,
+    side_one_2_options: Vec<MoveChoice>,
+    side_two_1_options: Vec<MoveChoice>,
+    side_two_2_options: Vec<MoveChoice>,
     ab_prune: bool,
     mtx: &Arc<Mutex<bool>>,
 ) -> Vec<f32> {
     depth -= 1;
-    let num_s1_moves = side_one_options.len();
-    let num_s2_moves = side_two_options.len();
-    let mut score_lookup: Vec<f32> = Vec::with_capacity(num_s1_moves * num_s2_moves);
+    let num_s1_1_moves = side_one_1_options.len();
+    let num_s1_2_moves = side_one_2_options.len();
+    let num_s2_1_moves = side_two_1_options.len();
+    let num_s2_2_moves = side_two_2_options.len();
+    let cap = num_s1_1_moves * num_s1_2_moves * num_s2_1_moves * num_s2_2_moves;
+    let mut score_lookup: Vec<f32> = Vec::with_capacity(cap);
 
     if *mtx.lock().unwrap() == false {
-        for _ in 0..(num_s1_moves * num_s2_moves) {
+        for _ in 0..(cap) {
             score_lookup.push(0.0);
         }
         return score_lookup;
@@ -38,7 +38,7 @@ pub fn expectiminimax_search(
 
     let battle_is_over = state.battle_is_over();
     if battle_is_over != 0.0 {
-        for _ in 0..(num_s1_moves * num_s2_moves) {
+        for _ in 0..(cap) {
             score_lookup.push(((100.0 * depth as f32) * battle_is_over) + evaluate(state));
         }
         return score_lookup;
@@ -46,11 +46,13 @@ pub fn expectiminimax_search(
 
     let mut skip;
     let mut alpha = f32::MIN;
-    for side_one_move in side_one_options.iter().as_ref() {
+    for side_one_1_move in side_one_1_options.iter().as_ref() {
+    for side_one_2_move in side_one_2_options.iter().as_ref() {
         let mut beta = f32::MAX;
         skip = false;
 
-        for side_two_move in side_two_options.iter().as_ref() {
+        for side_two_1_move in side_two_1_options.iter().as_ref() {
+        for side_two_2_move in side_two_2_options.iter().as_ref() {
             if skip {
                 score_lookup.push(f32::NAN);
                 continue;
@@ -58,7 +60,7 @@ pub fn expectiminimax_search(
 
             let mut score = 0.0;
             let instructions =
-                generate_instructions_from_move_pair(state, &side_one_move, &side_two_move, false);
+                generate_instructions_from_move_pair(state, &side_one_1_move, &side_one_2_move, &side_two_1_move, &side_two_2_move, false);
             if depth == 0 {
                 for instruction in instructions.iter() {
                     state.apply_instructions(&instruction.instruction_list);
@@ -68,22 +70,28 @@ pub fn expectiminimax_search(
             } else {
                 for instruction in instructions.iter() {
                     state.apply_instructions(&instruction.instruction_list);
-                    let (next_turn_side_one_options, next_turn_side_two_options) =
+                    let (next_turn_side_one_1_options, next_turn_side_one_2_options, next_turn_side_twp_1_options, next_turn_side_two_2_options) =
                         state.get_all_options();
 
-                    let next_turn_side_one_options_len = next_turn_side_one_options.len();
-                    let next_turn_side_two_options_len = next_turn_side_two_options.len();
-                    let (_, safest) = pick_safest(
+                    let next_turn_side_one_1_options_len = next_turn_side_one_1_options.len();
+                    let next_turn_side_one_2_options_len = next_turn_side_one_2_options.len();
+                    let next_turn_side_two_1_options_len = next_turn_side_two_1_options.len();
+                    let next_turn_side_two_2_options_len = next_turn_side_two_2_options.len();
+                    let (_, _, safest) = pick_safest(
                         &expectiminimax_search(
                             state,
                             depth,
-                            next_turn_side_one_options,
-                            next_turn_side_two_options,
+                            next_turn_side_one_1_options,
+                            next_turn_side_one_2_options,
+                            next_turn_side_two_1_options,
+                            next_turn_side_two_2_options,
                             true, // until there is something better than `pick_safest` for evaluating a sub-game, there is no point in this being anything other than `true`
                             &mtx,
                         ),
-                        next_turn_side_one_options_len,
-                        next_turn_side_two_options_len,
+                        next_turn_side_one_1_options_len,
+                        next_turn_side_one_2_options_len,
+                        next_turn_side_two_1_options_len,
+                        next_turn_side_two_2_options_len,
                     );
                     score += instruction.percentage * safest / 100.0;
 
@@ -103,59 +111,72 @@ pub fn expectiminimax_search(
         }
         if beta > alpha {
             alpha = beta;
-        }
-    }
+        }}
+    }}
     score_lookup
 }
 
 pub fn pick_safest(
     score_lookup: &Vec<f32>,
-    num_s1_moves: usize,
-    num_s2_moves: usize,
-) -> (usize, f32) {
+    num_s1_1_moves: usize,
+    num_s1_2_moves: usize,
+    num_s2_1_moves: usize,
+    num_s2_2_moves: usize,
+) -> (usize, usize, f32) {
     let mut best_worst_case = f32::MIN;
-    let mut best_worst_case_s1_index = 0;
+    let mut best_worst_case_s1_1_index = 0;
+    let mut best_worst_case_s1_2_index = 0;
     let mut vec_index = 0;
 
-    for s1_index in 0..num_s1_moves {
+    for s1_1_index in 0..num_s1_1_moves {
+    for s1_2_index in 0..num_s1_2_moves {
         let mut worst_case_this_row = f32::MAX;
-        for _ in 0..num_s2_moves {
+        for _ in 0..num_s2_1_moves {
+        for _ in 0..num_s2_2_moves {
             let score = score_lookup[vec_index];
             vec_index += 1;
             if score < worst_case_this_row {
                 worst_case_this_row = score;
             }
-        }
+        }}
         if worst_case_this_row > best_worst_case {
-            best_worst_case_s1_index = s1_index;
+            best_worst_case_s1_1_index = s1_1_index;
+            best_worst_case_s1_2_index = s1_2_index;
             best_worst_case = worst_case_this_row;
         }
-    }
+    }}
 
-    (best_worst_case_s1_index, best_worst_case)
+    (best_worst_case_s1_1_index, best_worst_case_s1_2_index, best_worst_case)
 }
 
 fn re_order_moves_for_iterative_deepening(
     last_search_result: &Vec<f32>,
-    side_one_options: Vec<MoveChoice>,
-    side_two_options: Vec<MoveChoice>,
+    side_one_1_options: Vec<MoveChoice>,
+    side_one_2_options: Vec<MoveChoice>,
+    side_two_1_options: Vec<MoveChoice>,
+    side_two_2_options: Vec<MoveChoice>,
 ) -> (Vec<MoveChoice>, Vec<MoveChoice>) {
-    let num_s1_moves = side_one_options.len();
-    let num_s2_moves = side_two_options.len();
-    let mut worst_case_s1_scores: Vec<(MoveChoice, f32)> = vec![];
+    let num_s1_1_moves = side_one_1_options.len();
+    let num_s1_2_moves = side_one_2_options.len();
+    let num_s2_1_moves = side_two_1_options.len();
+    let num_s2_2_moves = side_two_2_options.len();
+    let mut worst_case_s1_scores: Vec<(MoveChoice, MoveChoice, f32)> = vec![];
     let mut vec_index = 0;
 
-    for s1_index in 0..num_s1_moves {
+    for s1_1_index in 0..num_s1_1_moves {
+    for s1_2_index in 0..num_s1_2_moves {
+        for _ in 0..num_s2_1_moves {
         let mut worst_case_this_row = f32::MAX;
-        for _ in 0..num_s2_moves {
+        for _ in 0..num_s2_2_moves {
             let score = last_search_result[vec_index];
             vec_index += 1;
             if score < worst_case_this_row {
                 worst_case_this_row = score;
             }
-        }
-        worst_case_s1_scores.push((side_one_options[s1_index].clone(), worst_case_this_row));
-    }
+        }}
+        worst_case_s1_scores.push((
+            side_one_1_options[s1_1_index].clone(), side_one_2_options[s1_2_index].clone(), worst_case_this_row));
+    }} // TODO
 
     worst_case_s1_scores.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
     let new_s1_vec = worst_case_s1_scores.iter().map(|x| x.0.clone()).collect();
@@ -165,22 +186,26 @@ fn re_order_moves_for_iterative_deepening(
 
 pub fn iterative_deepen_expectiminimax(
     state: &mut State,
-    side_one_options: Vec<MoveChoice>,
-    side_two_options: Vec<MoveChoice>,
+    side_one_1_options: Vec<MoveChoice>,
+    side_one_2_options: Vec<MoveChoice>,
+    side_two_1_options: Vec<MoveChoice>,
+    side_two_2_options: Vec<MoveChoice>,
     max_time: Duration,
-) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<f32>, i8) {
+) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<f32>, i8) {
     let mut state_clone = state.clone();
 
     let mut result = expectiminimax_search(
         state,
         1,
-        side_one_options.clone(),
-        side_two_options.clone(),
+        side_one_1_options.clone(),
+        side_one_2_options.clone(),
+        side_two_1_options.clone(),
+        side_two_2_options.clone(),
         true,
         &Arc::new(Mutex::new(true)),
     );
-    let (mut re_ordered_s1_options, mut re_ordered_s2_options) =
-        re_order_moves_for_iterative_deepening(&result, side_one_options, side_two_options);
+    let (mut re_ordered_s1_1_options, mut re_ordered_s1_2_options, mut re_ordered_s2_1_options, mut re_ordered_s2_2_options) =
+        re_order_moves_for_iterative_deepening(&result, side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
     let mut i = 1;
     let running = Arc::new(Mutex::new(true));
     let running_clone = Arc::clone(&running);
@@ -191,16 +216,20 @@ pub fn iterative_deepen_expectiminimax(
     ) = channel();
 
     let handle = thread::spawn(move || {
-        let mut previous_turn_s1_options = re_ordered_s1_options.clone();
-        let mut previous_turn_s2_options = re_ordered_s2_options.clone();
+        let mut previous_turn_s1_1_options = re_ordered_s1_1_options.clone();
+        let mut previous_turn_s1_2_options = re_ordered_s1_2_options.clone();
+        let mut previous_turn_s2_1_options = re_ordered_s2_1_options.clone();
+        let mut previous_turn_s2_2_options = re_ordered_s2_2_options.clone();
         loop {
             let previous_result = result;
             i += 1;
             result = expectiminimax_search(
                 &mut state_clone,
                 i,
-                re_ordered_s1_options.clone(),
-                re_ordered_s2_options.clone(),
+                re_ordered_s1_1_options.clone(),
+                re_ordered_s1_2_options.clone(),
+                re_ordered_s2_1_options.clone(),
+                re_ordered_s2_2_options.clone(),
                 true,
                 &running_clone,
             );
@@ -210,20 +239,26 @@ pub fn iterative_deepen_expectiminimax(
             if *running_clone.lock().unwrap() == false {
                 sender
                     .send(IterativeDeependingThreadMessage::Stop((
-                        previous_turn_s1_options,
-                        previous_turn_s2_options,
+                        previous_turn_s1_1_options,
+                        previous_turn_s1_2_options,
+                        previous_turn_s2_1_options,
+                        previous_turn_s2_2_options,
                         previous_result,
                         i - 1,
                     )))
                     .unwrap();
                 break;
             }
-            previous_turn_s1_options = re_ordered_s1_options.clone();
-            previous_turn_s2_options = re_ordered_s2_options.clone();
-            (re_ordered_s1_options, re_ordered_s2_options) = re_order_moves_for_iterative_deepening(
+            previous_turn_s1_1_options = re_ordered_s1_1_options.clone();
+            previous_turn_s1_2_options = re_ordered_s1_2_options.clone();
+            previous_turn_s2_1_options = re_ordered_s2_1_options.clone();
+            previous_turn_s2_2_options = re_ordered_s2_2_options.clone();
+            (re_ordered_s1_1_options, re_ordered_s1_2_options, re_ordered_s2_1_options, re_ordered_s2_2_options) = re_order_moves_for_iterative_deepening(
                 &result,
-                re_ordered_s1_options,
-                re_ordered_s2_options,
+                re_ordered_s1_1_options,
+                re_ordered_s1_2_options,
+                re_ordered_s2_1_options,
+                re_ordered_s2_2_options,
             );
         }
     });
@@ -237,139 +272,4 @@ pub fn iterative_deepen_expectiminimax(
         }
         _ => panic!("Failed to receive stop message"),
     }
-}
-
-/// Phase 4: Doubles variant of expectiminimax search
-/// Takes DoublesAction vectors instead of MoveChoice vectors
-#[cfg(feature = "doubles")]
-pub fn expectiminimax_search_doubles(
-    state: &mut State,
-    mut depth: i8,
-    side_one_options: Vec<DoublesAction>,
-    side_two_options: Vec<DoublesAction>,
-    ab_prune: bool,
-    mtx: &Arc<Mutex<bool>>,
-) -> Vec<f32> {
-    // Phase 4: Doubles search implementation
-    // Mirrors the singles search structure but:
-    // - Takes Vec<DoublesAction> instead of Vec<MoveChoice>
-    // - Calls generate_instructions_from_doubles_action_pair instead of generate_instructions_from_move_pair
-    // - Uses root_get_all_doubles_actions() for next turn options
-    
-    depth -= 1;
-    let num_s1_moves = side_one_options.len();
-    let num_s2_moves = side_two_options.len();
-    let mut score_lookup: Vec<f32> = Vec::with_capacity(num_s1_moves * num_s2_moves);
-
-    if *mtx.lock().unwrap() == false {
-        for _ in 0..(num_s1_moves * num_s2_moves) {
-            score_lookup.push(0.0);
-        }
-        return score_lookup;
-    }
-
-    let battle_is_over = state.battle_is_over();
-    if battle_is_over != 0.0 {
-        for _ in 0..(num_s1_moves * num_s2_moves) {
-            score_lookup.push(((100.0 * depth as f32) * battle_is_over) + evaluate(state));
-        }
-        return score_lookup;
-    }
-
-    let mut skip;
-    let mut alpha = f32::MIN;
-    for side_one_action in side_one_options.iter() {
-        let mut beta = f32::MAX;
-        skip = false;
-
-        for side_two_action in side_two_options.iter() {
-            if skip {
-                score_lookup.push(f32::NAN);
-                continue;
-            }
-
-            let mut score = 0.0;
-            let instructions = generate_instructions_from_doubles_action_pair(
-                state,
-                side_one_action,
-                side_two_action,
-                false,
-            );
-            if depth == 0 {
-                for instruction in instructions.iter() {
-                    state.apply_instructions(&instruction.instruction_list);
-                    score += instruction.percentage * evaluate(state) / 100.0;
-                    state.reverse_instructions(&instruction.instruction_list);
-                }
-            } else {
-                for instruction in instructions.iter() {
-                    state.apply_instructions(&instruction.instruction_list);
-                    let (next_turn_side_one_options, next_turn_side_two_options) =
-                        state.root_get_all_doubles_actions();
-
-                    let next_turn_side_one_options_len = next_turn_side_one_options.len();
-                    let next_turn_side_two_options_len = next_turn_side_two_options.len();
-                    let (_, safest) = pick_safest_doubles(
-                        &expectiminimax_search_doubles(
-                            state,
-                            depth,
-                            next_turn_side_one_options,
-                            next_turn_side_two_options,
-                            true,
-                            &mtx,
-                        ),
-                        next_turn_side_one_options_len,
-                        next_turn_side_two_options_len,
-                    );
-                    score += instruction.percentage * safest / 100.0;
-
-                    state.reverse_instructions(&instruction.instruction_list);
-                }
-            }
-            score_lookup.push(score);
-
-            if ab_prune {
-                if score < beta {
-                    beta = score;
-                }
-                if score <= alpha {
-                    skip = true;
-                }
-            }
-        }
-        if beta > alpha {
-            alpha = beta;
-        }
-    }
-    score_lookup
-}
-
-/// Doubles variant of pick_safest
-#[cfg(feature = "doubles")]
-pub fn pick_safest_doubles(
-    score_lookup: &Vec<f32>,
-    num_s1_moves: usize,
-    num_s2_moves: usize,
-) -> (usize, f32) {
-    // Same logic as singles version but works with doubles branching
-    let mut best_worst_case = f32::MIN;
-    let mut best_worst_case_s1_index = 0;
-    let mut vec_index = 0;
-
-    for s1_index in 0..num_s1_moves {
-        let mut worst_case_this_row = f32::MAX;
-        for _ in 0..num_s2_moves {
-            let score = score_lookup[vec_index];
-            vec_index += 1;
-            if score < worst_case_this_row {
-                worst_case_this_row = score;
-            }
-        }
-        if worst_case_this_row > best_worst_case {
-            best_worst_case = worst_case_this_row;
-            best_worst_case_s1_index = s1_index;
-        }
-    }
-
-    (best_worst_case_s1_index, best_worst_case)
 }

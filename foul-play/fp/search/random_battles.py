@@ -24,10 +24,14 @@ def get_all_remaining_sets_for_revealed_pkmn(battle: Battle) -> dict:
         raise ValueError("Only random battles are supported")
 
     revealed_pkmn = []
-    for pkmn in battle.opponent.reserve:
+    for pkmn in battle.opponent_1.reserve:
         revealed_pkmn.append(pkmn)
-    if battle.opponent.active is not None:
-        revealed_pkmn.append(battle.opponent.active)
+    if battle.opponent_1.active is not None:
+        revealed_pkmn.append(battle.opponent_1.active)
+    for pkmn in battle.opponent_2.reserve:
+        revealed_pkmn.append(pkmn)
+    if battle.opponent_2.active is not None:
+        revealed_pkmn.append(battle.opponent_2.active)
 
     ret = {}
     for pkmn in revealed_pkmn:
@@ -43,19 +47,19 @@ def prepare_random_battles(battle: Battle, num_battles: int) -> list[(Battle, fl
 
     sampled_battles = []
     for index in range(num_battles):
-        logger.info("Sampling battle {}".format(index))
         battle_copy = deepcopy(battle)
 
-        active = battle_copy.opponent.active
-        if revealed_pkmn_sets[active.name]:
+        # OPPONENT_1 LOGIC
+        active = battle_copy.opponent_1.active
+        if active and revealed_pkmn_sets.get(active.name):
             pkmn_full_set = random.choices(
                 revealed_pkmn_sets[active.name],
                 weights=[s.pkmn_set.count for s in revealed_pkmn_sets[active.name]],
             )[0]
             populate_pkmn_from_set(active, pkmn_full_set)
 
-        for pkmn in filter(lambda x: x.is_alive(), battle_copy.opponent.reserve):
-            if not revealed_pkmn_sets[pkmn.name]:
+        for pkmn in filter(lambda x: x.is_alive(), battle_copy.opponent_1.reserve):
+            if not revealed_pkmn_sets.get(pkmn.name):
                 continue
             pkmn_full_set = random.choices(
                 revealed_pkmn_sets[pkmn.name],
@@ -63,8 +67,29 @@ def prepare_random_battles(battle: Battle, num_battles: int) -> list[(Battle, fl
             )[0]
             populate_pkmn_from_set(pkmn, pkmn_full_set)
 
+        # OPPONENT_2 LOGIC (NEW)
+        active = battle_copy.opponent_2.active
+        if active and revealed_pkmn_sets.get(active.name):
+            pkmn_full_set = random.choices(
+                revealed_pkmn_sets[active.name],
+                weights=[s.pkmn_set.count for s in revealed_pkmn_sets[active.name]],
+            )[0]
+            populate_pkmn_from_set(active, pkmn_full_set)
+
+        for pkmn in filter(lambda x: x.is_alive(), battle_copy.opponent_2.reserve):
+            if not revealed_pkmn_sets.get(pkmn.name):
+                continue
+            pkmn_full_set = random.choices(
+                revealed_pkmn_sets[pkmn.name],
+                weights=[s.pkmn_set.count for s in revealed_pkmn_sets[pkmn.name]],
+            )[0]
+            populate_pkmn_from_set(pkmn, pkmn_full_set)
+
+        # BOTH NEED UNREVEALED PKMN AND LOCKED MOVES
         populate_randombattle_unrevealed_pkmn(battle_copy)
-        battle_copy.opponent.lock_moves()
+        battle_copy.opponent_1.lock_moves()
+        battle_copy.opponent_2.lock_moves()  # NEW
+        
         sampled_battles.append((battle_copy, 1 / num_battles))
 
     return sampled_battles
@@ -160,14 +185,17 @@ def _more_than_1_pokemon_with_4x_weakness(team: list[Pokemon]) -> bool:
 def populate_randombattle_unrevealed_pkmn(battle: Battle):
     num_revealed_pkmn = 0
     existing_pkmn = []
-    for pkmn in battle.opponent.reserve:
+    for pkmn in battle.opponent_1.reserve:
         existing_pkmn.append(pkmn)
         num_revealed_pkmn += 1
-    if battle.opponent.active is not None:
-        existing_pkmn.append(battle.opponent.active)
+    for pkmn in battle.opponent_2.reserve:
+        existing_pkmn.append(pkmn)
         num_revealed_pkmn += 1
-    if battle.opponent.active_right is not None:
-        existing_pkmn.append(battle.opponent.active_right)
+    if battle.opponent_1.active is not None:
+        existing_pkmn.append(battle.opponent_1.active)
+        num_revealed_pkmn += 1
+    if battle.opponent_2.active is not None:
+        existing_pkmn.append(battle.opponent_2.active)
         num_revealed_pkmn += 1
 
     if num_revealed_pkmn == 6:
@@ -177,5 +205,5 @@ def populate_randombattle_unrevealed_pkmn(battle: Battle):
     while num_revealed_pkmn < 6:
         pkmn = sample_randombattle_pokemon(existing_pkmn)
         existing_pkmn.append(pkmn)
-        battle.opponent.reserve.append(pkmn)
+        battle.opponent_1.reserve.append(pkmn)
         num_revealed_pkmn += 1

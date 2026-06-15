@@ -75,8 +75,10 @@ pub enum Instruction {
     SetSleepTurns(SetSleepTurnsInstruction),
     ChangeSubstituteHealth(ChangeSubsituteHealthInstruction),
     FormeChange(FormeChangeInstruction),
-    SetSideOneMoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
-    SetSideTwoMoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
+    SetSideOne_1MoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
+    SetSideOne_2MoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
+    SetSideTwo_1MoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
+    SetSideTwo_2MoveSecondSwitchOutMove(SetSecondMoveSwitchOutMoveInstruction),
     ToggleBatonPassing(ToggleBatonPassingInstruction),
     ToggleShedTailing(ToggleShedTailingInstruction),
     SetLastUsedMove(SetLastUsedMoveInstruction),
@@ -86,8 +88,10 @@ pub enum Instruction {
     DecrementPP(DecrementPPInstruction),
     ToggleTrickRoom(ToggleTrickRoomInstruction),
     DecrementTrickRoomTurnsRemaining,
-    ToggleSideOneForceSwitch,
-    ToggleSideTwoForceSwitch,
+    ToggleSideOne_1ForceSwitch,
+    ToggleSideOne_2ForceSwitch,
+    ToggleSideTwo_1ForceSwitch,
+    ToggleSideTwo_2ForceSwitch,
     ToggleTerastallized(ToggleTerastallizedInstruction),
 }
 
@@ -259,17 +263,31 @@ impl fmt::Debug for Instruction {
             Instruction::FormeChange(s) => {
                 write!(f, "FormeChange {:?} {}", s.side_ref, s.name_change)
             }
-            Instruction::SetSideOneMoveSecondSwitchOutMove(s) => {
+            Instruction::SetSideOne_1MoveSecondSwitchOutMove(s) => {
                 write!(
                     f,
-                    "SideOneMoveSecondSwitchOutMove: {:?} -> {:?}",
+                    "SideOne_1MoveSecondSwitchOutMove: {:?} -> {:?}",
                     s.previous_choice, s.new_choice
                 )
             }
-            Instruction::SetSideTwoMoveSecondSwitchOutMove(s) => {
+            Instruction::SetSideOne_2MoveSecondSwitchOutMove(s) => {
                 write!(
                     f,
-                    "SideTwoMoveSecondSwitchOutMove: {:?} -> {:?}",
+                    "SideOne_2MoveSecondSwitchOutMove: {:?} -> {:?}",
+                    s.previous_choice, s.new_choice
+                )
+            }
+            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(s) => {
+                write!(
+                    f,
+                    "SideTwo_1MoveSecondSwitchOutMove: {:?} -> {:?}",
+                    s.previous_choice, s.new_choice
+                )
+            }
+            Instruction::SetSideTwo_2MoveSecondSwitchOutMove(s) => {
+                write!(
+                    f,
+                    "SideTwo_2MoveSecondSwitchOutMove: {:?} -> {:?}",
                     s.previous_choice, s.new_choice
                 )
             }
@@ -326,11 +344,17 @@ impl fmt::Debug for Instruction {
             Instruction::DecrementTrickRoomTurnsRemaining => {
                 write!(f, "DecrementTrickRoomTurnsRemaining")
             }
-            Instruction::ToggleSideOneForceSwitch => {
-                write!(f, "ToggleSideOneForceSwitch")
+            Instruction::ToggleSideOne_1ForceSwitch => {
+                write!(f, "ToggleSideOne_1ForceSwitch")
             }
-            Instruction::ToggleSideTwoForceSwitch => {
-                write!(f, "ToggleSideTwoForceSwitch")
+            Instruction::ToggleSideOne_2ForceSwitch => {
+                write!(f, "ToggleSideOne_2ForceSwitch")
+            }
+            Instruction::ToggleSideTwo_1ForceSwitch => {
+                write!(f, "ToggleSideTwo_1ForceSwitch")
+            }
+            Instruction::ToggleSideTwo_2ForceSwitch => {
+                write!(f, "ToggleSideTwo_2ForceSwitch")
             }
         }
     }

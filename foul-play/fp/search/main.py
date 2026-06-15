@@ -94,18 +94,20 @@ def get_result_from_mcts(state: str, search_time_ms: int, index: int) -> MctsRes
 
 
 def search_time_num_battles_randombattles(battle):
-    revealed_pkmn = len(battle.opponent.reserve)
-    if battle.opponent.active is not None:
+    revealed_pkmn = len(battle.opponent_1.reserve) + len(battle.opponent_2.reserve)
+    if battle.opponent_1.active is not None:
+        revealed_pkmn += 1
+    if battle.opponent_2.active is not None:
         revealed_pkmn += 1
 
-    opponent_active_num_moves = len(battle.opponent.active.moves)
+    opponent_active_num_moves = len(battle.opponent_1.active.moves) + len(battle.opponent_2.active.moves)
     in_time_pressure = battle.time_remaining is not None and battle.time_remaining <= 60
 
     # it is still quite early in the battle and the pkmn in front of us
     # hasn't revealed any moves: search a lot of battles shallowly
     if (
         revealed_pkmn <= 3
-        and battle.opponent.active.hp > 0
+        and battle.opponent_1.active.hp > 0
         and opponent_active_num_moves == 0
     ):
         num_battles_multiplier = 2 if in_time_pressure else 4
@@ -121,12 +123,13 @@ def search_time_num_battles_randombattles(battle):
 
 
 def search_time_num_battles_standard_battle(battle):
-    opponent_active_num_moves = len(battle.opponent.active.moves)
+    opponent_active_num_moves = len(battle.opponent_1.active.moves) + len(battle.opponent_2.active.moves)
     in_time_pressure = battle.time_remaining is not None and battle.time_remaining <= 60
 
     if (
         battle.team_preview
-        or (battle.opponent.active.hp > 0 and opponent_active_num_moves == 0)
+        or (battle.opponent_1.active.hp > 0 and opponent_active_num_moves == 0)
+        or (battle.opponent_2.active.hp > 0 and opponent_active_num_moves == 0)
         or opponent_active_num_moves < 3
     ):
         num_battles_multiplier = 1 if in_time_pressure else 2
@@ -146,16 +149,13 @@ def find_best_move(battle: Battle):
         tuple for doubles battles  
     """
     battle = deepcopy(battle)
-    if battle.team_preview:
-        battle.user.active = battle.user.reserve.pop(0)
-        battle.opponent.active = battle.opponent.reserve.pop(0)
 
     # Detect doubles battles by checking the battle format string
     # A battle is doubles if "multi" appears in the format name, regardless of current active count
     # This ensures 2v1 situations remain in doubles format
-    is_doubles = battle.pokemon_format and "multi" in battle.pokemon_format.lower()
+    is_doubles = True # battle.pokemon_format and "multi" in battle.pokemon_format.lower()
     
-    logger.info(f"Battle format detected: {'Doubles' if is_doubles else 'Singles'} (format={battle.pokemon_format})")
+    # logger.info(f"Battle format detected: {'Doubles' if is_doubles else 'Singles'} (format={battle.pokemon_format})")
     
     if is_doubles:
         return find_best_move_pair_mcts(battle)

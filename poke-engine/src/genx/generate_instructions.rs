@@ -32,9 +32,6 @@ use super::items::{
     item_on_switch_in, Items,
 };
 use super::state::{MoveChoice, PokemonVolatileStatus, Terrain, Weather};
-
-#[cfg(feature = "doubles")]
-use super::state::DoublesAction;
 use crate::choices::{Choice, MoveCategory};
 use crate::instruction::{
     ChangeStatusInstruction, DamageInstruction, Instruction, StateInstructions, SwitchInstruction,
@@ -175,15 +172,25 @@ fn generate_instructions_from_switch(
     if side.force_switch {
         side.force_switch = false;
         match switching_side_ref {
-            SideReference::SideOne => {
+            SideReference::SideOne_1 => {
                 incoming_instructions
                     .instruction_list
-                    .push(Instruction::ToggleSideOneForceSwitch);
+                    .push(Instruction::ToggleSideOne_1ForceSwitch);
             }
-            SideReference::SideTwo => {
+            SideReference::SideTwo_1 => {
                 incoming_instructions
                     .instruction_list
-                    .push(Instruction::ToggleSideTwoForceSwitch);
+                    .push(Instruction::ToggleSideTwo_1ForceSwitch);
+            }
+            SideReference::SideOne_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleSideOne_2ForceSwitch);
+            }
+            SideReference::SideTwo_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleSideTwo_2ForceSwitch);
             }
         }
     }
@@ -193,21 +200,39 @@ fn generate_instructions_from_switch(
         baton_passing = true;
         side.baton_passing = false;
         match switching_side_ref {
-            SideReference::SideOne => {
+            SideReference::SideOne_1 => {
                 incoming_instructions
                     .instruction_list
                     .push(Instruction::ToggleBatonPassing(
                         ToggleBatonPassingInstruction {
-                            side_ref: SideReference::SideOne,
+                            side_ref: SideReference::SideOne_1,
                         },
                     ));
             }
-            SideReference::SideTwo => {
+            SideReference::SideTwo_1 => {
                 incoming_instructions
                     .instruction_list
                     .push(Instruction::ToggleBatonPassing(
                         ToggleBatonPassingInstruction {
-                            side_ref: SideReference::SideTwo,
+                            side_ref: SideReference::SideTwo_1,
+                        },
+                    ));
+            }
+            SideReference::SideOne_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleBatonPassing(
+                        ToggleBatonPassingInstruction {
+                            side_ref: SideReference::SideOne_2,
+                        },
+                    ));
+            }
+            SideReference::SideTwo_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleBatonPassing(
+                        ToggleBatonPassingInstruction {
+                            side_ref: SideReference::SideTwo_2,
                         },
                     ));
             }
@@ -219,21 +244,39 @@ fn generate_instructions_from_switch(
         shed_tailing = true;
         side.shed_tailing = false;
         match switching_side_ref {
-            SideReference::SideOne => {
+            SideReference::SideOne_1 => {
                 incoming_instructions
                     .instruction_list
                     .push(Instruction::ToggleShedTailing(
                         ToggleShedTailingInstruction {
-                            side_ref: SideReference::SideOne,
+                            side_ref: SideReference::SideOne_1,
                         },
                     ));
             }
-            SideReference::SideTwo => {
+            SideReference::SideTwo_1 => {
                 incoming_instructions
                     .instruction_list
                     .push(Instruction::ToggleShedTailing(
                         ToggleShedTailingInstruction {
-                            side_ref: SideReference::SideTwo,
+                            side_ref: SideReference::SideTwo_1,
+                        },
+                    ));
+            }
+            SideReference::SideOne_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleShedTailing(
+                        ToggleShedTailingInstruction {
+                            side_ref: SideReference::SideOne_2,
+                        },
+                    ));
+            }
+            SideReference::SideTwo_2 => {
+                incoming_instructions
+                    .instruction_list
+                    .push(Instruction::ToggleShedTailing(
+                        ToggleShedTailingInstruction {
+                            side_ref: SideReference::SideTwo_2,
                         },
                     ));
             }
@@ -490,10 +533,11 @@ fn generate_instructions_from_increment_side_condition(
     attacking_side_reference: &SideReference,
     incoming_instructions: &mut StateInstructions,
 ) {
-    let affected_side_ref;
+    let affected_side_refs;
     match side_condition.target {
-        MoveTarget::Opponent => affected_side_ref = attacking_side_reference.get_other_side(),
-        MoveTarget::User => affected_side_ref = *attacking_side_reference,
+        MoveTarget::Opponent | Opponents => affected_side_refs = attacking_side_reference.get_other_sides(),
+        MoveTarget::User => affected_side_refs = attacking_side_reference.get_own_sides(),
+        MoveTarget::All=> return, 
     }
 
     let max_layers = match side_condition.condition {
@@ -502,15 +546,17 @@ fn generate_instructions_from_increment_side_condition(
         _ => 1,
     };
 
-    let affected_side = state.get_side(&affected_side_ref);
-    if affected_side.get_side_condition(side_condition.condition) < max_layers {
-        let ins = Instruction::ChangeSideCondition(ChangeSideConditionInstruction {
-            side_ref: affected_side_ref,
-            side_condition: side_condition.condition,
-            amount: 1,
-        });
-        affected_side.update_side_condition(side_condition.condition, 1);
-        incoming_instructions.instruction_list.push(ins);
+    for affected_side_ref in affected_side_refs {
+        let affected_side = state.get_side(&affected_side_ref);
+        if affected_side.get_side_condition(side_condition.condition) < max_layers {
+            let ins = Instruction::ChangeSideCondition(ChangeSideConditionInstruction {
+                side_ref: affected_side_ref,
+                side_condition: side_condition.condition,
+                amount: 1,
+            });
+            affected_side.update_side_condition(side_condition.condition, 1);
+            incoming_instructions.instruction_list.push(ins);
+        }
     }
 }
 
@@ -521,25 +567,29 @@ fn generate_instructions_from_duration_side_conditions(
     incoming_instructions: &mut StateInstructions,
     duration: i8,
 ) {
-    let affected_side_ref = match side_condition.target {
-        MoveTarget::Opponent => attacking_side_reference.get_other_side(),
-        MoveTarget::User => *attacking_side_reference,
-    };
+    let affected_side_refs;
+    match side_condition.target {
+        MoveTarget::Opponent | Opponents => affected_side_refs = attacking_side_reference.get_other_sides(),
+        MoveTarget::User => affected_side_refs = attacking_side_reference.get_own_sides(),
+        MoveTarget::All=> return, 
+    }
     if side_condition.condition == PokemonSideCondition::AuroraVeil
         && !state.weather_is_active(&Weather::HAIL)
         && !state.weather_is_active(&Weather::SNOW)
     {
         return;
     }
-    let affected_side = state.get_side(&affected_side_ref);
-    if affected_side.get_side_condition(side_condition.condition) == 0 {
-        let ins = Instruction::ChangeSideCondition(ChangeSideConditionInstruction {
-            side_ref: affected_side_ref,
-            side_condition: side_condition.condition,
-            amount: duration,
-        });
-        affected_side.update_side_condition(side_condition.condition, duration);
-        incoming_instructions.instruction_list.push(ins);
+    for affected_side_ref in affected_side_refs {
+        let affected_side = state.get_side(&affected_side_ref);
+        if affected_side.get_side_condition(side_condition.condition) == 0 {
+            let ins = Instruction::ChangeSideCondition(ChangeSideConditionInstruction {
+                side_ref: affected_side_ref,
+                side_condition: side_condition.condition,
+                amount: duration,
+            });
+            affected_side.update_side_condition(side_condition.condition, duration);
+            incoming_instructions.instruction_list.push(ins);
+        }
     }
 }
 
@@ -592,6 +642,7 @@ fn get_instructions_from_volatile_statuses(
     match volatile_status.target {
         MoveTarget::Opponent => target_side = attacking_side_reference.get_other_side(),
         MoveTarget::User => target_side = *attacking_side_reference,
+        MoveTarget::All | Opponents => !todo(), // TODO 
     }
 
     if volatile_status.volatile_status == PokemonVolatileStatus::YAWN
@@ -780,6 +831,7 @@ fn get_instructions_from_status_effects(
     match status.target {
         MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
         MoveTarget::User => target_side_ref = *attacking_side_reference,
+        MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
 
     if hit_sub || immune_to_status(state, &status.target, &target_side_ref, &status.status) {
@@ -871,8 +923,8 @@ pub fn apply_boost_instruction(
                     target_side.special_defense_boost += boost_amount
                 }
                 PokemonBoostableStat::Speed => target_side.speed_boost += boost_amount,
-                PokemonBoostableStat::Evasion => target_side.accuracy_boost += boost_amount,
-                PokemonBoostableStat::Accuracy => target_side.evasion_boost += boost_amount,
+                PokemonBoostableStat::Evasion => target_side.evasion_boost += boost_amount,
+                PokemonBoostableStat::Accuracy => target_side.accuracy_boost += boost_amount,
             }
             instructions
                 .instruction_list
@@ -927,6 +979,7 @@ fn get_instructions_from_boosts(
     match boosts.target {
         MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
         MoveTarget::User => target_side_ref = *attacking_side_reference,
+        MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
     let boostable_stats = boosts.boosts.get_as_pokemon_boostable();
     for (pkmn_boostable_stat, boost) in boostable_stats.iter().filter(|(_, b)| b != &0) {
@@ -1052,6 +1105,7 @@ fn get_instructions_from_secondaries(
                             MoveTarget::User => {
                                 secondary_target_side_ref = *side_reference;
                             }
+                            MoveTarget::All | MoveTarget::Opponents => return, // TODO
                         }
                         let target_pkmn = state.get_side(&secondary_target_side_ref).get_active();
                         secondary_hit_instructions
@@ -1084,6 +1138,7 @@ fn get_instructions_from_heal(
     match heal.target {
         MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
         MoveTarget::User => target_side_ref = *attacking_side_reference,
+        MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
 
     let target_pkmn = state.get_side(&target_side_ref).get_active();
@@ -2533,91 +2588,97 @@ fn modify_choice_priority(state: &State, side_reference: &SideReference, choice:
 
 fn moves_first(
     state: &State,
-    side_one_choice: &Choice,
-    side_two_choice: &Choice,
+    side_one_1_choice: &Choice,
+    side_two_1_choice: &Choice,
+    side_one_2_choice: &Choice,
+    side_two_2_choice: &Choice,
     incoming_instructions: &mut StateInstructions,
 ) -> SideMovesFirst {
-    let side_one_effective_speed = get_effective_speed(&state, &SideReference::SideOne);
-    let side_two_effective_speed = get_effective_speed(&state, &SideReference::SideTwo);
+    // TODO forget pursuit, just add 1000* priority to each thing and choose max/min (trick room)
+    SideMovesFirst::SideOne_1
+    // let side_one_1_effective_speed = get_effective_speed(&state, &SideReference::SideOne_1);
+    // let side_two_1_effective_speed = get_effective_speed(&state, &SideReference::SideTwo_1);
+    // let side_one_2_effective_speed = get_effective_speed(&state, &SideReference::SideOne_2);
+    // let side_two_2_effective_speed = get_effective_speed(&state, &SideReference::SideTwo_2);
 
-    if side_one_choice.category == MoveCategory::Switch
-        && side_two_choice.category == MoveCategory::Switch
-    {
-        return if side_one_effective_speed > side_two_effective_speed {
-            SideMovesFirst::SideOne
-        } else if side_one_effective_speed == side_two_effective_speed {
-            SideMovesFirst::SpeedTie
-        } else {
-            SideMovesFirst::SideTwo
-        };
-    } else if side_one_choice.category == MoveCategory::Switch {
-        return if side_two_choice.move_id != Choices::PURSUIT {
-            SideMovesFirst::SideOne
-        } else {
-            SideMovesFirst::SideTwo
-        };
-    } else if side_two_choice.category == MoveCategory::Switch {
-        return if side_one_choice.move_id == Choices::PURSUIT {
-            SideMovesFirst::SideOne
-        } else {
-            SideMovesFirst::SideTwo
-        };
-    }
+    // if side_one_choice.category == MoveCategory::Switch
+    //     && side_two_choice.category == MoveCategory::Switch
+    // {
+    //     return if side_one_effective_speed > side_two_effective_speed {
+    //         SideMovesFirst::SideOne
+    //     } else if side_one_effective_speed == side_two_effective_speed {
+    //         SideMovesFirst::SpeedTie
+    //     } else {
+    //         SideMovesFirst::SideTwo
+    //     };
+    // } else if side_one_choice.category == MoveCategory::Switch {
+    //     return if side_two_choice.move_id != Choices::PURSUIT {
+    //         SideMovesFirst::SideOne
+    //     } else {
+    //         SideMovesFirst::SideTwo
+    //     };
+    // } else if side_two_choice.category == MoveCategory::Switch {
+    //     return if side_one_choice.move_id == Choices::PURSUIT {
+    //         SideMovesFirst::SideOne
+    //     } else {
+    //         SideMovesFirst::SideTwo
+    //     };
+    // }
 
-    let side_one_active = state.side_one.get_active_immutable();
-    let side_two_active = state.side_two.get_active_immutable();
-    if side_one_choice.priority == side_two_choice.priority {
-        if side_one_active.item == Items::CUSTAPBERRY
-            && side_one_active.hp < side_one_active.maxhp / 4
-        {
-            incoming_instructions
-                .instruction_list
-                .push(Instruction::ChangeItem(ChangeItemInstruction {
-                    side_ref: SideReference::SideOne,
-                    new_item: Items::NONE,
-                    current_item: Items::CUSTAPBERRY,
-                }));
-            return SideMovesFirst::SideOne;
-        } else if side_two_active.item == Items::CUSTAPBERRY
-            && side_two_active.hp < side_two_active.maxhp / 4
-        {
-            incoming_instructions
-                .instruction_list
-                .push(Instruction::ChangeItem(ChangeItemInstruction {
-                    side_ref: SideReference::SideTwo,
-                    new_item: Items::NONE,
-                    current_item: Items::CUSTAPBERRY,
-                }));
-            return SideMovesFirst::SideTwo;
-        }
+    // let side_one_active = state.side_one.get_active_immutable();
+    // let side_two_active = state.side_two.get_active_immutable();
+    // if side_one_choice.priority == side_two_choice.priority {
+    //     if side_one_active.item == Items::CUSTAPBERRY
+    //         && side_one_active.hp < side_one_active.maxhp / 4
+    //     {
+    //         incoming_instructions
+    //             .instruction_list
+    //             .push(Instruction::ChangeItem(ChangeItemInstruction {
+    //                 side_ref: SideReference::SideOne,
+    //                 new_item: Items::NONE,
+    //                 current_item: Items::CUSTAPBERRY,
+    //             }));
+    //         return SideMovesFirst::SideOne;
+    //     } else if side_two_active.item == Items::CUSTAPBERRY
+    //         && side_two_active.hp < side_two_active.maxhp / 4
+    //     {
+    //         incoming_instructions
+    //             .instruction_list
+    //             .push(Instruction::ChangeItem(ChangeItemInstruction {
+    //                 side_ref: SideReference::SideTwo,
+    //                 new_item: Items::NONE,
+    //                 current_item: Items::CUSTAPBERRY,
+    //             }));
+    //         return SideMovesFirst::SideTwo;
+    //     }
 
-        if side_one_effective_speed == side_two_effective_speed {
-            return SideMovesFirst::SpeedTie;
-        }
+    //     if side_one_effective_speed == side_two_effective_speed {
+    //         return SideMovesFirst::SpeedTie;
+    //     }
 
-        match state.trick_room.active {
-            true => {
-                if side_one_effective_speed < side_two_effective_speed {
-                    SideMovesFirst::SideOne
-                } else {
-                    SideMovesFirst::SideTwo
-                }
-            }
-            false => {
-                if side_one_effective_speed > side_two_effective_speed {
-                    SideMovesFirst::SideOne
-                } else {
-                    SideMovesFirst::SideTwo
-                }
-            }
-        }
-    } else {
-        if side_one_choice.priority > side_two_choice.priority {
-            SideMovesFirst::SideOne
-        } else {
-            SideMovesFirst::SideTwo
-        }
-    }
+    //     match state.trick_room.active {
+    //         true => {
+    //             if side_one_effective_speed < side_two_effective_speed {
+    //                 SideMovesFirst::SideOne
+    //             } else {
+    //                 SideMovesFirst::SideTwo
+    //             }
+    //         }
+    //         false => {
+    //             if side_one_effective_speed > side_two_effective_speed {
+    //                 SideMovesFirst::SideOne
+    //             } else {
+    //                 SideMovesFirst::SideTwo
+    //             }
+    //         }
+    //     }
+    // } else {
+    //     if side_one_choice.priority > side_two_choice.priority {
+    //         SideMovesFirst::SideOne
+    //     } else {
+    //         SideMovesFirst::SideTwo
+    //     }
+    // }
 }
 
 fn get_active_protosynthesis(side: &Side) -> Option<PokemonVolatileStatus> {
@@ -2767,7 +2828,8 @@ fn add_end_of_turn_instructions(
     mut incoming_instructions: &mut StateInstructions,
     first_move_side: &SideReference,
 ) {
-    if state.side_one.force_switch || state.side_two.force_switch {
+    if state.side_one_1.force_switch || state.side_two_1.force_switch
+        || state.side_two_2.force_switch || state.side_one_1.force_switch {
         return;
     }
 
@@ -3597,35 +3659,35 @@ fn run_move(
     // This deals with a bunch of flags that are required for the next turn to run properly
     if choice.flags.pivot {
         match attacking_side {
-            SideReference::SideOne => {
-                if state.side_one.visible_alive_pkmn() > 1 {
+            SideReference::SideOne_1 => {
+                if state.side_one_1.visible_alive_pkmn() > 1 {
                     if choice.move_id == Choices::BATONPASS {
-                        state.side_one.baton_passing = !state.side_one.baton_passing;
+                        state.side_one_1.baton_passing = !state.side_one_1.baton_passing;
                         instructions
                             .instruction_list
                             .push(Instruction::ToggleBatonPassing(
                                 ToggleBatonPassingInstruction {
-                                    side_ref: SideReference::SideOne,
+                                    side_ref: SideReference::SideOne_1,
                                 },
                             ));
                     } else if choice.move_id == Choices::SHEDTAIL {
-                        state.side_one.shed_tailing = !state.side_one.shed_tailing;
+                        state.side_one_1.shed_tailing = !state.side_one_1.shed_tailing;
                         instructions
                             .instruction_list
                             .push(Instruction::ToggleShedTailing(
                                 ToggleShedTailingInstruction {
-                                    side_ref: SideReference::SideOne,
+                                    side_ref: SideReference::SideOne_1,
                                 },
                             ));
                     }
-                    state.side_one.force_switch = !state.side_one.force_switch;
+                    state.side_one_1.force_switch = !state.side_one_1.force_switch;
                     instructions
                         .instruction_list
-                        .push(Instruction::ToggleSideOneForceSwitch);
+                        .push(Instruction::ToggleSideOne_1ForceSwitch);
 
                     if choice.first_move {
                         instructions.instruction_list.push(
-                            Instruction::SetSideTwoMoveSecondSwitchOutMove(
+                            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
@@ -3634,10 +3696,10 @@ fn run_move(
                                 },
                             ),
                         );
-                        state.side_two.switch_out_move_second_saved_move = defender_choice.move_id;
+                        state.side_two_1.switch_out_move_second_saved_move = defender_choice.move_id;
                     } else {
                         instructions.instruction_list.push(
-                            Instruction::SetSideTwoMoveSecondSwitchOutMove(
+                            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
@@ -3646,39 +3708,39 @@ fn run_move(
                                 },
                             ),
                         );
-                        state.side_two.switch_out_move_second_saved_move = defender_choice.move_id;
+                        state.side_two_1.switch_out_move_second_saved_move = defender_choice.move_id;
                     }
                 }
             }
-            SideReference::SideTwo => {
-                if state.side_two.visible_alive_pkmn() > 1 {
+            SideReference::SideTwo_1 => {
+                if state.side_two_1.visible_alive_pkmn() > 1 {
                     if choice.move_id == Choices::BATONPASS {
-                        state.side_two.baton_passing = !state.side_two.baton_passing;
+                        state.side_two_1.baton_passing = !state.side_two_1.baton_passing;
                         instructions
                             .instruction_list
                             .push(Instruction::ToggleBatonPassing(
                                 ToggleBatonPassingInstruction {
-                                    side_ref: SideReference::SideTwo,
+                                    side_ref: SideReference::SideTwo_1,
                                 },
                             ));
                     } else if choice.move_id == Choices::SHEDTAIL {
-                        state.side_two.shed_tailing = !state.side_two.shed_tailing;
+                        state.side_two_1.shed_tailing = !state.side_two_1.shed_tailing;
                         instructions
                             .instruction_list
                             .push(Instruction::ToggleShedTailing(
                                 ToggleShedTailingInstruction {
-                                    side_ref: SideReference::SideTwo,
+                                    side_ref: SideReference::SideTwo_1,
                                 },
                             ));
                     }
-                    state.side_two.force_switch = !state.side_two.force_switch;
+                    state.side_two_1.force_switch = !state.side_two_1.force_switch;
                     instructions
                         .instruction_list
-                        .push(Instruction::ToggleSideTwoForceSwitch);
+                        .push(Instruction::ToggleSideTwo_1ForceSwitch);
 
                     if choice.first_move {
                         instructions.instruction_list.push(
-                            Instruction::SetSideOneMoveSecondSwitchOutMove(
+                            Instruction::SetSideOne_1MoveSecondSwitchOutMove(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: defender_choice.move_id,
                                     previous_choice: state
@@ -3687,10 +3749,10 @@ fn run_move(
                                 },
                             ),
                         );
-                        state.side_one.switch_out_move_second_saved_move = defender_choice.move_id;
+                        state.side_one_1.switch_out_move_second_saved_move = defender_choice.move_id;
                     } else {
                         instructions.instruction_list.push(
-                            Instruction::SetSideOneMoveSecondSwitchOutMove(
+                            Instruction::SetSideOne_1MoveSecondSwitchOutMove(
                                 SetSecondMoveSwitchOutMoveInstruction {
                                     new_choice: Choices::NONE,
                                     previous_choice: state
@@ -3699,7 +3761,113 @@ fn run_move(
                                 },
                             ),
                         );
-                        state.side_one.switch_out_move_second_saved_move = defender_choice.move_id;
+                        state.side_one_1.switch_out_move_second_saved_move = defender_choice.move_id;
+                    }
+                }
+            }
+            SideReference::SideOne_2 => {
+                if state.side_one_2.visible_alive_pkmn() > 1 {
+                    if choice.move_id == Choices::BATONPASS {
+                        state.side_one_2.baton_passing = !state.side_one_2.baton_passing;
+                        instructions
+                            .instruction_list
+                            .push(Instruction::ToggleBatonPassing(
+                                ToggleBatonPassingInstruction {
+                                    side_ref: SideReference::SideOne_2,
+                                },
+                            ));
+                    } else if choice.move_id == Choices::SHEDTAIL {
+                        state.side_one_2.shed_tailing = !state.side_one_2.shed_tailing;
+                        instructions
+                            .instruction_list
+                            .push(Instruction::ToggleShedTailing(
+                                ToggleShedTailingInstruction {
+                                    side_ref: SideReference::SideOne_2,
+                                },
+                            ));
+                    }
+                    state.side_one_2.force_switch = !state.side_one_2.force_switch;
+                    instructions
+                        .instruction_list
+                        .push(Instruction::ToggleSideOne_2ForceSwitch);
+
+                    if choice.first_move {
+                        instructions.instruction_list.push(
+                            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(
+                                SetSecondMoveSwitchOutMoveInstruction {
+                                    new_choice: defender_choice.move_id,
+                                    previous_choice: state
+                                        .side_two
+                                        .switch_out_move_second_saved_move,
+                                },
+                            ),
+                        );
+                        state.side_two_1.switch_out_move_second_saved_move = defender_choice.move_id;
+                    } else {
+                        instructions.instruction_list.push(
+                            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(
+                                SetSecondMoveSwitchOutMoveInstruction {
+                                    new_choice: Choices::NONE,
+                                    previous_choice: state
+                                        .side_two
+                                        .switch_out_move_second_saved_move,
+                                },
+                            ),
+                        );
+                        state.side_two_1.switch_out_move_second_saved_move = defender_choice.move_id;
+                    }
+                }
+            }
+            SideReference::SideTwo_2 => {
+                if state.side_two_2.visible_alive_pkmn() > 1 {
+                    if choice.move_id == Choices::BATONPASS {
+                        state.side_two_2.baton_passing = !state.side_two_2.baton_passing;
+                        instructions
+                            .instruction_list
+                            .push(Instruction::ToggleBatonPassing(
+                                ToggleBatonPassingInstruction {
+                                    side_ref: SideReference::SideTwo_2,
+                                },
+                            ));
+                    } else if choice.move_id == Choices::SHEDTAIL {
+                        state.side_two_2.shed_tailing = !state.side_two_2.shed_tailing;
+                        instructions
+                            .instruction_list
+                            .push(Instruction::ToggleShedTailing(
+                                ToggleShedTailingInstruction {
+                                    side_ref: SideReference::SideTwo_2,
+                                },
+                            ));
+                    }
+                    state.side_two_2.force_switch = !state.side_two_2.force_switch;
+                    instructions
+                        .instruction_list
+                        .push(Instruction::ToggleSideTwo_2ForceSwitch);
+
+                    if choice.first_move {
+                        instructions.instruction_list.push( // TODO this is incorrect
+                            Instruction::SetSideOne_1MoveSecondSwitchOutMove(
+                                SetSecondMoveSwitchOutMoveInstruction {
+                                    new_choice: defender_choice.move_id,
+                                    previous_choice: state
+                                        .side_one
+                                        .switch_out_move_second_saved_move,
+                                },
+                            ),
+                        );
+                        state.side_one_1.switch_out_move_second_saved_move = defender_choice.move_id;
+                    } else {
+                        instructions.instruction_list.push(
+                            Instruction::SetSideOne_1MoveSecondSwitchOutMove(
+                                SetSecondMoveSwitchOutMoveInstruction {
+                                    new_choice: Choices::NONE,
+                                    previous_choice: state
+                                        .side_one
+                                        .switch_out_move_second_saved_move,
+                                },
+                            ),
+                        );
+                        state.side_one_1.switch_out_move_second_saved_move = defender_choice.move_id;
                     }
                 }
             }
@@ -3737,7 +3905,7 @@ fn after_move_finish(state: &mut State, final_instructions: &mut Vec<StateInstru
 
         // check if anybody has negative boosts and a whiteherb
         // if so, consume the item and set the boosts to 0
-        for side_ref in [SideReference::SideOne, SideReference::SideTwo] {
+        for side_ref in [SideReference::SideOne_1, SideReference::SideTwo_1, SideReference::SideOne_2, SideReference::SideTwo_2 ] {
             let side = state.get_side(&side_ref);
             let active_has_whiteherb = side.get_active_immutable().item == Items::WHITEHERB;
             if active_has_whiteherb {
@@ -3852,110 +4020,202 @@ fn mega_evolve(state: &mut State, side_ref: SideReference, instructions: &mut St
 
 pub fn generate_instructions_from_move_pair(
     state: &mut State,
-    side_one_move: &MoveChoice,
-    side_two_move: &MoveChoice,
+    side_one_1_move: &MoveChoice,
+    side_one_2_move: &MoveChoice,
+    side_two_1_move: &MoveChoice,
+    side_two_2_move: &MoveChoice,
     branch_on_damage: bool,
 ) -> Vec<StateInstructions> {
-    let mut side_one_choice;
-    let mut s1_tera = false;
-    let mut s1_mega = false;
-    let mut s1_replacing_fainted_pkmn = false;
-    match side_one_move {
+    let mut side_one_1_choice;
+    let mut s1_1_tera = false;
+    let mut s1_1_mega = false;
+    let mut s1_1_replacing_fainted_pkmn = false;
+    match side_one_1_move {
         MoveChoice::Switch(switch_id) => {
-            if state.side_one.get_active().hp == 0 {
-                s1_replacing_fainted_pkmn = true;
+            if state.side_one_1.get_active().hp == 0 {
+                s1_1_replacing_fainted_pkmn = true;
             }
-            side_one_choice = Choice::default();
-            side_one_choice.switch_id = *switch_id;
-            side_one_choice.category = MoveCategory::Switch;
+            side_one_1_choice = Choice::default();
+            side_one_1_choice.switch_id = *switch_id;
+            side_one_1_choice.category = MoveCategory::Switch;
         }
         MoveChoice::Move(move_index) => {
-            side_one_choice = state.side_one.get_active().moves[move_index].choice.clone();
-            side_one_choice.move_index = *move_index;
+            side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
+            side_one_1_choice.move_index = *move_index;
         }
         MoveChoice::MoveTera(move_index) => {
-            side_one_choice = state.side_one.get_active().moves[move_index].choice.clone();
-            side_one_choice.move_index = *move_index;
-            s1_tera = true;
+            side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
+            side_one_1_choice.move_index = *move_index;
+            s1_1_tera = true;
         }
         MoveChoice::MoveMega(move_index) => {
-            side_one_choice = state.side_one.get_active().moves[move_index].choice.clone();
-            side_one_choice.move_index = *move_index;
-            s1_mega = true;
+            side_one_1_choice = state.side_one_1.get_active().moves[move_index].choice.clone();
+            side_one_1_choice.move_index = *move_index;
+            s1_1_mega = true;
         }
         MoveChoice::None => {
-            side_one_choice = Choice::default();
+            side_one_1_choice = Choice::default();
+        }
+    }
+    let mut side_one_2_choice;
+    let mut s1_2_tera = false;
+    let mut s1_2_mega = false;
+    let mut s1_2_replacing_fainted_pkmn = false;
+    match side_one_2_move {
+        MoveChoice::Switch(switch_id) => {
+            if state.side_one_2.get_active().hp == 0 {
+                s1_2_replacing_fainted_pkmn = true;
+            }
+            side_one_2_choice = Choice::default();
+            side_one_2_choice.switch_id = *switch_id;
+            side_one_2_choice.category = MoveCategory::Switch;
+        }
+        MoveChoice::Move(move_index) => {
+            side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
+            side_one_2_choice.move_index = *move_index;
+        }
+        MoveChoice::MoveTera(move_index) => {
+            side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
+            side_one_2_choice.move_index = *move_index;
+            s1_2_tera = true;
+        }
+        MoveChoice::MoveMega(move_index) => {
+            side_one_2_choice = state.side_one_2.get_active().moves[move_index].choice.clone();
+            side_one_2_choice.move_index = *move_index;
+            s1_2_mega = true;
+        }
+        MoveChoice::None => {
+            side_one_2_choice = Choice::default();
         }
     }
 
-    let mut side_two_choice;
-    let mut s2_replacing_fainted_pkmn = false;
-    let mut s2_tera = false;
-    let mut s2_mega = false;
-    match side_two_move {
+    let mut side_two_1_choice;
+    let mut s2_1_replacing_fainted_pkmn = false;
+    let mut s2_1_tera = false;
+    let mut s2_1_mega = false;
+    match side_two_1_move {
         MoveChoice::Switch(switch_id) => {
-            if state.side_two.get_active().hp == 0 {
-                s2_replacing_fainted_pkmn = true;
+            if state.side_two_1.get_active().hp == 0 {
+                s2_1_replacing_fainted_pkmn = true;
             }
-            side_two_choice = Choice::default();
-            side_two_choice.switch_id = *switch_id;
-            side_two_choice.category = MoveCategory::Switch;
+            side_two_1_choice = Choice::default();
+            side_two_1_choice.switch_id = *switch_id;
+            side_two_1_choice.category = MoveCategory::Switch;
         }
         MoveChoice::Move(move_index) => {
-            side_two_choice = state.side_two.get_active().moves[move_index].choice.clone();
-            side_two_choice.move_index = *move_index;
+            side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
+            side_two_1_choice.move_index = *move_index;
         }
         MoveChoice::MoveTera(move_index) => {
-            side_two_choice = state.side_two.get_active().moves[move_index].choice.clone();
-            side_two_choice.move_index = *move_index;
-            s2_tera = true;
+            side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
+            side_two_1_choice.move_index = *move_index;
+            s2_1_tera = true;
         }
         MoveChoice::MoveMega(move_index) => {
-            side_two_choice = state.side_two.get_active().moves[move_index].choice.clone();
-            side_two_choice.move_index = *move_index;
-            s2_mega = true;
+            side_two_1_choice = state.side_two_1.get_active().moves[move_index].choice.clone();
+            side_two_1_choice.move_index = *move_index;
+            s2_1_mega = true;
         }
         MoveChoice::None => {
-            side_two_choice = Choice::default();
+            side_two_1_choice = Choice::default();
+        }
+    }
+    let mut side_two_2_choice;
+    let mut s2_2_replacing_fainted_pkmn = false;
+    let mut s2_2_tera = false;
+    let mut s2_2_mega = false;
+    match side_two_2_move {
+        MoveChoice::Switch(switch_id) => {
+            if state.side_two_2.get_active().hp == 0 {
+                s2_2_replacing_fainted_pkmn = true;
+            }
+            side_two_2_choice = Choice::default();
+            side_two_2_choice.switch_id = *switch_id;
+            side_two_2_choice.category = MoveCategory::Switch;
+        }
+        MoveChoice::Move(move_index) => {
+            side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
+            side_two_2_choice.move_index = *move_index;
+        }
+        MoveChoice::MoveTera(move_index) => {
+            side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
+            side_two_2_choice.move_index = *move_index;
+            s2_2_tera = true;
+        }
+        MoveChoice::MoveMega(move_index) => {
+            side_two_2_choice = state.side_two_2.get_active().moves[move_index].choice.clone();
+            side_two_2_choice.move_index = *move_index;
+            s2_2_mega = true;
+        }
+        MoveChoice::None => {
+            side_two_2_choice = Choice::default();
         }
     }
 
-    let mut state_instructions_vec: Vec<StateInstructions> = Vec::with_capacity(4);
+    let mut state_instructions_vec: Vec<StateInstructions> = Vec::with_capacity(8);
     let mut incoming_instructions: StateInstructions = StateInstructions::default();
 
     // Run terastallization / Mega evolutions
     // Note: only create/apply instructions, don't apply changes
     // generate_instructions_from_move() assumes instructions have not been applied
     // technically, switches should happen _before_ this, but this is fine for now
-    if s1_tera {
-        state.side_one.get_active().terastallized = true;
+    if s1_1_tera {
+        state.side_one_1.get_active().terastallized = true;
         incoming_instructions
             .instruction_list
             .push(Instruction::ToggleTerastallized(
                 ToggleTerastallizedInstruction {
-                    side_ref: SideReference::SideOne,
+                    side_ref: SideReference::SideOne_1,
                 },
             ));
     }
-    if s2_tera {
-        state.side_two.get_active().terastallized = true;
+    if s2_1_tera {
+        state.side_two_1.get_active().terastallized = true;
         incoming_instructions
             .instruction_list
             .push(Instruction::ToggleTerastallized(
                 ToggleTerastallizedInstruction {
-                    side_ref: SideReference::SideTwo,
+                    side_ref: SideReference::SideTwo_1,
                 },
             ));
     }
-    if s1_mega {
+    if s1_2_tera {
+        state.side_one_2.get_active().terastallized = true;
+        incoming_instructions
+            .instruction_list
+            .push(Instruction::ToggleTerastallized(
+                ToggleTerastallizedInstruction {
+                    side_ref: SideReference::SideOne_2,
+                },
+            ));
+    }
+    if s2_2_tera {
+        state.side_two_2.get_active().terastallized = true;
+        incoming_instructions
+            .instruction_list
+            .push(Instruction::ToggleTerastallized(
+                ToggleTerastallizedInstruction {
+                    side_ref: SideReference::SideTwo_2,
+                },
+            ));
+    }
+    if s1_1_mega {
         mega_evolve(state, SideReference::SideOne, &mut incoming_instructions);
     }
-    if s2_mega {
+    if s2_1_mega {
+        mega_evolve(state, SideReference::SideTwo, &mut incoming_instructions);
+    }
+    if s1_2_mega {
+        mega_evolve(state, SideReference::SideOne, &mut incoming_instructions);
+    }
+    if s2_2_mega {
         mega_evolve(state, SideReference::SideTwo, &mut incoming_instructions);
     }
 
-    modify_choice_priority(&state, &SideReference::SideOne, &mut side_one_choice);
-    modify_choice_priority(&state, &SideReference::SideTwo, &mut side_two_choice);
+    modify_choice_priority(&state, &SideReference::SideOne_1, &mut side_one_1_choice);
+    modify_choice_priority(&state, &SideReference::SideTwo_1, &mut side_two_1_choice);
+    modify_choice_priority(&state, &SideReference::SideOne_2, &mut side_one_2_choice);
+    modify_choice_priority(&state, &SideReference::SideTwo_2, &mut side_two_2_choice);
 
     // reverse instructions because mega-evolving might've added some
     state.reverse_instructions(&incoming_instructions.instruction_list);
@@ -4193,259 +4453,6 @@ pub fn calculate_both_damage_rolls(
     );
 
     (damages_dealt_s1, damages_dealt_s2)
-}
-
-/// Generates instructions for a doubles action pair where each side has two active Pokemon
-#[cfg(feature = "doubles")]
-pub fn generate_instructions_from_doubles_action_pair(
-    state: &mut State,
-    side_one_action: &DoublesAction,
-    side_two_action: &DoublesAction,
-    _branch_on_damage: bool,
-) -> Vec<StateInstructions> {
-    // Phase 3: Doubles instruction generation for 2v2 battles
-    // Each side has two active Pokemon (left and right positions)
-    
-    // Phase 3.2: Extract moves and determine execution order
-    let execution_order = get_doubles_execution_order(
-        state,
-        side_one_action,
-        side_two_action,
-    );
-    
-    // Phase 3.3: Generate instructions in execution order
-    // For Phase 3.3, we implement a basic version that:
-    // - Handles switches (they execute first, before moves)
-    // - Iterates through remaining moves in priority/speed order
-    // - Creates instruction entries for each Pokemon's action
-    //
-    // Future phases will add:
-    // - Multi-target move calculations
-    // - Per-Pokemon volatile status updates
-    // - Complex ability interactions
-    // - Branching on damage rolls and accuracy
-    
-    // Separate switches from moves in the execution order
-    let (switches, moves): (Vec<_>, Vec<_>) = 
-        execution_order.iter().partition(|info| matches!(info.move_choice, MoveChoice::Switch(_)));
-    
-    let mut state_instructions = Vec::new();
-    let mut incoming_instructions = StateInstructions::default();
-    
-    // Phase 3.3.1: Handle all switches first
-    // Switches execute before moves in Pokemon battles
-    // In the doubles format, both sides' switches happen simultaneously
-    for switch_info in &switches {
-        if let MoveChoice::Switch(switch_id) = switch_info.move_choice {
-            let side_ref = switch_info.side_ref;
-            
-            // For Phase 3.3, we prepare switch data
-            // In Phase 3.4, this will create actual SwitchInstruction entries
-            // which includes:
-            // 1. Removing current Pokemon
-            // 2. Adding new Pokemon
-            // 3. Triggering switch-in effects (abilities, entry hazards, etc.)
-            // 4. Resetting move volatiles (Encore, Disable, etc.)
-            
-            let _switch_side = side_ref;
-            let _incoming_pokemon_index = switch_id;
-            
-            // Placeholder for Phase 3.4 implementation
-        }
-    }
-    
-    // Phase 3.3.2: Execute moves in priority/speed order
-    // The execution_order vector is already sorted correctly
-    for move_info in &moves {
-        if matches!(move_info.move_choice, MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_)) {
-            // Get the attacking Pokemon and their move data
-            let side = state.get_side_immutable(&move_info.side_ref);
-            let active_pkmn = side.get_active_immutable();
-            
-            // Extract move index based on the move choice variant
-            let move_idx = match &move_info.move_choice {
-                MoveChoice::Move(idx) | MoveChoice::MoveTera(idx) | MoveChoice::MoveMega(idx) => idx,
-                _ => continue,
-            };
-            
-            // Get the move data
-            let move_data = &active_pkmn.moves[move_idx];
-            
-            // For Phase 3.3, we create a placeholder entry for this move's execution
-            // In Phase 3.4+, this will be expanded to:
-            // 1. Determine targets (single or multi-target)
-            // 2. Calculate damage
-            // 3. Apply status effects
-            // 4. Handle move accuracy
-            // 5. Branch on damage rolls
-            
-            // Create instruction entry marking this move was executed
-            // This is a simplified version - full implementation in Phase 3.4
-            let _attack_side = move_info.side_ref;
-            let _attack_move_id = move_data.choice.move_id;
-            let _attack_category = move_data.choice.category;
-            
-            // Placeholder: In full implementation, would generate actual damage/status/effect instructions
-        }
-    }
-    
-    // Phase 3.3.3: Return instruction set
-    // For Phase 3.3, we return a simple placeholder that establishes the API
-    if state_instructions.is_empty() {
-        incoming_instructions.percentage = 100.0;
-        state_instructions.push(incoming_instructions);
-    }
-    
-    state_instructions
-}
-
-/// Represents a single Pokemon with its move information for execution ordering
-#[cfg(feature = "doubles")]
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-struct DoublesExecutionInfo {
-    /// Which side (One or Two)
-    side_ref: SideReference,
-    /// Whether it's the left (true) or right (false) active Pokemon
-    is_left: bool,
-    /// The move choice for this Pokemon
-    move_choice: MoveChoice,
-    /// The priority of the move (higher executes first)
-    move_priority: i8,
-    /// The effective speed of this Pokemon (modified by items, abilities, etc.)
-    effective_speed: i16,
-}
-
-/// Determines the execution order for all 4 active Pokemon in a doubles battle
-#[cfg(feature = "doubles")]
-fn get_doubles_execution_order(
-    state: &State,
-    side_one_action: &DoublesAction,
-    side_two_action: &DoublesAction,
-) -> Vec<DoublesExecutionInfo> {
-    let mut execution_info = Vec::new();
-    
-    // Get information for Side One's left Pokemon
-    let s1_left_priority = get_move_priority(state, &side_one_action.left_action, SideReference::SideOne);
-    let s1_left_speed = get_effective_speed(state, &SideReference::SideOne);
-    execution_info.push(DoublesExecutionInfo {
-        side_ref: SideReference::SideOne,
-        is_left: true,
-        move_choice: side_one_action.left_action,
-        move_priority: s1_left_priority,
-        effective_speed: s1_left_speed,
-    });
-    
-    // Get information for Side One's right Pokemon
-    let s1_right_priority = get_move_priority(state, &side_one_action.right_action, SideReference::SideOne);
-    let s1_right_speed = get_effective_speed(state, &SideReference::SideOne);
-    execution_info.push(DoublesExecutionInfo {
-        side_ref: SideReference::SideOne,
-        is_left: false,
-        move_choice: side_one_action.right_action,
-        move_priority: s1_right_priority,
-        effective_speed: s1_right_speed,
-    });
-    
-    // Get information for Side Two's left Pokemon
-    let s2_left_priority = get_move_priority(state, &side_two_action.left_action, SideReference::SideTwo);
-    let s2_left_speed = get_effective_speed(state, &SideReference::SideTwo);
-    execution_info.push(DoublesExecutionInfo {
-        side_ref: SideReference::SideTwo,
-        is_left: true,
-        move_choice: side_two_action.left_action,
-        move_priority: s2_left_priority,
-        effective_speed: s2_left_speed,
-    });
-    
-    // Get information for Side Two's right Pokemon
-    let s2_right_priority = get_move_priority(state, &side_two_action.right_action, SideReference::SideTwo);
-    let s2_right_speed = get_effective_speed(state, &SideReference::SideTwo);
-    execution_info.push(DoublesExecutionInfo {
-        side_ref: SideReference::SideTwo,
-        is_left: false,
-        move_choice: side_two_action.right_action,
-        move_priority: s2_right_priority,
-        effective_speed: s2_right_speed,
-    });
-    
-    // TODO Phase 3.3: Handle switches - they should execute first
-    // Priority: switches first, then sort by move priority then speed
-    // Current: just sort by priority then speed
-    
-    // Sort by priority (descending) then by speed (descending, or ascending with Trick Room)
-    execution_info.sort_by(|a, b| {
-        if a.move_priority != b.move_priority {
-            // Higher priority goes first
-            b.move_priority.cmp(&a.move_priority)
-        } else {
-            // Same priority: use speed
-            if state.trick_room.active {
-                // In Trick Room, lower speed goes first
-                a.effective_speed.cmp(&b.effective_speed)
-            } else {
-                // Normal: higher speed goes first
-                b.effective_speed.cmp(&a.effective_speed)
-            }
-        }
-    });
-    
-    execution_info
-}
-
-/// Gets the priority of a move choice (without modifying Pokemon's active data)
-#[cfg(feature = "doubles")]
-fn get_move_priority(state: &State, move_choice: &MoveChoice, side_ref: SideReference) -> i8 {
-    let side = state.get_side_immutable(&side_ref);
-    let active = side.get_active_immutable();
-    
-    match move_choice {
-        MoveChoice::Switch(_) => {
-            // Switches have highest priority except against Pursuit
-            // For doubles, we'll treat them as priority 7 (higher than most moves)
-            7
-        }
-        MoveChoice::Move(move_idx) | MoveChoice::MoveTera(move_idx) | MoveChoice::MoveMega(move_idx) => {
-            let move_data = &active.moves[move_idx];
-            let base_priority = move_data.choice.priority;
-            
-            // Apply ability-based priority modifiers
-            let mut priority = base_priority;
-            
-            // Grassy Glide gets +1 priority in Grassy Terrain
-            if move_data.choice.move_id == Choices::GRASSYGLIDE
-                && state.terrain_is_active(&Terrain::GRASSYTERRAIN)
-            {
-                priority += 1;
-            }
-            
-            // Prankster: Status moves get +1 priority
-            if active.ability == Abilities::PRANKSTER
-                && move_data.choice.category == MoveCategory::Status
-            {
-                priority += 1;
-            }
-            
-            // Gale Wings: Flying moves get +1 priority at full HP
-            if active.ability == Abilities::GALEWINGS
-                && move_data.choice.move_type == PokemonType::FLYING
-                && active.hp == active.maxhp
-            {
-                priority += 1;
-            }
-            
-            // Triage: Healing moves get +3 priority
-            if active.ability == Abilities::TRIAGE && move_data.choice.flags.heal {
-                priority += 3;
-            }
-            
-            priority
-        }
-        MoveChoice::None => {
-            // No move = lowest priority
-            -7
-        }
-    }
 }
 
 #[cfg(test)]

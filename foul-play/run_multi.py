@@ -41,7 +41,7 @@ def check_dictionaries_are_unmodified(original_pokedex, original_move_json):
         logger.debug("Pokedex JSON unmodified!")
 
 
-async def bot_challenger(original_pokedex, original_move_json, command_queue):
+async def bot_challenger(original_pokedex, original_move_json, command_queue, team_dicts, bot_index):
     """Bot 1 (Master) that challenges Bot 2 and makes all battle decisions"""
     logger.info("Bot 1 (Challenger/Master) starting...")
     
@@ -54,12 +54,15 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue):
     if FoulPlayConfig.avatar is not None:
         await ps_websocket_client.avatar(FoulPlayConfig.avatar)
     
-    team_packed, team_dict, team_file_name = None, None, "None"
     if FoulPlayConfig.requires_team():
-        team_name = FoulPlayConfig.team_name
-        team_packed, team_dict, team_file_name = load_team(team_name)
+        # Use team_dicts[bot_index] which is team_dicts[0] for Bot 1
+        team_dict = team_dicts[bot_index]
+        # Need to reconstruct team_packed for update_team
+        # For now, we'll load it again (could optimize by returning team_packed from run_foul_play_multi)
+        team_packed, _, _ = load_team(FoulPlayConfig.team_name)
         await ps_websocket_client.update_team(team_packed)
     else:
+        team_dict = None
         await ps_websocket_client.update_team("None")
     
     # Challenge user and get the battle tag
@@ -68,15 +71,15 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue):
         FoulPlayConfig.pokemon_format,
     )
     
-    # Play the battle, coordinating with Bot 2 via the command queue
+    # Play the battle, passing the list of team dicts
     winner = await pokemon_battle(
-        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dict, command_queue
+        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dicts, command_queue
     )
     
     if winner == FoulPlayConfig.bot1username:
-        logger.info("Bot 1: Won with team: {}".format(team_file_name))
+        logger.info("Bot 1: Won")
     else:
-        logger.info("Bot 1: Lost with team: {}".format(team_file_name))
+        logger.info("Bot 1: Lost")
     
     # Signal Bot 2 to stop
     await command_queue.put(None)
@@ -85,7 +88,7 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue):
     await ps_websocket_client.close()
 
 
-async def bot_accepter(original_pokedex, original_move_json, command_queue):
+async def bot_accepter(original_pokedex, original_move_json, command_queue, team_dicts, bot_index):
     """Bot 2 (Worker) that accepts the challenge and waits for commands from Bot 1"""
     logger.info("Bot 2 (Accepter/Worker) starting...")
     
@@ -98,12 +101,14 @@ async def bot_accepter(original_pokedex, original_move_json, command_queue):
     if FoulPlayConfig.avatar is not None:
         await ps_websocket_client.avatar(FoulPlayConfig.avatar)
     
-    team_packed, team_dict, team_file_name = None, None, "None"
     if FoulPlayConfig.requires_team():
-        team_name = FoulPlayConfig.team_name
-        team_packed, team_dict, team_file_name = load_team(team_name)
+        # Use team_dicts[bot_index] which is team_dicts[1] for Bot 2
+        team_dict = team_dicts[bot_index]
+        # Need to reconstruct team_packed for update_team
+        team_packed, _, _ = load_team(FoulPlayConfig.team_name)
         await ps_websocket_client.update_team(team_packed)
     else:
+        team_dict = None
         await ps_websocket_client.update_team("None")
     
     # Accept the challenge from Bot 1
@@ -125,7 +130,7 @@ async def bot_accepter(original_pokedex, original_move_json, command_queue):
                 break
             
             logger.info(f"Bot 2: Sending command to server: {command}")
-            await ps_websocket_client.send_message(command)
+            await ps_websocket_client.send_message(command[0], command[1])
             
         except asyncio.TimeoutError:
             logger.warning("Bot 2: Timeout waiting for command (300s), closing...")
@@ -147,13 +152,23 @@ async def run_foul_play_multi():
     original_pokedex = deepcopy(pokedex)
     original_move_json = deepcopy(all_move_json)
     
-    # Create a queue for the master thread to send commands to the worker thread
+    # Load teams for both bots
+    team_dicts = [None, None]  # [bot1_team_dict, bot2_team_dict]
+    team_names = ["", ""]
+    
+    if FoulPlayConfig.requires_team():
+        # Load Bot 1's team
+        team_packed_1, team_dicts[0], team_names[0] = load_team(FoulPlayConfig.team_name)
+        # Load Bot 2's team (same config for now, but could be different)
+        team_packed_2, team_dicts[1], team_names[1] = load_team(FoulPlayConfig.team_name)
+    
+    # Create command queue
     command_queue = asyncio.Queue()
     
-    # Run both bots concurrently
+    # Run both bots concurrently, passing the list of team dicts
     await asyncio.gather(
-        bot_challenger(original_pokedex, original_move_json, command_queue),
-        bot_accepter(original_pokedex, original_move_json, command_queue),
+        bot_challenger(original_pokedex, original_move_json, command_queue, team_dicts, 0),
+        bot_accepter(original_pokedex, original_move_json, command_queue, team_dicts, 1),
     )
 
 

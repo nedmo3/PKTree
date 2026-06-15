@@ -1007,7 +1007,7 @@ pub fn choice_hazard_clear(
                 PokemonSideCondition::Tailwind,
             ];
 
-            for side in [SideReference::SideOne, SideReference::SideTwo] {
+            for side in [SideReference::SideOne_1, SideReference::SideOne_2, SideReference::SideTwo_1, SideReference::SideTwo_2] {
                 for side_condition in courtchange_swaps {
                     let side_condition_num = state
                         .get_side_immutable(&side)
@@ -1060,7 +1060,7 @@ pub fn choice_hazard_clear(
                 PokemonSideCondition::AuroraVeil,
             ];
 
-            for side in [SideReference::SideOne, SideReference::SideTwo] {
+            for side in [SideReference::SideOne_1, SideReference::SideOne_2, SideReference::SideTwo_1, SideReference::SideTwo_2] {
                 for side_condition in side_condition_clears {
                     let side_condition_num = state
                         .get_side_immutable(&side)
@@ -1085,7 +1085,7 @@ pub fn choice_hazard_clear(
                 PokemonSideCondition::StickyWeb,
             ];
 
-            for side in [SideReference::SideOne, SideReference::SideTwo] {
+            for side in [SideReference::SideOne_1, SideReference::SideOne_2, SideReference::SideTwo_1, SideReference::SideTwo_2] {
                 for side_condition in side_condition_clears {
                     let side_condition_num = state
                         .get_side_immutable(&side)
@@ -1102,7 +1102,7 @@ pub fn choice_hazard_clear(
                 }
             }
             if state
-                .side_one
+                .side_one_1
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::SUBSTITUTE)
             {
@@ -1110,26 +1110,26 @@ pub fn choice_hazard_clear(
                     .instruction_list
                     .push(Instruction::ChangeSubstituteHealth(
                         ChangeSubsituteHealthInstruction {
-                            side_ref: SideReference::SideOne,
-                            health_change: -1 * state.side_one.substitute_health,
+                            side_ref: SideReference::SideOne_1,
+                            health_change: -1 * state.side_one_1.substitute_health,
                         },
                     ));
                 instructions
                     .instruction_list
                     .push(Instruction::RemoveVolatileStatus(
                         RemoveVolatileStatusInstruction {
-                            side_ref: SideReference::SideOne,
+                            side_ref: SideReference::SideOne_1,
                             volatile_status: PokemonVolatileStatus::SUBSTITUTE,
                         },
                     ));
-                state.side_one.substitute_health = 0;
+                state.side_one_1.substitute_health = 0;
                 state
-                    .side_one
+                    .side_one_1
                     .volatile_statuses
                     .remove(&PokemonVolatileStatus::SUBSTITUTE);
             }
             if state
-                .side_two
+                .side_one_2
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::SUBSTITUTE)
             {
@@ -1137,21 +1137,75 @@ pub fn choice_hazard_clear(
                     .instruction_list
                     .push(Instruction::ChangeSubstituteHealth(
                         ChangeSubsituteHealthInstruction {
-                            side_ref: SideReference::SideTwo,
-                            health_change: -1 * state.side_two.substitute_health,
+                            side_ref: SideReference::SideOne_2,
+                            health_change: -1 * state.side_one_2.substitute_health,
                         },
                     ));
                 instructions
                     .instruction_list
                     .push(Instruction::RemoveVolatileStatus(
                         RemoveVolatileStatusInstruction {
-                            side_ref: SideReference::SideTwo,
+                            side_ref: SideReference::SideOne_2,
                             volatile_status: PokemonVolatileStatus::SUBSTITUTE,
                         },
                     ));
-                state.side_two.substitute_health = 0;
+                state.side_one_2.substitute_health = 0;
                 state
-                    .side_two
+                    .side_one_2
+                    .volatile_statuses
+                    .remove(&PokemonVolatileStatus::SUBSTITUTE);
+            }
+            if state
+                .side_two_1
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::SUBSTITUTE)
+            {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSubstituteHealth(
+                        ChangeSubsituteHealthInstruction {
+                            side_ref: SideReference::SideTwo_1,
+                            health_change: -1 * state.side_two_1.substitute_health,
+                        },
+                    ));
+                instructions
+                    .instruction_list
+                    .push(Instruction::RemoveVolatileStatus(
+                        RemoveVolatileStatusInstruction {
+                            side_ref: SideReference::SideTwo_1,
+                            volatile_status: PokemonVolatileStatus::SUBSTITUTE,
+                        },
+                    ));
+                state.side_two_1.substitute_health = 0;
+                state
+                    .side_two_1
+                    .volatile_statuses
+                    .remove(&PokemonVolatileStatus::SUBSTITUTE);
+            }
+            if state
+                .side_two_2
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::SUBSTITUTE)
+            {
+                instructions
+                    .instruction_list
+                    .push(Instruction::ChangeSubstituteHealth(
+                        ChangeSubsituteHealthInstruction {
+                            side_ref: SideReference::SideTwo_2,
+                            health_change: -1 * state.side_two_2.substitute_health,
+                        },
+                    ));
+                instructions
+                    .instruction_list
+                    .push(Instruction::RemoveVolatileStatus(
+                        RemoveVolatileStatusInstruction {
+                            side_ref: SideReference::SideTwo_2,
+                            volatile_status: PokemonVolatileStatus::SUBSTITUTE,
+                        },
+                    ));
+                state.side_two_2.substitute_health = 0;
+                state
+                    .side_two_2
                     .volatile_statuses
                     .remove(&PokemonVolatileStatus::SUBSTITUTE);
             }
@@ -1339,8 +1393,10 @@ pub fn choice_special_effect(
             }
         }
         Choices::HAZE => {
-            state.reset_boosts(&SideReference::SideOne, &mut instructions.instruction_list);
-            state.reset_boosts(&SideReference::SideTwo, &mut instructions.instruction_list);
+            state.reset_boosts(&SideReference::SideOne_1, &mut instructions.instruction_list);
+            state.reset_boosts(&SideReference::SideTwo_1, &mut instructions.instruction_list);
+            state.reset_boosts(&SideReference::SideOne_2, &mut instructions.instruction_list);
+            state.reset_boosts(&SideReference::SideTwo_2, &mut instructions.instruction_list);
         }
         Choices::REST => {
             let electric_terrain_active = state.terrain_is_active(&Terrain::ELECTRICTERRAIN);
@@ -1563,7 +1619,7 @@ pub fn choice_special_effect(
             }
         }
         Choices::PERISHSONG => {
-            for side_ref in [SideReference::SideOne, SideReference::SideTwo] {
+            for side_ref in [SideReference::SideOne_1, SideReference::SideOne_2, SideReference::SideTwo_1, SideReference::SideTwo_2] {
                 let side = state.get_side(&side_ref);
                 let pkmn = side.get_active();
                 if pkmn.hp != 0

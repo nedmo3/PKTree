@@ -11,14 +11,18 @@ use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum SideReference {
-    SideOne,
-    SideTwo,
+    SideOne_1,
+    SideOne_2,
+    SideTwo_1,
+    SideTwo_2,
 }
 impl SideReference {
     pub fn get_other_side(&self) -> SideReference {
         match self {
-            SideReference::SideOne => SideReference::SideTwo,
-            SideReference::SideTwo => SideReference::SideOne,
+            SideReference::SideOne_1 => SideReference::SideTwo_1,
+            SideReference::SideTwo_1 => SideReference::SideOne_1,
+            SideReference::SideOne_2 => SideReference::SideTwo_2,
+            SideReference::SideTwo_2 => SideReference::SideOne_2,
         }
     }
 }
@@ -437,8 +441,6 @@ impl Default for Side {
     fn default() -> Side {
         Side {
             active_index: PokemonIndex::P0,
-            #[cfg(feature = "doubles")]
-            doubles_active_indices: None,
             baton_passing: false,
             shed_tailing: false,
             pokemon: SidePokemon {
@@ -987,50 +989,9 @@ impl Pokemon {
     }
 }
 
-/// Tracks the two active Pokemon indices in a doubles battle
-#[cfg(feature = "doubles")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct DoublesActiveIndices {
-    /// The left/first active Pokemon (position 0)
-    pub left: PokemonIndex,
-    /// The right/second active Pokemon (position 1)
-    pub right: PokemonIndex,
-}
-
-#[cfg(feature = "doubles")]
-impl DoublesActiveIndices {
-    /// Creates a new DoublesActiveIndices
-    pub fn new(left: PokemonIndex, right: PokemonIndex) -> Self {
-        DoublesActiveIndices { left, right }
-    }
-
-    /// Swaps the left and right positions
-    pub fn swap(&mut self) {
-        std::mem::swap(&mut self.left, &mut self.right);
-    }
-
-    /// Checks if a given index is one of the active Pokemon
-    pub fn contains(&self, index: PokemonIndex) -> bool {
-        self.left == index || self.right == index
-    }
-
-    /// Gets the other active index given one index
-    pub fn get_other(&self, index: PokemonIndex) -> Option<PokemonIndex> {
-        if self.left == index {
-            Some(self.right)
-        } else if self.right == index {
-            Some(self.left)
-        } else {
-            None
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Side {
     pub active_index: PokemonIndex,
-    #[cfg(feature = "doubles")]
-    pub doubles_active_indices: Option<DoublesActiveIndices>,
     pub baton_passing: bool,
     pub shed_tailing: bool,
     pub pokemon: SidePokemon,
@@ -1180,8 +1141,6 @@ impl Side {
                 ],
             },
             active_index: PokemonIndex::deserialize(split[6]),
-            #[cfg(feature = "doubles")]
-            doubles_active_indices: None,
             side_conditions: SideConditions::deserialize(split[7]),
             volatile_statuses: vs_hashset,
             volatile_status_durations: VolatileStatusDurations::deserialize(split[9]),
@@ -1228,59 +1187,6 @@ impl Side {
     pub fn get_active_immutable(&self) -> &Pokemon {
         &self.pokemon[self.active_index]
     }
-
-    /// Get the left active Pokemon in doubles battles  
-    #[cfg(feature = "doubles")]
-    pub fn get_active_left_immutable(&self) -> &Pokemon {
-        let indices = self.doubles_active_indices
-            .expect("doubles_active_indices should be set when using doubles accessor");
-        &self.pokemon[indices.left]
-    }
-
-    /// Get the right active Pokemon in doubles battles
-    #[cfg(feature = "doubles")]
-    pub fn get_active_right_immutable(&self) -> &Pokemon {
-        let indices = self.doubles_active_indices
-            .expect("doubles_active_indices should be set when using doubles accessor");
-        &self.pokemon[indices.right]
-    }
-
-    /// Get a mutable reference to the left active Pokemon in doubles battles
-    #[cfg(feature = "doubles")]
-    pub fn get_active_left(&mut self) -> &mut Pokemon {
-        let indices = self.doubles_active_indices
-            .expect("doubles_active_indices should be set when using doubles accessor");
-        &mut self.pokemon[indices.left]
-    }
-
-    /// Get a mutable reference to the right active Pokemon in doubles battles
-    #[cfg(feature = "doubles")]
-    pub fn get_active_right(&mut self) -> &mut Pokemon {
-        let indices = self.doubles_active_indices
-            .expect("doubles_active_indices should be set when using doubles accessor");
-        &mut self.pokemon[indices.right]
-    }
-
-    /// Get both active Pokemon in doubles battles as immutable references
-    #[cfg(feature = "doubles")]
-    pub fn get_active_both_immutable(&self) -> (&Pokemon, &Pokemon) {
-        let indices = self.doubles_active_indices
-            .expect("doubles_active_indices should be set when using doubles accessor");
-        (&self.pokemon[indices.left], &self.pokemon[indices.right])
-    }
-
-    /// Initialize doubles actives for a new battle
-    #[cfg(feature = "doubles")]
-    pub fn initialize_doubles_actives(&mut self, left: PokemonIndex, right: PokemonIndex) {
-        self.doubles_active_indices = Some(DoublesActiveIndices::new(left, right));
-    }
-
-    /// Check if doubles is enabled and actives are set
-    #[cfg(feature = "doubles")]
-    pub fn is_doubles(&self) -> bool {
-        self.doubles_active_indices.is_some()
-    }
-
     fn toggle_force_switch(&mut self) {
         self.force_switch = !self.force_switch;
     }
@@ -1346,8 +1252,10 @@ impl Side {
 
 #[derive(Debug, Clone)]
 pub struct State {
-    pub side_one: Side,
-    pub side_two: Side,
+    pub side_one_1: Side,
+    pub side_one_2: Side,
+    pub side_two_1: Side,
+    pub side_two_2: Side,
     pub weather: StateWeather,
     pub terrain: StateTerrain,
     pub trick_room: StateTrickRoom,
@@ -1358,8 +1266,10 @@ pub struct State {
 impl Default for State {
     fn default() -> State {
         let mut s = State {
-            side_one: Side::default(),
-            side_two: Side::default(),
+            side_one_1: Side::default(),
+            side_one_2: Side::default(),
+            side_two_1: Side::default(),
+            side_two_2: Side::default(),
             weather: StateWeather {
                 weather_type: Weather::NONE,
                 turns_remaining: -1,
@@ -1378,7 +1288,8 @@ impl Default for State {
         };
 
         // many tests rely on the speed of side 2's active pokemon being greater than side_one's
-        s.side_two.get_active().speed += 1;
+        s.side_two_1.get_active().speed += 1;
+        s.side_two_2.get_active().speed += 1;
         s
     }
 }
@@ -1387,10 +1298,10 @@ impl State {
         //  0 if battle is not over
         //  1 if side one has won
         // -1 if side two has won
-        if self.side_one.pokemon.into_iter().all(|p| p.hp <= 0) {
+        if self.side_one_1.pokemon.into_iter().all(|p| p.hp <= 0) && self.side_one_2.pokemon.into_iter().all(|p| p.hp <= 0) {
             return -1.0;
         }
-        if self.side_two.pokemon.into_iter().all(|p| p.hp <= 0) {
+        if self.side_two_1.pokemon.into_iter().all(|p| p.hp <= 0) && self.side_two_2.pokemon.into_iter().all(|p| p.hp <= 0) {
             return 1.0;
         }
         0.0
@@ -1398,29 +1309,37 @@ impl State {
 
     pub fn get_side(&mut self, side_ref: &SideReference) -> &mut Side {
         match side_ref {
-            SideReference::SideOne => &mut self.side_one,
-            SideReference::SideTwo => &mut self.side_two,
+            SideReference::SideOne_1 => &mut self.side_one_1,
+            SideReference::SideOne_2 => &mut self.side_one_2,
+            SideReference::SideTwo_1 => &mut self.side_two_1,
+            SideReference::SideTwo_2 => &mut self.side_two_2,
         }
     }
 
     pub fn get_side_immutable(&self, side_ref: &SideReference) -> &Side {
         match side_ref {
-            SideReference::SideOne => &self.side_one,
-            SideReference::SideTwo => &self.side_two,
+            SideReference::SideOne_1 => &self.side_one_1,
+            SideReference::SideOne_2 => &self.side_one_2,
+            SideReference::SideTwo_1 => &self.side_two_1,
+            SideReference::SideTwo_2 => &self.side_two_2,
         }
     }
 
     pub fn get_both_sides(&mut self, side_ref: &SideReference) -> (&mut Side, &mut Side) {
         match side_ref {
-            SideReference::SideOne => (&mut self.side_one, &mut self.side_two),
-            SideReference::SideTwo => (&mut self.side_two, &mut self.side_one),
+            SideReference::SideOne_1 => (&mut self.side_one_1, &mut self.side_two_1),
+            SideReference::SideOne_2 => (&mut self.side_one_2, &mut self.side_two_2),
+            SideReference::SideTwo_1 => (&mut self.side_two_1, &mut self.side_one_1),
+            SideReference::SideTwo_2 => (&mut self.side_two_2, &mut self.side_one_2),
         }
     }
 
     pub fn get_both_sides_immutable(&self, side_ref: &SideReference) -> (&Side, &Side) {
         match side_ref {
-            SideReference::SideOne => (&self.side_one, &self.side_two),
-            SideReference::SideTwo => (&self.side_two, &self.side_one),
+            SideReference::SideOne_1 => (&self.side_one_1, &self.side_two_1),
+            SideReference::SideOne_2 => (&self.side_one_2, &self.side_two_2),
+            SideReference::SideTwo_1 => (&self.side_two_1, &self.side_one_1),
+            SideReference::SideTwo_2 => (&self.side_two_2, &self.side_one_2),
         }
     }
 
@@ -1783,8 +1702,10 @@ impl State {
 
     fn set_last_used_move(&mut self, side_reference: &SideReference, last_used_move: LastUsedMove) {
         match side_reference {
-            SideReference::SideOne => self.side_one.last_used_move = last_used_move,
-            SideReference::SideTwo => self.side_two.last_used_move = last_used_move,
+            SideReference::SideOne_1 => self.side_one_1.last_used_move = last_used_move,
+            SideReference::SideOne_2 => self.side_one_2.last_used_move = last_used_move,
+            SideReference::SideTwo_1 => self.side_two_1.last_used_move = last_used_move,
+            SideReference::SideTwo_2 => self.side_two_2.last_used_move = last_used_move,
         }
     }
 
@@ -1795,8 +1716,10 @@ impl State {
         amount: &i8,
     ) {
         match side_reference {
-            SideReference::SideOne => self.side_one.get_active().moves[move_index].pp -= amount,
-            SideReference::SideTwo => self.side_two.get_active().moves[move_index].pp -= amount,
+            SideReference::SideOne_1 => self.side_one_1.get_active().moves[move_index].pp -= amount,
+            SideReference::SideOne_2 => self.side_one_2.get_active().moves[move_index].pp -= amount,
+            SideReference::SideTwo_1 => self.side_two_1.get_active().moves[move_index].pp -= amount,
+            SideReference::SideTwo_2 => self.side_two_2.get_active().moves[move_index].pp -= amount,
         }
     }
 
@@ -1807,8 +1730,10 @@ impl State {
         amount: &i8,
     ) {
         match side_reference {
-            SideReference::SideOne => self.side_one.get_active().moves[move_index].pp += amount,
-            SideReference::SideTwo => self.side_two.get_active().moves[move_index].pp += amount,
+            SideReference::SideOne_1 => self.side_one_1.get_active().moves[move_index].pp += amount,
+            SideReference::SideOne_2 => self.side_one_2.get_active().moves[move_index].pp += amount,
+            SideReference::SideTwo_1 => self.side_two_1.get_active().moves[move_index].pp += amount,
+            SideReference::SideTwo_2 => self.side_two_2.get_active().moves[move_index].pp += amount,
         }
     }
 
@@ -1947,29 +1872,47 @@ impl State {
             Instruction::DecrementTrickRoomTurnsRemaining => {
                 self.trick_room.turns_remaining -= 1;
             }
-            Instruction::ToggleSideOneForceSwitch => self.side_one.toggle_force_switch(),
-            Instruction::ToggleSideTwoForceSwitch => self.side_two.toggle_force_switch(),
-            Instruction::SetSideOneMoveSecondSwitchOutMove(instruction) => {
-                self.side_one.switch_out_move_second_saved_move = instruction.new_choice;
+            Instruction::ToggleSideOne_1ForceSwitch => self.side_one_1.toggle_force_switch(),
+            Instruction::ToggleSideOne_2ForceSwitch => self.side_one_2.toggle_force_switch(),
+            Instruction::ToggleSideTwo_1ForceSwitch => self.side_two_1.toggle_force_switch(),
+            Instruction::ToggleSideTwo_2ForceSwitch => self.side_two_2.toggle_force_switch(),
+            Instruction::SetSideOne_1MoveSecondSwitchOutMove(instruction) => {
+                self.side_one_1.switch_out_move_second_saved_move = instruction.new_choice;
             }
-            Instruction::SetSideTwoMoveSecondSwitchOutMove(instruction) => {
-                self.side_two.switch_out_move_second_saved_move = instruction.new_choice;
+            Instruction::SetSideOne_2MoveSecondSwitchOutMove(instruction) => {
+                self.side_one_2.switch_out_move_second_saved_move = instruction.new_choice;
+            }
+            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(instruction) => {
+                self.side_two_1.switch_out_move_second_saved_move = instruction.new_choice;
+            }
+            Instruction::SetSideTwo_2MoveSecondSwitchOutMove(instruction) => {
+                self.side_two_2.switch_out_move_second_saved_move = instruction.new_choice;
             }
             Instruction::ToggleBatonPassing(instruction) => match instruction.side_ref {
-                SideReference::SideOne => {
-                    self.side_one.baton_passing = !self.side_one.baton_passing
+                SideReference::SideOne_1 => {
+                    self.side_one_1.baton_passing = !self.side_one_1.baton_passing
                 }
-                SideReference::SideTwo => {
-                    self.side_two.baton_passing = !self.side_two.baton_passing
+                SideReference::SideOne_2 => {
+                    self.side_one_2.baton_passing = !self.side_one_2.baton_passing
+                }
+                SideReference::SideTwo_1 => {
+                    self.side_two_1.baton_passing = !self.side_two_1.baton_passing
+                }
+                SideReference::SideTwo_2 => {
+                    self.side_two_2.baton_passing = !self.side_two_2.baton_passing
                 }
             },
             Instruction::ToggleShedTailing(instruction) => match instruction.side_ref {
-                SideReference::SideOne => self.side_one.shed_tailing = !self.side_one.shed_tailing,
-                SideReference::SideTwo => self.side_two.shed_tailing = !self.side_two.shed_tailing,
+                SideReference::SideOne_1 => self.side_one_1.shed_tailing = !self.side_one_1.shed_tailing,
+                SideReference::SideOne_2 => self.side_one_2.shed_tailing = !self.side_one_2.shed_tailing,
+                SideReference::SideTwo_1 => self.side_two_1.shed_tailing = !self.side_two_1.shed_tailing,
+                SideReference::SideTwo_2 => self.side_two_2.shed_tailing = !self.side_two_2.shed_tailing,
             },
             Instruction::ToggleTerastallized(instruction) => match instruction.side_ref {
-                SideReference::SideOne => self.side_one.get_active().terastallized ^= true,
-                SideReference::SideTwo => self.side_two.get_active().terastallized ^= true,
+                SideReference::SideOne_1 => self.side_one_1.get_active().terastallized ^= true,
+                SideReference::SideOne_2 => self.side_one_2.get_active().terastallized ^= true,
+                SideReference::SideTwo_1 => self.side_two_1.get_active().terastallized ^= true,
+                SideReference::SideTwo_2 => self.side_two_2.get_active().terastallized ^= true,
             },
             Instruction::SetLastUsedMove(instruction) => {
                 self.set_last_used_move(&instruction.side_ref, instruction.last_used_move)
@@ -2134,29 +2077,47 @@ impl State {
             Instruction::DecrementTrickRoomTurnsRemaining => {
                 self.trick_room.turns_remaining += 1;
             }
-            Instruction::ToggleSideOneForceSwitch => self.side_one.toggle_force_switch(),
-            Instruction::ToggleSideTwoForceSwitch => self.side_two.toggle_force_switch(),
-            Instruction::SetSideOneMoveSecondSwitchOutMove(instruction) => {
-                self.side_one.switch_out_move_second_saved_move = instruction.previous_choice;
+            Instruction::ToggleSideOne_1ForceSwitch => self.side_one_1.toggle_force_switch(),
+            Instruction::ToggleSideOne_2ForceSwitch => self.side_one_2.toggle_force_switch(),
+            Instruction::ToggleSideTwo_1ForceSwitch => self.side_two_1.toggle_force_switch(),
+            Instruction::ToggleSideTwo_2ForceSwitch => self.side_two_2.toggle_force_switch(),
+            Instruction::SetSideOne_1MoveSecondSwitchOutMove(instruction) => {
+                self.side_one_1.switch_out_move_second_saved_move = instruction.previous_choice;
             }
-            Instruction::SetSideTwoMoveSecondSwitchOutMove(instruction) => {
-                self.side_two.switch_out_move_second_saved_move = instruction.previous_choice;
+            Instruction::SetSideOne_2MoveSecondSwitchOutMove(instruction) => {
+                self.side_one_2.switch_out_move_second_saved_move = instruction.previous_choice;
+            }
+            Instruction::SetSideTwo_1MoveSecondSwitchOutMove(instruction) => {
+                self.side_two_1.switch_out_move_second_saved_move = instruction.previous_choice;
+            }
+            Instruction::SetSideTwo_2MoveSecondSwitchOutMove(instruction) => {
+                self.side_two_2.switch_out_move_second_saved_move = instruction.previous_choice;
             }
             Instruction::ToggleBatonPassing(instruction) => match instruction.side_ref {
-                SideReference::SideOne => {
-                    self.side_one.baton_passing = !self.side_one.baton_passing
+                SideReference::SideOne_1 => {
+                    self.side_one_1.baton_passing = !self.side_one_1.baton_passing
                 }
-                SideReference::SideTwo => {
-                    self.side_two.baton_passing = !self.side_two.baton_passing
+                SideReference::SideOne_2 => {
+                    self.side_one_2.baton_passing = !self.side_one_2.baton_passing
+                }
+                SideReference::SideTwo_1 => {
+                    self.side_two_1.baton_passing = !self.side_two_1.baton_passing
+                }
+                SideReference::SideTwo_2 => {
+                    self.side_two_2.baton_passing = !self.side_two_2.baton_passing
                 }
             },
             Instruction::ToggleShedTailing(instruction) => match instruction.side_ref {
-                SideReference::SideOne => self.side_one.shed_tailing = !self.side_one.shed_tailing,
-                SideReference::SideTwo => self.side_two.shed_tailing = !self.side_two.shed_tailing,
+                SideReference::SideOne_1 => self.side_one_1.shed_tailing = !self.side_one_1.shed_tailing,
+                SideReference::SideOne_2 => self.side_one_2.shed_tailing = !self.side_one_2.shed_tailing,
+                SideReference::SideTwo_1 => self.side_two_1.shed_tailing = !self.side_two_1.shed_tailing,
+                SideReference::SideTwo_2 => self.side_two_2.shed_tailing = !self.side_two_2.shed_tailing,
             },
             Instruction::ToggleTerastallized(instruction) => match instruction.side_ref {
-                SideReference::SideOne => self.side_one.get_active().terastallized ^= true,
-                SideReference::SideTwo => self.side_two.get_active().terastallized ^= true,
+                SideReference::SideOne_1 => self.side_one_1.get_active().terastallized ^= true,
+                SideReference::SideOne_2 => self.side_one_2.get_active().terastallized ^= true,
+                SideReference::SideTwo_1 => self.side_two_1.get_active().terastallized ^= true,
+                SideReference::SideTwo_2 => self.side_two_2.get_active().terastallized ^= true,
             },
             Instruction::SetLastUsedMove(instruction) => {
                 self.set_last_used_move(&instruction.side_ref, instruction.previous_last_used_move)
@@ -2188,20 +2149,21 @@ impl State {
 }
 impl State {
     pub fn pprint(&self) -> String {
-        let (side_one_options, side_two_options) = self.root_get_all_options();
+        // let (side_one_options, side_two_options) = self.root_get_all_options();
 
-        let mut side_one_choices = vec![];
-        for option in side_one_options {
-            side_one_choices.push(format!("{}", option.to_string(&self.side_one)).to_lowercase());
-        }
-        let mut side_two_choices = vec![];
-        for option in side_two_options {
-            side_two_choices.push(format!("{}", option.to_string(&self.side_two)).to_lowercase());
-        }
+        // let mut side_one_choices = vec![];
+        // for option in side_one_options {
+        //     side_one_choices.push(format!("{}", option.to_string(&self.side_one)).to_lowercase());
+        // }
+        // let mut side_two_choices = vec![];
+        // for option in side_two_options {
+        //     side_two_choices.push(format!("{}", option.to_string(&self.side_two)).to_lowercase());
+        // }
+        // REMOVED : "SideOne {}\n\nvs\n\nSideTwo {}\n\n
         format!(
-            "SideOne {}\n\nvs\n\nSideTwo {}\n\nState:\n  Weather: {:?},{}\n  Terrain: {:?},{}\n  TrickRoom: {},{}\n  UseLastUsedMove: {}\n  UseDamageDealt: {}",
-            self.side_one.pprint(side_one_choices),
-            self.side_two.pprint(side_two_choices),
+            "State:\n  Weather: {:?},{}\n  Terrain: {:?},{}\n  TrickRoom: {},{}\n  UseLastUsedMove: {}\n  UseDamageDealt: {}",
+            // self.side_one.pprint(side_one_choices),
+            // self.side_two.pprint(side_two_choices),
             self.weather.weather_type,
             self.weather.turns_remaining,
             self.terrain.terrain_type,
@@ -2215,9 +2177,11 @@ impl State {
 
     pub fn serialize(&self) -> String {
         format!(
-            "{}/{}/{}/{}/{}/{}",
-            self.side_one.serialize(),
-            self.side_two.serialize(),
+            "{}/{}/{}/{}/{}/{}/{}/{}",
+            self.side_one_1.serialize(),
+            self.side_one_2.serialize(),
+            self.side_two_1.serialize(),
+            self.side_two_2.serialize(),
             self.weather.serialize(),
             self.terrain.serialize(),
             self.trick_room.serialize(),
@@ -2412,12 +2376,14 @@ impl State {
     pub fn deserialize(serialized: &str) -> State {
         let split: Vec<&str> = serialized.split("/").collect();
         let mut state = State {
-            side_one: Side::deserialize(split[0]),
-            side_two: Side::deserialize(split[1]),
-            weather: StateWeather::deserialize(split[2]),
-            terrain: StateTerrain::deserialize(split[3]),
-            trick_room: StateTrickRoom::deserialize(split[4]),
-            team_preview: split[5].parse::<bool>().unwrap(),
+            side_one_1: Side::deserialize(split[0]),
+            side_one_2: Side::deserialize(split[1]),
+            side_two_1: Side::deserialize(split[2]),
+            side_two_2: Side::deserialize(split[3]),
+            weather: StateWeather::deserialize(split[4]),
+            terrain: StateTerrain::deserialize(split[5]),
+            trick_room: StateTrickRoom::deserialize(split[6]),
+            team_preview: split[7].parse::<bool>().unwrap(),
             use_damage_dealt: false,
             use_last_used_move: false,
         };

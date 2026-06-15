@@ -102,7 +102,7 @@ def convert_mcts_choice_to_move_name(mcts_choice: str, active_pokemon) -> str:
     return move_name + modifiers
 
 
-def format_decision(battle, decision):
+def format_decision(battle, decision, battle_user):
     # Formats a decision for communication with Pokemon-Showdown
     # Handles singles moves (str) for individual bots
     # For doubles battles, the move selection is split in async_pick_move()
@@ -111,7 +111,7 @@ def format_decision(battle, decision):
     # Handle singles (and extracted doubles moves)
     if decision.startswith(constants.SWITCH_STRING + " "):
         switch_pokemon = decision.split("switch ")[-1]
-        for pkmn in battle.user.reserve:
+        for pkmn in battle_user.reserve:
             if pkmn.name == switch_pokemon:
                 message = "/switch {}".format(pkmn.index)
                 break
@@ -119,7 +119,7 @@ def format_decision(battle, decision):
             raise ValueError("Tried to switch to: {}".format(switch_pokemon))
     else:
         # Safety check: ensure we have an active Pokemon before formatting a move choice
-        if battle.user.active is None:
+        if battle_user.active is None :
             logger.warning(f"No active Pokemon available; defaulting to pass")
             return ["/pass", str(battle.rqid)]
             
@@ -133,14 +133,14 @@ def format_decision(battle, decision):
             mega = True
         message = "/choose move {}".format(decision)
 
-        if battle.user.active.can_mega_evo and mega:
+        if battle_user.active.can_mega_evo and mega:
             message = "{} {}".format(message, constants.MEGA)
-        elif battle.user.active.can_ultra_burst:
+        elif battle_user.active.can_ultra_burst:
             message = "{} {}".format(message, constants.ULTRA_BURST)
 
         # only dynamax on last pokemon
-        if battle.user.active.can_dynamax and all(
-            p.hp == 0 for p in battle.user.reserve
+        if battle_user.active.can_dynamax and all(
+            p.hp == 0 for p in battle_user.reserve
         ):
             message = "{} {}".format(message, constants.DYNAMAX)
 
@@ -148,7 +148,7 @@ def format_decision(battle, decision):
             message = "{} {}".format(message, constants.TERASTALLIZE)
 
         # Check if the move exists and has Z-move capability
-        move = battle.user.active.get_move(decision)
+        move = battle_user.active.get_move(decision)
         if move and move.can_z:
             message = "{} {}".format(message, constants.ZMOVE)
 
@@ -174,7 +174,8 @@ def extract_battle_factory_tier_from_msg(msg):
 async def async_pick_move(battle, ps_websocket_client: PSWebsocketClient):
     battle_copy = deepcopy(battle)
     if not battle_copy.team_preview:
-        battle_copy.user.update_from_request_json(battle_copy.request_json)
+        battle_copy.user_1.update_from_request_json(battle_copy.request_json)
+        battle_copy.user_2.update_from_request_json(battle_copy.request_json, ally=True)
 
     loop = asyncio.get_event_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
@@ -182,76 +183,64 @@ async def async_pick_move(battle, ps_websocket_client: PSWebsocketClient):
     
     # Handle both singles (str) and doubles (tuple) return types
     if isinstance(best_move, tuple):
-        # Doubles battles: MCTS returns (left_move_index, right_move_index) tuple
-        # Each bot acts independently, so extract the move for THIS bot
-        left_move_index, right_move_index = best_move
         
-        # Determine which move belongs to this bot based on username
-        # Bot1 controls left active, other username controls right active
-        is_this_bot1 = ps_websocket_client.username == FoulPlayConfig.bot1username
+        selected_move = [
+            convert_mcts_choice_to_move_name(best_move[0], battle_copy.user_1.active),
+            convert_mcts_choice_to_move_name(best_move[1], battle_copy.user_2.active)
+        ]
         
-        if is_this_bot1:
-            # This bot is Bot1 (left side), use left active Pokemon
-            selected_move_index = left_move_index
-            active_pokemon = battle_copy.user.active
-            bot_position = "left (p1)"
-        else:
-            # This bot is the other player (right side), use right active Pokemon
-            selected_move_index = right_move_index
-            active_pokemon = battle_copy.user.active_right
-            bot_position = "right (p4)"
-        
-        # Convert move index string to actual move name
-        # MCTS returns strings like "move 0", "move 1", "switch 2", etc.
-        logger.info(f"Converting MCTS choice '{selected_move_index}' for {active_pokemon.name if active_pokemon else 'NONE'} on {bot_position}")
-        selected_move = convert_mcts_choice_to_move_name(selected_move_index, active_pokemon)
-        
-        # For logging, also convert the other player's move index
-        other_active = battle_copy.user.active_right if is_this_bot1 else battle_copy.user.active
-        other_move = convert_mcts_choice_to_move_name(
-            right_move_index if is_this_bot1 else left_move_index, 
-            other_active
-        )
-        
-        # Log both moves for transparency
-        logger.info(f"Doubles move pair from MCTS: {left_move_index}, {right_move_index}")
-        logger.info(f"Bot {bot_position} selected: {selected_move} (opponent selecting: {other_move})")
+        logger.info(f"Bot selected: {selected_move} ")
         
         # Track the selected move for this bot
-        battle.user.last_selected_move = LastUsedMove(
-            active_pokemon.name if active_pokemon else "unknown",
-            selected_move.removesuffix("-tera").removesuffix("-mega"),
+        battle.user_1.last_selected_move = LastUsedMove(
+            battle_copy.user_1.active.name if battle_copy.user_1.active else "unknown",
+            selected_move[0].removesuffix("-tera").removesuffix("-mega"),
+            battle.turn,
+        )
+        battle.user_2.last_selected_move = LastUsedMove(
+            battle_copy.user_2.active.name if battle_copy.user_2.active else "unknown",
+            selected_move[1].removesuffix("-tera").removesuffix("-mega"),
             battle.turn,
         )
         
         best_move = selected_move
     else:
         # Singles: original behavior - convert move index to move name
-        best_move = convert_mcts_choice_to_move_name(best_move, battle_copy.user.active)
-        battle.user.last_selected_move = LastUsedMove(
-            battle.user.active.name,
-            best_move.removesuffix("-tera").removesuffix("-mega"),
-            battle.turn,
-        )
+        pass # ditching singles behavior
+        # best_move = convert_mcts_choice_to_move_name(best_move, battle_copy.user.active)
+        # battle.user.last_selected_move = LastUsedMove(
+        #     battle.user.active.name,
+        #     best_move.removesuffix("-tera").removesuffix("-mega"),
+        #     battle.turn,
+        # )
     
-    return format_decision(battle_copy, best_move)
+    return [
+        format_decision(battle_copy, best_move[0], battle_copy.user_1),
+        format_decision(battle_copy, best_move[1], battle_copy.user_2) 
+    ]
 
 
 async def handle_team_preview(battle, ps_websocket_client):
     battle_copy = deepcopy(battle)
-    battle_copy.user.active = Pokemon.get_dummy()
-    battle_copy.opponent.active = Pokemon.get_dummy()
+    battle_copy.user_1.active = Pokemon.get_dummy()
+    battle_copy.user_2.active = Pokemon.get_dummy()
+    battle_copy.opponent_1.active = Pokemon.get_dummy()
+    battle_copy.opponent_2.active = Pokemon.get_dummy()
     battle_copy.team_preview = True
 
     best_move = await async_pick_move(battle_copy, ps_websocket_client)
 
     # because we copied the battle before sending it in, we need to update the last selected move here
-    pkmn_name = battle.user.reserve[int(best_move[0].split()[1]) - 1].name
-    battle.user.last_selected_move = LastUsedMove(
-        "teampreview", "switch {}".format(pkmn_name), battle.turn
+    pkmn_name_1 = battle.user_1.reserve[int(best_move[0].split()[1]) - 1].name
+    pkmn_name_2 = battle.user_2.reserve[int(best_move[1].split()[1]) - 1].name
+    battle.user_1.last_selected_move = LastUsedMove(
+        "teampreview", "switch {}".format(pkmn_name_1), battle.turn
+    )
+    battle.user_2.last_selected_move = LastUsedMove(
+        "teampreview", "switch {}".format(pkmn_name_2), battle.turn
     )
 
-    size_of_team = len(battle.user.reserve) + 1
+    size_of_team = 2* (len(battle.user_1.reserve) + 1)
     team_list_indexes = list(range(1, size_of_team))
     choice_digit = int(best_move[0].split()[-1])
 
@@ -261,7 +250,7 @@ async def handle_team_preview(battle, ps_websocket_client):
             choice_digit, "".join(str(x) for x in team_list_indexes), battle.rqid
         )
     ]
-
+    # HOPING THIS ISN'T APPLICABLE TO MULTI BATTLES
     await ps_websocket_client.send_message(battle.battle_tag, message)
 
 
@@ -282,7 +271,7 @@ async def get_battle_tag_and_opponent(ps_websocket_client: PSWebsocketClient):
 
 
 async def start_battle_common(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue
 ):
     battle_tag, opponent_name = await get_battle_tag_and_opponent(ps_websocket_client)
     if FoulPlayConfig.log_to_file:
@@ -291,20 +280,21 @@ async def start_battle_common(
         )
 
     battle = Battle(battle_tag)
-    battle.opponent.account_name = opponent_name
+    battle.opponent_1.account_name = opponent_name
+    battle.opponent_2.account_name = opponent_name + "'s ally"
     battle.pokemon_format = pokemon_battle_type
     battle.generation = pokemon_battle_type[:4]
 
-    # wait until the opponent's identifier is received. This will be `p1` or `p2`.
-    #
     # e.g.
     # '>battle-gen9randombattle-44733
-    # |player|p1|OpponentName|2|'
+    # |player|p1|OpponentName|2|' TODO CHECK THIS
     while True:
         msg = await ps_websocket_client.receive_message()
         if "|player|" in msg and "p4" in msg:
-            battle.opponent.name = msg.split("|")[2]
-            battle.user.name = "p1" if ps_websocket_client.username == FoulPlayConfig.bot1username else "p3"
+            battle.opponent_1.name = "p2a"
+            battle.opponent_2.name = "p4b"
+            battle.user_1.name = "p1a"
+            battle.user_2.name = "p3b"
             break
 
     return battle, msg
@@ -319,15 +309,16 @@ async def get_first_request_json(
         if msg_split[1].strip() == "request" and msg_split[2].strip():
             user_json = json.loads(msg_split[2].strip("'"))
             battle.request_json = user_json
-            battle.user.initialize_first_turn_user_from_json(user_json)
+            battle.user_1.initialize_first_turn_user_from_json(user_json)
+            battle.user_2.initialize_first_turn_user_from_json(user_json, ally=True)
             battle.rqid = user_json[constants.RQID]
             return
 
 
 async def start_random_battle(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue
 ):
-    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type)
+    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
     battle.battle_type = BattleType.RANDOM_BATTLE
     RandomBattleTeamDatasets.initialize(battle.generation)
 
@@ -341,7 +332,7 @@ async def start_random_battle(
             battle.msg_list = [
                 m
                 for m in msg.split(constants.START_STRING)[1].strip().split("\n")
-                if not (m.startswith("|switch|{}".format(battle.user.name)))
+                if not (m.startswith("|switch|{}".format(battle.user_1.name)))
             ]
             break
         msg = await ps_websocket_client.receive_message()
@@ -352,16 +343,18 @@ async def start_random_battle(
     process_battle_updates(battle)
 
     best_move = await async_pick_move(battle, ps_websocket_client)
-    await ps_websocket_client.send_message(battle.battle_tag, best_move)
+    await command_queue.put([battle.battle_tag, best_move[1]])
+    await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
 
     return battle
 
 
 async def start_standard_battle(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, team_dict
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, team_dict, command_queue
 ):
-    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type)
-    battle.user.team_dict = team_dict
+    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
+    battle.user_1.team_dict = team_dict
+    battle.user_2.team_dict = team_dict # TODO CHECK
     if "battlefactory" in pokemon_battle_type:
         battle.battle_type = BattleType.BATTLE_FACTORY
     else:
@@ -378,7 +371,7 @@ async def start_standard_battle(
                 battle.msg_list = [
                     m
                     for m in msg.split(constants.START_STRING)[1].strip().split("\n")
-                    if not (m.startswith("|switch|{}".format(battle.user.name)))
+                    if not (m.startswith("|switch|{}".format(battle.user_1.name))) # TODO CHECK
                 ]
                 break
             msg = await ps_websocket_client.receive_message()
@@ -386,7 +379,7 @@ async def start_standard_battle(
         await get_first_request_json(ps_websocket_client, battle)
 
         unique_pkmn_names = set(
-            [p.name for p in battle.user.reserve] + [battle.user.active.name]
+            [p.name for p in battle.user_1.reserve] + [battle.user_1.active.name]
         )
         SmogonSets.initialize(
             FoulPlayConfig.smogon_stats or pokemon_battle_type, unique_pkmn_names
@@ -397,7 +390,8 @@ async def start_standard_battle(
         process_battle_updates(battle)
 
         best_move = await async_pick_move(battle, ps_websocket_client)
-        await ps_websocket_client.send_message(battle.battle_tag, best_move)
+        await command_queue.put([battle.battle_tag, best_move[1]])
+        await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
 
     else:
         while constants.START_TEAM_PREVIEW not in msg:
@@ -413,7 +407,8 @@ async def start_standard_battle(
             split_line = line.split("|")
             if (
                 split_line[1] == constants.TEAM_PREVIEW_POKE
-                and split_line[2].strip() == battle.opponent.name
+                and (split_line[2].strip() == battle.opponent_1.name
+                        or split_line[2].strip() == battle.opponent_2.name)
             ):
                 opponent_pokemon.append(split_line[3])
 
@@ -422,7 +417,7 @@ async def start_standard_battle(
         battle.during_team_preview()
 
         unique_pkmn_names = set(
-            p.name for p in battle.opponent.reserve + battle.user.reserve
+            p.name for p in battle.opponent_1.reserve + battle.user_1.reserve
         )
 
         if battle.battle_type == BattleType.BATTLE_FACTORY:
@@ -446,22 +441,31 @@ async def start_standard_battle(
     return battle
 
 
-async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict):
+async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue):
     if "random" in pokemon_battle_type:
-        battle = await start_random_battle(ps_websocket_client, pokemon_battle_type)
+        battle = await start_random_battle(ps_websocket_client, pokemon_battle_type, command_queue)
     else:
         battle = await start_standard_battle(
-            ps_websocket_client, pokemon_battle_type, team_dict
+            ps_websocket_client, pokemon_battle_type, team_dict, command_queue
         )
 
     await ps_websocket_client.send_message(battle.battle_tag, ["hf"])
+    await command_queue.put([battle.battle_tag, ["hf"]])
     await ps_websocket_client.send_message(battle.battle_tag, ["/timer on"])
 
     return battle
 
 
-async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dict):
-    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dict)
+async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue=None):
+    # Extract the correct team_dict based on the bot's username
+    if isinstance(team_dicts, list):
+        # Multi-battle: team_dicts is [bot1_dict, bot2_dict]
+        team_dict = team_dicts[0] if ps_websocket_client.username == FoulPlayConfig.bot1username else team_dicts[1]
+    else:
+        # Single-battle: team_dicts is just a dict
+        team_dict = team_dicts
+    
+    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue)
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):
@@ -490,4 +494,5 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dict):
             action_required = await async_update_battle(battle, msg)
             if action_required and not battle.wait:
                 best_move = await async_pick_move(battle, ps_websocket_client)
-                await ps_websocket_client.send_message(battle.battle_tag, best_move)
+                await command_queue.put([battle.battle_tag, best_move[1]])
+                await ps_websocket_client.send_message(battle.battle_tag, best_move[0])

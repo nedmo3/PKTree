@@ -355,7 +355,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
         Choice {
             move_id: Choices::ALLYSWITCH,
             priority: 2,
-            target: MoveTarget::User,
+            target: MoveTarget::Opponent,
             move_type: PokemonType::PSYCHIC,
             flags: Flags {
                 ..Default::default()
@@ -1699,6 +1699,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
             base_power: 140.0,
             category: MoveCategory::Special,
             move_type: PokemonType::NORMAL,
+            target: MoveTarget::All
             flags: Flags {
                 protect: true,
                 sound: true,
@@ -4541,6 +4542,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
             base_power: 100.0,
             category: MoveCategory::Physical,
             move_type: PokemonType::GROUND,
+            target: MoveTarget::All, 
             flags: Flags {
                 protect: true,
                 ..Default::default()
@@ -10991,6 +10993,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
                 base_power: 95.0,
                 category: MoveCategory::Special,
                 move_type: PokemonType::WATER,
+                target: MoveTarget::Opponents,
                 flags: Flags {
                     protect: true,
                     ..Default::default()
@@ -11019,6 +11022,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
                 base_power: 90.0,
                 category: MoveCategory::Special,
                 move_type: PokemonType::WATER,
+                target: MoveTarget::Opponents,
                 flags: Flags {
                     protect: true,
                     ..Default::default()
@@ -13715,6 +13719,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
                 base_power: 75.0,
                 category: MoveCategory::Physical,
                 move_type: PokemonType::ROCK,
+                target: MoveTarget::Opponents,
                 flags: Flags {
                     protect: true,
                     ..Default::default()
@@ -13731,6 +13736,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
                 base_power: 75.0,
                 category: MoveCategory::Physical,
                 move_type: PokemonType::ROCK,
+                target: MoveTarget::Opponents,
                 flags: Flags {
                     protect: true,
                     ..Default::default()
@@ -16654,6 +16660,7 @@ pub static MOVES: LazyLock<HashMap<Choices, Choice>> = LazyLock::new(|| {
                 base_power: 95.0,
                 category: MoveCategory::Special,
                 move_type: PokemonType::WATER,
+                target: MoveTarget::All, 
                 flags: Flags {
                     protect: true,
                     ..Default::default()
@@ -19343,6 +19350,8 @@ pub enum MoveCategory {
 pub enum MoveTarget {
     User,
     Opponent,
+    Opponents,
+    All,
 }
 
 #[derive(Debug, Clone)]

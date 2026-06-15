@@ -112,64 +112,6 @@ impl MoveChoice {
     }
 }
 
-/// Represents a pair of moves/actions for doubles battles
-#[cfg(feature = "doubles")]
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
-pub struct DoublesAction {
-    /// Action for the left active Pokemon
-    pub left_action: MoveChoice,
-    /// Action for the right active Pokemon  
-    pub right_action: MoveChoice,
-}
-
-#[cfg(feature = "doubles")]
-impl DoublesAction {
-    /// Creates a new DoublesAction from left and right moves
-    pub fn new(left_action: MoveChoice, right_action: MoveChoice) -> Self {
-        DoublesAction {
-            left_action,
-            right_action,
-        }
-    }
-
-    /// Converts to a string representation for debugging
-    pub fn to_string(&self, side: &Side) -> String {
-        format!(
-            "({}, {})",
-            self.left_action.to_string(side),
-            self.right_action.to_string(side)
-        )
-    }
-
-    /// Creates a DoublesAction from two string representations
-    pub fn from_strings(
-        left_str: &str,
-        right_str: &str,
-        side: &Side,
-    ) -> Option<DoublesAction> {
-        let left = MoveChoice::from_string(left_str, side)?;
-        let right = MoveChoice::from_string(right_str, side)?;
-        Some(DoublesAction::new(left, right))
-    }
-
-    /// Checks if both actives are performing the same action (e.g., both attacking)
-    pub fn is_coordinated_action(&self) -> bool {
-        match (self.left_action, self.right_action) {
-            (MoveChoice::Move(_), MoveChoice::Move(_)) => true,
-            (MoveChoice::MoveMega(_), MoveChoice::MoveMega(_)) => true,
-            (MoveChoice::MoveTera(_), MoveChoice::MoveTera(_)) => true,
-            (MoveChoice::Switch(_), MoveChoice::Switch(_)) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if either active is switching
-    pub fn has_switch(&self) -> bool {
-        matches!(self.left_action, MoveChoice::Switch(_))
-            || matches!(self.right_action, MoveChoice::Switch(_))
-    }
-}
-
 define_enum_with_from_str! {
     #[repr(u8)]
     #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
@@ -889,208 +831,384 @@ impl Side {
 }
 
 impl State {
-    pub fn root_get_all_options(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>) {
+    pub fn root_get_all_options(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>) {
         if self.team_preview {
-            let mut s1_options = Vec::with_capacity(6);
-            let mut s2_options = Vec::with_capacity(6);
+            let mut s1_1_options = Vec::with_capacity(6);
+            let mut s1_2_options = Vec::with_capacity(6);
+            let mut s2_1_options = Vec::with_capacity(6);
+            let mut s2_2_options = Vec::with_capacity(6);
 
-            let mut pkmn_iter = self.side_one.pokemon.into_iter();
+            let mut pkmn_iter = self.side_one_1.pokemon.into_iter();
             while let Some(_) = pkmn_iter.next() {
-                if self.side_one.pokemon[pkmn_iter.pokemon_index].hp > 0 {
-                    s1_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
+                if self.side_one_1.pokemon[pkmn_iter.pokemon_index].hp > 0 {
+                    s1_1_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
                 }
             }
-            let mut pkmn_iter = self.side_two.pokemon.into_iter();
+            let mut pkmn_iter = self.side_one_2.pokemon.into_iter();
             while let Some(_) = pkmn_iter.next() {
-                if self.side_two.pokemon[pkmn_iter.pokemon_index].hp > 0 {
-                    s2_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
+                if self.side_one_2.pokemon[pkmn_iter.pokemon_index].hp > 0 {
+                    s1_2_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
                 }
             }
-            return (s1_options, s2_options);
+            let mut pkmn_iter = self.side_two_1.pokemon.into_iter();
+            while let Some(_) = pkmn_iter.next() {
+                if self.side_two_1.pokemon[pkmn_iter.pokemon_index].hp > 0 {
+                    s2_1_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
+                }
+            }
+            let mut pkmn_iter = self.side_two_2.pokemon.into_iter();
+            while let Some(_) = pkmn_iter.next() {
+                if self.side_two_2.pokemon[pkmn_iter.pokemon_index].hp > 0 {
+                    s2_2_options.push(MoveChoice::Switch(pkmn_iter.pokemon_index));
+                }
+            }
+            return (s1_1_options, s1_2_options, s2_1_options, s2_2_options);
         }
 
-        let (mut s1_options, mut s2_options) = self.get_all_options();
+        let (mut s1_1_options, mut s1_2_options, mut s2_1_options, mut s2_2_options) = self.get_all_options();
 
-        if self.side_one.force_trapped {
-            s1_options.retain(|x| match x {
+        if self.side_one_1.force_trapped {
+            s1_1_options.retain(|x| match x {
                 MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
         }
-        if self.side_one.slow_uturn_move {
-            s1_options.clear();
+        if self.side_one_1.slow_uturn_move {
+            s1_1_options.clear();
             let encored = self
-                .side_one
+                .side_one_1
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::ENCORE);
             let taunted = self
-                .side_one
+                .side_one_1
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::TAUNT);
-            self.side_one.get_active_immutable().add_available_moves(
-                &mut s1_options,
-                &self.side_one.last_used_move,
+            self.side_one_1.get_active_immutable().add_available_moves(
+                &mut s1_1_options,
+                &self.side_one_1.last_used_move,
                 encored,
                 taunted,
-                self.side_one.can_use_tera(),
+                self.side_one_1.can_use_tera(),
             );
         }
-
-        if self.side_two.force_trapped {
-            s2_options.retain(|x| match x {
+        if self.side_one_2.force_trapped {
+            s1_2_options.retain(|x| match x {
                 MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
                 MoveChoice::Switch(_) => false,
                 MoveChoice::None => true,
             });
         }
-        if self.side_two.slow_uturn_move {
-            s2_options.clear();
+        if self.side_one_2.slow_uturn_move {
+            s1_2_options.clear();
             let encored = self
-                .side_two
+                .side_one_2
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::ENCORE);
             let taunted = self
-                .side_two
+                .side_one_2
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::TAUNT);
-            self.side_two.get_active_immutable().add_available_moves(
-                &mut s2_options,
-                &self.side_two.last_used_move,
+            self.side_one_2.get_active_immutable().add_available_moves(
+                &mut s1_2_options,
+                &self.side_one_2.last_used_move,
                 encored,
                 taunted,
-                self.side_two.can_use_tera(),
+                self.side_one_2.can_use_tera(),
             );
         }
 
-        if s1_options.len() == 0 {
-            s1_options.push(MoveChoice::None);
+        if self.side_two_1.force_trapped {
+            s2_1_options.retain(|x| match x {
+                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Switch(_) => false,
+                MoveChoice::None => true,
+            });
         }
-        if s2_options.len() == 0 {
-            s2_options.push(MoveChoice::None);
+        if self.side_two_1.slow_uturn_move {
+            s2_1_options.clear();
+            let encored = self
+                .side_two_1
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::ENCORE);
+            let taunted = self
+                .side_two_1
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::TAUNT);
+            self.side_two_1.get_active_immutable().add_available_moves(
+                &mut s2_1_options,
+                &self.side_two_1.last_used_move,
+                encored,
+                taunted,
+                self.side_two_1.can_use_tera(),
+            );
+        }
+        if self.side_two_2.force_trapped {
+            s2_2_options.retain(|x| match x {
+                MoveChoice::Move(_) | MoveChoice::MoveTera(_) | MoveChoice::MoveMega(_) => true,
+                MoveChoice::Switch(_) => false,
+                MoveChoice::None => true,
+            });
+        }
+        if self.side_two_2.slow_uturn_move {
+            s2_2_options.clear();
+            let encored = self
+                .side_two_2
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::ENCORE);
+            let taunted = self
+                .side_two_2
+                .volatile_statuses
+                .contains(&PokemonVolatileStatus::TAUNT);
+            self.side_two_2.get_active_immutable().add_available_moves(
+                &mut s2_2_options,
+                &self.side_two_2.last_used_move,
+                encored,
+                taunted,
+                self.side_two_2.can_use_tera(),
+            );
         }
 
-        (s1_options, s2_options)
+        if s1_1_options.len() == 0 {
+            s1_1_options.push(MoveChoice::None);
+        }
+        if s1_2_options.len() == 0 {
+            s1_2_options.push(MoveChoice::None);
+        }
+        if s2_1_options.len() == 0 {
+            s2_1_options.push(MoveChoice::None);
+        }
+        if s2_2_options.len() == 0 {
+            s2_2_options.push(MoveChoice::None);
+        }
+
+        (s1_1_options, s1_2_options, s2_1_options, s2_2_options)
     }
 
-    pub fn get_all_options(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>) {
-        let mut side_one_options: Vec<MoveChoice> = Vec::with_capacity(9);
-        let mut side_two_options: Vec<MoveChoice> = Vec::with_capacity(9);
+    pub fn get_all_options(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>) {
+        let mut side_one_1_options: Vec<MoveChoice> = Vec::with_capacity(9);
+        let mut side_one_2_options: Vec<MoveChoice> = Vec::with_capacity(9);
+        let mut side_two_1_options: Vec<MoveChoice> = Vec::with_capacity(9);
+        let mut side_two_2_options: Vec<MoveChoice> = Vec::with_capacity(9);
 
-        let side_one_active = self.side_one.get_active_immutable();
-        let side_two_active = self.side_two.get_active_immutable();
+        let side_one_1_active = self.side_one_1.get_active_immutable();
+        let side_one_2_active = self.side_one_2.get_active_immutable();
+        let side_two_1_active = self.side_two_1.get_active_immutable();
+        let side_two_2_active = self.side_two_2.get_active_immutable();
 
-        if self.side_one.force_switch {
-            self.side_one.add_switches(&mut side_one_options);
-            if self.side_two.switch_out_move_second_saved_move == Choices::NONE {
-                side_two_options.push(MoveChoice::None);
+        if self.side_one_1.force_switch {
+            self.side_one_1.add_switches(&mut side_one_1_options);
+            if self.side_one_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_2_options.push(MoveChoice::None);
             } else {
-                self.side_two.get_active_immutable().add_move_from_choice(
-                    &mut side_two_options,
-                    self.side_two.switch_out_move_second_saved_move,
+                self.side_one_2.get_active_immutable().add_move_from_choice(
+                    &mut side_one_2_options,
+                    self.side_one_2.switch_out_move_second_saved_move,
                 );
             }
-            return (side_one_options, side_two_options);
-        }
-
-        if self.side_two.force_switch {
-            self.side_two.add_switches(&mut side_two_options);
-            if self.side_one.switch_out_move_second_saved_move == Choices::NONE {
-                side_one_options.push(MoveChoice::None);
+            if self.side_two_1.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_1_options.push(MoveChoice::None);
             } else {
-                self.side_one.get_active_immutable().add_move_from_choice(
-                    &mut side_one_options,
-                    self.side_one.switch_out_move_second_saved_move,
+                self.side_two_1.get_active_immutable().add_move_from_choice(
+                    &mut side_two_1_options,
+                    self.side_two_1.switch_out_move_second_saved_move,
                 );
             }
-            return (side_one_options, side_two_options);
+            if self.side_two_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_2_options.push(MoveChoice::None);
+            } else {
+                self.side_two_2.get_active_immutable().add_move_from_choice(
+                    &mut side_two_2_options,
+                    self.side_two_2.switch_out_move_second_saved_move,
+                );
+            }
+            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
         }
 
-        let side_one_force_switch = self.side_one.get_active_immutable().hp <= 0;
-        let side_two_force_switch = self.side_two.get_active_immutable().hp <= 0;
+        if self.side_one_2.force_switch {
+            self.side_one_2.add_switches(&mut side_one_2_options);
+            if self.side_one_1.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_1_options.push(MoveChoice::None);
+            } else {
+                self.side_one_1.get_active_immutable().add_move_from_choice(
+                    &mut side_one_1_options,
+                    self.side_one_1.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_two_1.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_1_options.push(MoveChoice::None);
+            } else {
+                self.side_two_1.get_active_immutable().add_move_from_choice(
+                    &mut side_two_1_options,
+                    self.side_two_1.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_two_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_2_options.push(MoveChoice::None);
+            } else {
+                self.side_two_2.get_active_immutable().add_move_from_choice(
+                    &mut side_two_2_options,
+                    self.side_two_2.switch_out_move_second_saved_move,
+                );
+            }
+            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
+        }
 
-        if side_one_force_switch && side_two_force_switch {
-            self.side_one.add_switches(&mut side_one_options);
-            self.side_two.add_switches(&mut side_two_options);
-            return (side_one_options, side_two_options);
-        }
-        if side_one_force_switch {
-            self.side_one.add_switches(&mut side_one_options);
-            side_two_options.push(MoveChoice::None);
-            return (side_one_options, side_two_options);
-        }
-        if side_two_force_switch {
-            side_one_options.push(MoveChoice::None);
-            self.side_two.add_switches(&mut side_two_options);
-            return (side_one_options, side_two_options);
+        if self.side_two_1.force_switch {
+            self.side_two_1.add_switches(&mut side_two_1_options);
+            if self.side_one_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_2_options.push(MoveChoice::None);
+            } else {
+                self.side_one_2.get_active_immutable().add_move_from_choice(
+                    &mut side_one_2_options,
+                    self.side_one_2.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_one_1.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_1_options.push(MoveChoice::None);
+            } else {
+                self.side_one_1.get_active_immutable().add_move_from_choice(
+                    &mut side_one_1_options,
+                    self.side_one_1.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_two_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_2_options.push(MoveChoice::None);
+            } else {
+                self.side_two_2.get_active_immutable().add_move_from_choice(
+                    &mut side_two_2_options,
+                    self.side_two_2.switch_out_move_second_saved_move,
+                );
+            }
+            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
         }
 
-        if self
-            .side_one
+        if self.side_two_2.force_switch {
+            self.side_two_2.add_switches(&mut side_two_2_options);
+            if self.side_one_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_2_options.push(MoveChoice::None);
+            } else {
+                self.side_one_2.get_active_immutable().add_move_from_choice(
+                    &mut side_one_2_options,
+                    self.side_one_2.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_two_1.switch_out_move_second_saved_move == Choices::NONE {
+                side_two_1_options.push(MoveChoice::None);
+            } else {
+                self.side_two_1.get_active_immutable().add_move_from_choice(
+                    &mut side_two_1_options,
+                    self.side_two_1.switch_out_move_second_saved_move,
+                );
+            }
+            if self.side_two_2.switch_out_move_second_saved_move == Choices::NONE {
+                side_one_1_options.push(MoveChoice::None);
+            } else {
+                self.side_one_1.get_active_immutable().add_move_from_choice(
+                    &mut side_one_1_options,
+                    self.side_one_1.switch_out_move_second_saved_move,
+                );
+            }
+            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
+        }
+
+        let side_one_1_force_switch = self.side_one_1.get_active_immutable().hp <= 0;
+        let side_one_2_force_switch = self.side_one_2.get_active_immutable().hp <= 0;
+        let side_two_1_force_switch = self.side_two_1.get_active_immutable().hp <= 0;
+        let side_two_2_force_switch = self.side_two_2.get_active_immutable().hp <= 0;
+
+        if side_one_1_force_switch {
+            self.side_one_1.add_switches(&mut side_one_1_options);
+        } else {
+            side_one_1_options.push(MoveChoice::None);
+        }
+
+        if side_one_2_force_switch {
+            self.side_one_2.add_switches(&mut side_one_2_options);
+        } else {
+            side_one_2_options.push(MoveChoice::None);
+        }
+
+        if side_two_1_force_switch {
+            self.side_two_1.add_switches(&mut side_two_1_options);
+        } else {
+            side_two_1_options.push(MoveChoice::None);
+        }
+
+        if side_two_2_force_switch {
+            self.side_two_2.add_switches(&mut side_two_2_options);
+        } else {
+            side_two_2_options.push(MoveChoice::None);
+        }
+        if side_one_1_force_switch || side_one_2_force_switch || side_two_1_force_switch || side_two_2_force_switch {
+            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
+        }
+
+        add_actions_for_slot(
+            &self.side_one_1,
+            &self.side_two_1,
+            &mut side_one_1_options,
+        );
+
+        add_actions_for_slot(
+            &self.side_one_2,
+            &self.side_two_2,
+            &mut side_one_2_options,
+        );
+
+        add_actions_for_slot(
+            &self.side_two_1,
+            &self.side_one_1,
+            &mut side_two_1_options,
+        );
+
+        add_actions_for_slot(
+            &self.side_two_2,
+            &self.side_one_2,
+            &mut side_two_2_options,
+        );
+
+        return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
+    }
+
+    fn add_actions_for_slot(
+        slot: &Side,
+        opponent_1: &Side,
+        opponent_2: &Side,
+        options: &mut Vec<MoveChoice>,
+    ) {
+        if slot
             .volatile_statuses
             .contains(&PokemonVolatileStatus::MUSTRECHARGE)
         {
-            side_one_options.push(MoveChoice::None);
-        } else if let Some(mv_index) = self.side_one.active_is_charging_move() {
-            side_one_options.push(MoveChoice::Move(mv_index));
+            options.push(MoveChoice::None);
+        } else if let Some(mv_index) = slot.active_is_charging_move() {
+            options.push(MoveChoice::Move(mv_index));
         } else {
-            let encored = self
-                .side_one
+            let encored = slot
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::ENCORE);
-            let taunted = self
-                .side_one
+
+            let taunted = slot
                 .volatile_statuses
                 .contains(&PokemonVolatileStatus::TAUNT);
-            self.side_one.get_active_immutable().add_available_moves(
-                &mut side_one_options,
-                &self.side_one.last_used_move,
+
+            slot.get_active_immutable().add_available_moves(
+                options,
+                &slot.last_used_move,
                 encored,
                 taunted,
-                self.side_one.can_use_tera(),
+                slot.can_use_tera(),
             );
-            if !self.side_one.trapped(side_two_active) {
-                self.side_one.add_switches(&mut side_one_options);
+
+            if !(slot.trapped(opponent_1.get_active_immutable()) || slot.trapped(opponent_2.get_active_immutable())) {
+                slot.add_switches(options);
             }
         }
 
-        if self
-            .side_two
-            .volatile_statuses
-            .contains(&PokemonVolatileStatus::MUSTRECHARGE)
-        {
-            side_two_options.push(MoveChoice::None);
-        } else if let Some(mv_index) = self.side_two.active_is_charging_move() {
-            side_two_options.push(MoveChoice::Move(mv_index));
-        } else {
-            let encored = self
-                .side_two
-                .volatile_statuses
-                .contains(&PokemonVolatileStatus::ENCORE);
-            let taunted = self
-                .side_two
-                .volatile_statuses
-                .contains(&PokemonVolatileStatus::TAUNT);
-            self.side_two.get_active_immutable().add_available_moves(
-                &mut side_two_options,
-                &self.side_two.last_used_move,
-                encored,
-                taunted,
-                self.side_two.can_use_tera(),
-            );
-            if !self.side_two.trapped(side_one_active) {
-                self.side_two.add_switches(&mut side_two_options);
-            }
+        if options.is_empty() {
+            options.push(MoveChoice::None);
         }
-
-        if side_one_options.len() == 0 {
-            side_one_options.push(MoveChoice::None);
-        }
-        if side_two_options.len() == 0 {
-            side_two_options.push(MoveChoice::None);
-        }
-
-        (side_one_options, side_two_options)
     }
 
     pub fn reset_toxic_count(
@@ -1205,17 +1323,23 @@ impl State {
     }
 
     pub fn weather_is_active(&self, weather: &Weather) -> bool {
-        let s1_active = self.side_one.get_active_immutable();
-        let s2_active = self.side_two.get_active_immutable();
+        let s1_1_active = self.side_one_1.get_active_immutable();
+        let s1_2_active = self.side_one_2.get_active_immutable();
+        let s2_1_active = self.side_two_1.get_active_immutable();
+        let s2_2_active = self.side_two_2.get_active_immutable();
         &self.weather.weather_type == weather
-            && s1_active.ability != Abilities::AIRLOCK
-            && s1_active.ability != Abilities::CLOUDNINE
-            && s2_active.ability != Abilities::AIRLOCK
-            && s2_active.ability != Abilities::CLOUDNINE
+            && s1_1_active.ability != Abilities::AIRLOCK
+            && s1_1_active.ability != Abilities::CLOUDNINE
+            && s1_2_active.ability != Abilities::AIRLOCK
+            && s1_2_active.ability != Abilities::CLOUDNINE
+            && s2_1_active.ability != Abilities::AIRLOCK
+            && s2_1_active.ability != Abilities::CLOUDNINE
+            && s2_2_active.ability != Abilities::AIRLOCK
+            && s2_2_active.ability != Abilities::CLOUDNINE
     }
 
     fn _state_contains_any_move(&self, moves: &[Choices]) -> bool {
-        for s in [&self.side_one, &self.side_two] {
+        for s in [&self.side_one_1, &self.side_one_2, &self.side_two_1, &self.side_two_2] {
             for pkmn in s.pokemon.into_iter() {
                 for mv in pkmn.moves.into_iter() {
                     if moves.contains(&mv.id) {
@@ -1261,165 +1385,5 @@ impl State {
         */
         self.set_damage_dealt_flag();
         self.set_last_used_move_flag();
-    }
-
-    /// Generates options for a single active Pokemon slot
-    /// This is a helper for doubles option generation
-    /// Returns a vector of MoveChoice options for the specified Pokemon
-    #[cfg(feature = "doubles")]
-    fn get_single_pokemon_options(&self, side: &Side, pokemon_index: PokemonIndex) -> Vec<MoveChoice> {
-        let mut options: Vec<MoveChoice> = Vec::with_capacity(9);
-        let pkmn = &side.pokemon[pokemon_index];
-
-        // If Pokemon is fainted, must switch
-        if pkmn.hp <= 0 {
-            side.add_switches(&mut options);
-            return options;
-        }
-
-        // Check for must-recharge status (side-wide effect)
-        // In doubles, this would typically mean only one Pokemon needs to recharge,
-        // but for now we treat it as a side-wide constraint that affects both
-        if side.volatile_statuses.contains(&PokemonVolatileStatus::MUSTRECHARGE) {
-            options.push(MoveChoice::None);
-            return options;
-        }
-
-        // Check if the side has a charging move volatile status
-        // This causes the side to be locked into using that move
-        for volatile in side.volatile_statuses.iter() {
-            if let Some(choice) = charge_volatile_to_choice(volatile) {
-                let mut iter = pkmn.moves.into_iter();
-                while let Some(mv) = iter.next() {
-                    if mv.id == choice && mv.pp > 0 {
-                        options.push(MoveChoice::Move(iter.pokemon_move_index));
-                        return options;
-                    }
-                }
-            }
-        }
-
-        // Add available moves for this specific Pokemon
-        let encored = side.volatile_statuses.contains(&PokemonVolatileStatus::ENCORE);
-        let taunted = side.volatile_statuses.contains(&PokemonVolatileStatus::TAUNT);
-        pkmn.add_available_moves(
-            &mut options,
-            &side.last_used_move,
-            encored,
-            taunted,
-            side.can_use_tera(),
-        );
-
-        // Can only switch if not trapped
-        // In doubles, need to check against both opponent actives, but for now check first
-        let opponent_active = self.get_opponent_active(side);
-        if !side.trapped(opponent_active) {
-            side.add_switches(&mut options);
-        }
-
-        // If no valid options, add None
-        if options.is_empty() {
-            options.push(MoveChoice::None);
-        }
-
-        options
-    }
-
-    /// Helper to get the opponent's active Pokemon (for singles compatibility)
-    /// In doubles, this would need to be extended for both opponent actives
-    #[cfg(feature = "doubles")]
-    fn get_opponent_active(&self, side: &Side) -> &Pokemon {
-        if std::ptr::eq(side as *const _, &self.side_one as *const _) {
-            self.side_two.get_active_immutable()
-        } else {
-            self.side_one.get_active_immutable()
-        }
-    }
-
-    /// Generates all valid DoublesAction pairs for both sides
-    /// Returns (side_one_actions, side_two_actions) where each is Vec<DoublesAction>
-    #[cfg(feature = "doubles")]
-    pub fn get_all_doubles_actions(&self) -> (Vec<DoublesAction>, Vec<DoublesAction>) {
-        let mut side_one_actions: Vec<DoublesAction> = Vec::new();
-        let mut side_two_actions: Vec<DoublesAction> = Vec::new();
-
-        // Get the active indices for both sides
-        let s1_indices = self.side_one.doubles_active_indices
-            .expect("doubles_active_indices should be set for doubles mode");
-        let s2_indices = self.side_two.doubles_active_indices
-            .expect("doubles_active_indices should be set for doubles mode");
-
-        // Generate options for each Pokemon slot
-        let s1_left_options = self.get_single_pokemon_options(&self.side_one, s1_indices.left);
-        let s1_right_options = self.get_single_pokemon_options(&self.side_one, s1_indices.right);
-        let s2_left_options = self.get_single_pokemon_options(&self.side_two, s2_indices.left);
-        let s2_right_options = self.get_single_pokemon_options(&self.side_two, s2_indices.right);
-
-        // Generate Cartesian product for side one actions
-        for left_action in &s1_left_options {
-            for right_action in &s1_right_options {
-                // Validate the combination is legal
-                if self.is_valid_doubles_action_pair(*left_action, *right_action, &self.side_one) {
-                    side_one_actions.push(DoublesAction::new(*left_action, *right_action));
-                }
-            }
-        }
-
-        // Generate Cartesian product for side two actions
-        for left_action in &s2_left_options {
-            for right_action in &s2_right_options {
-                // Validate the combination is legal
-                if self.is_valid_doubles_action_pair(*left_action, *right_action, &self.side_two) {
-                    side_two_actions.push(DoublesAction::new(*left_action, *right_action));
-                }
-            }
-        }
-
-        // Ensure at least one action exists
-        if side_one_actions.is_empty() {
-            side_one_actions.push(DoublesAction::new(MoveChoice::None, MoveChoice::None));
-        }
-        if side_two_actions.is_empty() {
-            side_two_actions.push(DoublesAction::new(MoveChoice::None, MoveChoice::None));
-        }
-
-        (side_one_actions, side_two_actions)
-    }
-
-    /// Validates that a pair of actions is legal for one side in doubles
-    /// Ensures no illegal combinations like using incompatible moves together
-    #[cfg(feature = "doubles")]
-    fn is_valid_doubles_action_pair(
-        &self,
-        left_action: MoveChoice,
-        right_action: MoveChoice,
-        _side: &Side,
-    ) -> bool {
-        // Both can be None
-        if left_action == MoveChoice::None && right_action == MoveChoice::None {
-            return true;
-        }
-
-        // One can be None if the other is a valid action
-        if left_action == MoveChoice::None || right_action == MoveChoice::None {
-            return true;
-        }
-
-        // Both must be valid actions
-        // Currently no specific conflict rules, but can be extended for:
-        // - Mega evolution (only one per side)
-        // - Terastallization (only one per side)
-        // - Move compatibility (certain moves can't be used with certain other moves)
-
-        true
-    }
-
-    /// Alternative getter: returns actions in the format (Vec<DoublesAction>, Vec<DoublesAction>)
-    /// This is compatible with the search algorithm that expects pairs of action vectors
-    #[cfg(feature = "doubles")]
-    pub fn root_get_all_doubles_actions(&self) -> (Vec<DoublesAction>, Vec<DoublesAction>) {
-        // For now, just call get_all_doubles_actions directly
-        // In the future, this could apply root-level constraints like team preview
-        self.get_all_doubles_actions()
     }
 }

@@ -12,7 +12,6 @@ use poke_engine::engine::items::Items;
 use poke_engine::engine::state::{MoveChoice, PokemonVolatileStatus, Terrain, Weather};
 use poke_engine::instruction::{Instruction, StateInstructions};
 use poke_engine::mcts::{perform_mcts, MctsResult, MctsSideResult};
-use poke_engine::mcts_threaded::perform_mcts_shared_tree;
 use poke_engine::pokemon::PokemonName;
 use poke_engine::search::iterative_deepen_expectiminimax;
 use poke_engine::state::{
@@ -35,8 +34,10 @@ fn movechoice_to_string(side: &Side, move_choice: &MoveChoice) -> String {
 #[derive(Clone)]
 #[pyclass(name = "State", module = "poke_engine", get_all)]
 pub struct PyState {
-    pub side_one: PySide,
-    pub side_two: PySide,
+    pub side_one_1: PySide,
+    pub side_one_2: PySide,
+    pub side_two_1: PySide,
+    pub side_two_2: PySide,
     pub weather: String,
     pub weather_turns_remaining: i8,
     pub terrain: String,
@@ -49,8 +50,10 @@ pub struct PyState {
 impl From<State> for PyState {
     fn from(other: State) -> Self {
         PyState {
-            side_one: PySide::from(other.side_one),
-            side_two: PySide::from(other.side_two),
+            side_one_1: PySide::from(other.side_one_1),
+            side_one_2: PySide::from(other.side_one_2),
+            side_two_1: PySide::from(other.side_two_1),
+            side_two_2: PySide::from(other.side_two_2),
             weather: other.weather.weather_type.to_string(),
             weather_turns_remaining: other.weather.turns_remaining,
             terrain: other.terrain.terrain_type.to_string(),
@@ -65,8 +68,10 @@ impl From<State> for PyState {
 impl Into<State> for PyState {
     fn into(self) -> State {
         let mut state = State {
-            side_one: self.side_one.into(),
-            side_two: self.side_two.into(),
+            side_one_1: self.side_one_1.into(),
+            side_one_2: self.side_one_2.into(),
+            side_two_1: self.side_two_1.into(),
+            side_two_2: self.side_two_2.into(),
             weather: StateWeather {
                 weather_type: Weather::from_str(&self.weather).unwrap(),
                 turns_remaining: self.weather_turns_remaining,
@@ -92,8 +97,10 @@ impl Into<State> for PyState {
 impl PyState {
     #[new]
     #[pyo3(signature = (
-        side_one=PySide::from(Side::default()),
-        side_two=PySide::from(Side::default()),
+        side_one_1=PySide::from(Side::default()),
+        side_one_2=PySide::from(Side::default()),
+        side_two_1=PySide::from(Side::default()),
+        side_two_2=PySide::from(Side::default()),
         weather="none".to_string(),
         weather_turns_remaining=0,
         terrain="none".to_string(),
@@ -103,8 +110,10 @@ impl PyState {
         team_preview=false,
     ))]
     fn new(
-        side_one: PySide,
-        side_two: PySide,
+        side_one_1: PySide,
+        side_one_2: PySide,
+        side_two_1: PySide,
+        side_two_2: PySide,
         weather: String,
         weather_turns_remaining: i8,
         terrain: String,
@@ -114,8 +123,10 @@ impl PyState {
         team_preview: bool,
     ) -> Self {
         PyState {
-            side_one,
-            side_two,
+            side_one_1,
+            side_one_2,
+            side_two_1,
+            side_two_2,
             weather,
             weather_turns_remaining,
             terrain,
@@ -851,23 +862,35 @@ impl PyMctsSideResult {
 #[derive(Clone)]
 #[pyclass(get_all)]
 struct PyMctsResult {
-    s1: Vec<PyMctsSideResult>,
-    s2: Vec<PyMctsSideResult>,
+    s1_1: Vec<PyMctsSideResult>,
+    s1_2: Vec<PyMctsSideResult>,
+    s2_1: Vec<PyMctsSideResult>,
+    s2_2: Vec<PyMctsSideResult>,
     iteration_count: u32,
 }
 
 impl PyMctsResult {
     fn from_mcts_result(result: MctsResult, state: &State) -> Self {
         PyMctsResult {
-            s1: result
-                .s1
+            s1_1: result
+                .s1_1
                 .iter()
-                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_one))
+                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_one_1))
                 .collect(),
-            s2: result
-                .s2
+            s1_2: result
+                .s1_2
                 .iter()
-                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_two))
+                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_one_2))
+                .collect(),
+            s2_1: result
+                .s2_1
+                .iter()
+                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_two_1))
+                .collect(),
+            s2_2: result
+                .s2_2
+                .iter()
+                .map(|r| PyMctsSideResult::from_mcts_side_result(r.clone(), &state.side_two_2))
                 .collect(),
             iteration_count: result.iteration_count,
         }
@@ -877,44 +900,64 @@ impl PyMctsResult {
 #[derive(Clone)]
 #[pyclass(get_all)]
 struct PyIterativeDeepeningResult {
-    s1: Vec<String>,
-    s2: Vec<String>,
+    s1_1: Vec<String>,
+    s1_2: Vec<String>,
+    s2_1: Vec<String>,
+    s2_2: Vec<String>,
     matrix: Vec<f32>,
     depth_searched: i8,
 }
 
 impl PyIterativeDeepeningResult {
     fn from_iterative_deepening_result(
-        result: (Vec<MoveChoice>, Vec<MoveChoice>, Vec<f32>, i8),
+        result: (
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<f32>,
+            i8,
+        ),
         state: &State,
     ) -> Self {
         PyIterativeDeepeningResult {
-            s1: result
+            s1_1: result
                 .0
                 .iter()
-                .map(|c| movechoice_to_string(&state.side_one, c))
+                .map(|c| movechoice_to_string(&state.side_one_1, c))
                 .collect(),
-            s2: result
+            s1_2: result
                 .1
                 .iter()
-                .map(|c| movechoice_to_string(&state.side_two, c))
+                .map(|c| movechoice_to_string(&state.side_one_2, c))
                 .collect(),
-            matrix: result.2,
-            depth_searched: result.3,
+            s2_1: result
+                .2
+                .iter()
+                .map(|c| movechoice_to_string(&state.side_two_1, c))
+                .collect(),
+            s2_2: result
+                .3
+                .iter()
+                .map(|c| movechoice_to_string(&state.side_two_2, c))
+                .collect(),
+            matrix: result.4,
+            depth_searched: result.5,
         }
     }
 }
 
 #[pyfunction]
+#[pyo3(signature = (py_state, duration_ms, threads=1))]
 fn mcts(py_state: PyState, duration_ms: u64, threads: usize) -> PyResult<PyMctsResult> {
+    // `threads` is accepted for API compatibility but ignored: the shared-tree threaded
+    // MCTS is singles-only and not ported to doubles, so we always use the single-threaded
+    // search.
+    let _ = threads;
     let mut state: State = py_state.into();
     let duration = Duration::from_millis(duration_ms);
-    let (s1_options, s2_options) = state.root_get_all_options();
-    let mcts_result = if threads > 1 {
-        perform_mcts_shared_tree(&mut state, s1_options, s2_options, duration, threads)
-    } else {
-        perform_mcts(&mut state, s1_options, s2_options, duration)
-    };
+    let (s1_1, s1_2, s2_1, s2_2) = state.root_get_all_options();
+    let mcts_result = perform_mcts(&mut state, s1_1, s1_2, s2_1, s2_2, duration);
 
     let py_mcts_result = PyMctsResult::from_mcts_result(mcts_result, &state);
     Ok(py_mcts_result)
@@ -924,8 +967,8 @@ fn mcts(py_state: PyState, duration_ms: u64, threads: usize) -> PyResult<PyMctsR
 fn id(py_state: PyState, duration_ms: u64) -> PyResult<PyIterativeDeepeningResult> {
     let mut state: State = py_state.into();
     let duration = Duration::from_millis(duration_ms);
-    let (s1_options, s2_options) = state.root_get_all_options();
-    let id_result = iterative_deepen_expectiminimax(&mut state, s1_options, s2_options, duration);
+    let (s1_1, s1_2, s2_1, s2_2) = state.root_get_all_options();
+    let id_result = iterative_deepen_expectiminimax(&mut state, s1_1, s1_2, s2_1, s2_2, duration);
 
     let py_id_result =
         PyIterativeDeepeningResult::from_iterative_deepening_result(id_result, &state);
@@ -1008,30 +1051,33 @@ impl PyInstruction {
 #[pyfunction]
 fn generate_instructions(
     py_state: PyState,
-    side_one_move: String,
-    side_two_move: String,
+    side_one_1_move: String,
+    side_one_2_move: String,
+    side_two_1_move: String,
+    side_two_2_move: String,
 ) -> PyResult<Vec<PyStateInstructions>> {
-    let (s1_move, s2_move);
     let mut state: State = py_state.into();
-    match MoveChoice::from_string(&side_one_move, &state.side_one) {
-        Some(m) => s1_move = m,
-        None => {
-            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                "Invalid move for s1: {}",
-                side_one_move
-            )))
-        }
-    }
-    match MoveChoice::from_string(&side_two_move, &state.side_two) {
-        Some(m) => s2_move = m,
-        None => {
-            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                "Invalid move for s2: {}",
-                side_two_move
-            )))
-        }
-    }
-    let instructions = generate_instructions_from_move_pair(&mut state, &s1_move, &s2_move, true);
+    let resolve = |move_str: &str, side: &Side, label: &str| -> PyResult<MoveChoice> {
+        MoveChoice::from_string(move_str, side).ok_or_else(|| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                "Invalid move for {}: {}",
+                label, move_str
+            ))
+        })
+    };
+    let s1_1_move = resolve(&side_one_1_move, &state.side_one_1, "s1_1")?;
+    let s1_2_move = resolve(&side_one_2_move, &state.side_one_2, "s1_2")?;
+    let s2_1_move = resolve(&side_two_1_move, &state.side_two_1, "s2_1")?;
+    let s2_2_move = resolve(&side_two_2_move, &state.side_two_2, "s2_2")?;
+
+    let instructions = generate_instructions_from_move_pair(
+        &mut state,
+        &s1_1_move,
+        &s1_2_move,
+        &s2_1_move,
+        &s2_2_move,
+        true,
+    );
     let py_instructions = instructions.iter().map(|i| i.clone().into()).collect();
 
     Ok(py_instructions)

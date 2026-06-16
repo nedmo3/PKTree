@@ -19,7 +19,9 @@ pub mod choices;
 pub mod instruction;
 pub mod io;
 pub mod mcts;
-pub mod mcts_threaded;
+// mcts_threaded is the singles-only shared-tree MCTS; not ported to doubles. Stubbed out
+// of the build (the engine uses the single-threaded `mcts::perform_mcts`).
+// pub mod mcts_threaded;
 pub mod pokemon;
 pub mod search;
 pub mod state;

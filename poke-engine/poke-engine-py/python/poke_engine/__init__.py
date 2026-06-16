@@ -35,56 +35,68 @@ class PokemonIndex(StrEnum):
 @dataclass
 class IterativeDeepeningResult:
     """
-    Result of an Iterative Deepening Expectiminimax Search
+    Result of an Iterative Deepening Expectiminimax Search (doubles: four slots).
 
-    :param side_one: The moves for side_one
-    :type side_one: list[str]
-    :param side_two: The moves for side_two
-    :type side_two: list[str]
-    :param matrix: A vector representing the payoff matrix of the search.
-        Pruned branches are represented by None
-    :type matrix: int
+    :param side_one_1: The moves for side one's first slot
+    :param side_one_2: The moves for side one's second slot
+    :param side_two_1: The moves for side two's first slot
+    :param side_two_2: The moves for side two's second slot
+    :param matrix: A flat vector representing the 4-D payoff matrix of the search,
+        indexed as (((s1_1 * len(s1_2) + s1_2) * len(s2_1) + s2_1) * len(s2_2) + s2_2)
     :param depth_searched: The depth that was searched to
-    :type depth_searched: int
     """
 
-    side_one: list[str]
-    side_two: list[str]
+    side_one_1: list[str]
+    side_one_2: list[str]
+    side_two_1: list[str]
+    side_two_2: list[str]
     matrix: list[float]
     depth_searched: int
 
     @classmethod
     def _from_rust(cls, rust_result):
         return cls(
-            side_one=rust_result.s1,
-            side_two=rust_result.s2,
+            side_one_1=rust_result.s1_1,
+            side_one_2=rust_result.s1_2,
+            side_two_1=rust_result.s2_1,
+            side_two_2=rust_result.s2_2,
             matrix=rust_result.matrix,
             depth_searched=rust_result.depth_searched,
         )
 
-    def get_safest_move(self) -> str:
+    def get_safest_move(self) -> tuple[str, str]:
         """
-        Get the safest move for side_one
-        The safest move is the move that minimizes the loss for the turn
+        Get the safest (side_one_1, side_one_2) move pair: the pair that maximizes the
+        worst case over all opposing (side_two_1, side_two_2) combinations.
 
-        :return: The safest move
-        :rtype: str
+        :return: the safest move for each of side one's two slots
+        :rtype: tuple[str, str]
         """
+        n_s1_1 = len(self.side_one_1)
+        n_s1_2 = len(self.side_one_2)
+        n_s2_1 = len(self.side_two_1)
+        n_s2_2 = len(self.side_two_2)
+
         safest_value = float("-inf")
-        safest_s1_index = 0
+        best = (
+            self.side_one_1[0] if n_s1_1 else "",
+            self.side_one_2[0] if n_s1_2 else "",
+        )
         vec_index = 0
-        for i in range(len(self.side_one)):
-            worst_case_this_row = float("inf")
-            for _ in range(len(self.side_two)):
-                score = self.matrix[vec_index]
-                if score < worst_case_this_row:
-                    worst_case_this_row = score
+        for i in range(n_s1_1):
+            for j in range(n_s1_2):
+                worst_case_this_row = float("inf")
+                for _ in range(n_s2_1):
+                    for _ in range(n_s2_2):
+                        score = self.matrix[vec_index]
+                        vec_index += 1
+                        if score < worst_case_this_row:
+                            worst_case_this_row = score
+                if worst_case_this_row > safest_value:
+                    safest_value = worst_case_this_row
+                    best = (self.side_one_1[i], self.side_one_2[j])
 
-            if worst_case_this_row > safest_value:
-                safest_s1_index = i
-                safest_value = worst_case_this_row
-
-        return self.side_one[safest_s1_index]
+        return best
 
 
 @dataclass
@@ -108,39 +120,38 @@ class MctsSideResult:
 @dataclass
 class MctsResult:
     """
-    Result of a Monte Carlo Tree Search
+    Result of a Monte Carlo Tree Search (doubles: four slots).
 
-    :param side_one: Result for side one
-    :type side_one: list[MctsSideResult]
-    :param side_two: Result for side two
-    :type side_two: list[MctsSideResult]
+    :param side_one_1: Result for side one's first slot
+    :param side_one_2: Result for side one's second slot
+    :param side_two_1: Result for side two's first slot
+    :param side_two_2: Result for side two's second slot
     :param total_visits: Total number of monte carlo iterations
-    :type total_visits: int
     """
 
-    side_one: list[MctsSideResult]
-    side_two: list[MctsSideResult]
+    side_one_1: list[MctsSideResult]
+    side_one_2: list[MctsSideResult]
+    side_two_1: list[MctsSideResult]
+    side_two_2: list[MctsSideResult]
     total_visits: int
 
     @classmethod
     def _from_rust(cls, rust_result):
+        def convert(side):
+            return [
+                MctsSideResult(
+                    move_choice=i.move_choice,
+                    total_score=i.total_score,
+                    visits=i.visits,
+                )
+                for i in side
+            ]
+
         return cls(
-            side_one=[
-                MctsSideResult(
-                    move_choice=i.move_choice,
-                    total_score=i.total_score,
-                    visits=i.visits,
-                )
-                for i in rust_result.s1
-            ],
-            side_two=[
-                MctsSideResult(
-                    move_choice=i.move_choice,
-                    total_score=i.total_score,
-                    visits=i.visits,
-                )
-                for i in rust_result.s2
-            ],
+            side_one_1=convert(rust_result.s1_1),
+            side_one_2=convert(rust_result.s1_2),
+            side_two_1=convert(rust_result.s2_1),
+            side_two_2=convert(rust_result.s2_2),
             total_visits=rust_result.iteration_count,
         )
 

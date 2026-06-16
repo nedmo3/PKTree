@@ -31,14 +31,14 @@ use super::items::{
     item_before_move, item_end_of_turn, item_modify_attack_against, item_modify_attack_being_used,
     item_on_switch_in, Items,
 };
-use super::state::{MoveChoice, PokemonVolatileStatus, RelativeTarget, Terrain, Weather};
+use super::state::{MoveChoice, PokemonVolatileStatus, Terrain, Weather};
 use crate::choices::{Choice, MoveCategory};
 use crate::instruction::{
     ChangeStatusInstruction, DamageInstruction, Instruction, StateInstructions, SwitchInstruction,
 };
 use crate::state::{
     LastUsedMove, PokemonBoostableStat, PokemonIndex, PokemonMoveIndex, PokemonSideCondition,
-    PokemonStatus, PokemonType, Side, SideMovesFirst, SideReference, State,
+    PokemonStatus, PokemonType, Side, SideReference, State,
 };
 use std::cmp;
 
@@ -642,11 +642,10 @@ fn get_instructions_from_volatile_statuses(
     attacking_side_reference: &SideReference,
     incoming_instructions: &mut StateInstructions,
 ) {
-    // TODO(doubles/targeting): `Opponent` currently maps to the diagonal opponent.
-    // Once MoveChoice carries an explicit target (Step 3), single-target volatile
-    // statuses should be applied to the chosen slot instead.
+    // Single-target `Opponent` volatile statuses go to the chosen target slot; spread
+    // variants hit the whole opposing team (and `All` also the user's side).
     let target_sides: Vec<SideReference> = match volatile_status.target {
-        MoveTarget::Opponent => vec![attacking_side_reference.get_other_side()],
+        MoveTarget::Opponent => vec![attacker_choice.target_side],
         MoveTarget::User => vec![*attacking_side_reference],
         MoveTarget::Opponents => attacking_side_reference.get_other_sides(),
         MoveTarget::All => {
@@ -837,12 +836,13 @@ fn get_instructions_from_status_effects(
     state: &mut State,
     status: &Status,
     attacking_side_reference: &SideReference,
+    target_side: SideReference,
     incoming_instructions: &mut StateInstructions,
     hit_sub: bool,
 ) {
     let target_side_ref: SideReference;
     match status.target {
-        MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
+        MoveTarget::Opponent => target_side_ref = target_side,
         MoveTarget::User => target_side_ref = *attacking_side_reference,
         MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
@@ -986,11 +986,12 @@ fn get_instructions_from_boosts(
     state: &mut State,
     boosts: &Boost,
     attacking_side_reference: &SideReference,
+    target_side: SideReference,
     incoming_instructions: &mut StateInstructions,
 ) {
     let target_side_ref: SideReference;
     match boosts.target {
-        MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
+        MoveTarget::Opponent => target_side_ref = target_side,
         MoveTarget::User => target_side_ref = *attacking_side_reference,
         MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
@@ -1083,6 +1084,7 @@ fn get_instructions_from_secondaries(
                                 boosts: boost.clone(),
                             },
                             side_reference,
+                            attacker_choice.target_side,
                             &mut secondary_hit_instructions,
                         );
                     }
@@ -1094,6 +1096,7 @@ fn get_instructions_from_secondaries(
                                 status: status.clone(),
                             },
                             side_reference,
+                            attacker_choice.target_side,
                             &mut secondary_hit_instructions,
                             hit_sub,
                         );
@@ -1106,6 +1109,7 @@ fn get_instructions_from_secondaries(
                                 amount: *heal_amount,
                             },
                             side_reference,
+                            attacker_choice.target_side,
                             &mut secondary_hit_instructions,
                         );
                     }
@@ -1113,15 +1117,15 @@ fn get_instructions_from_secondaries(
                         let secondary_target_side_ref: SideReference;
                         match secondary.target {
                             MoveTarget::Opponent => {
-                                secondary_target_side_ref = side_reference.get_other_side();
+                                secondary_target_side_ref = attacker_choice.target_side;
                             }
                             MoveTarget::User => {
                                 secondary_target_side_ref = *side_reference;
                             }
                             // TODO(doubles/targeting): spread secondary effects should hit
-                            // all relevant targets; for now fall back to the diagonal opponent.
+                            // all relevant targets; for now fall back to the chosen target.
                             MoveTarget::All | MoveTarget::Opponents => {
-                                secondary_target_side_ref = side_reference.get_other_side();
+                                secondary_target_side_ref = attacker_choice.target_side;
                             }
                         }
                         let target_pkmn = state.get_side(&secondary_target_side_ref).get_active();
@@ -1149,11 +1153,12 @@ fn get_instructions_from_heal(
     state: &mut State,
     heal: &Heal,
     attacking_side_reference: &SideReference,
+    target_side: SideReference,
     incoming_instructions: &mut StateInstructions,
 ) {
     let target_side_ref: SideReference;
     match heal.target {
-        MoveTarget::Opponent => target_side_ref = attacking_side_reference.get_other_side(),
+        MoveTarget::Opponent => target_side_ref = target_side,
         MoveTarget::User => target_side_ref = *attacking_side_reference,
         MoveTarget::All | MoveTarget::Opponents => return, // TODO
     }
@@ -1406,7 +1411,9 @@ fn generate_instructions_from_damage(
 
     if percent_hit > 0.0 {
         let should_use_damage_dealt = state.use_damage_dealt;
-        let (attacking_side, defending_side) = state.get_both_sides(attacking_side_ref);
+        // doubles: damage is applied to the chosen target slot, not the diagonal opponent
+        let (attacking_side, defending_side) =
+            state.get_both_sides_with_target(attacking_side_ref, &choice.target_side);
         let attacking_pokemon = attacking_side.get_active();
         let mut damage_dealt;
         if defending_side
@@ -1418,7 +1425,7 @@ fn generate_instructions_from_damage(
             damage_dealt = cmp::min(calculated_damage, defending_side.substitute_health);
             let substitute_damage_dealt = cmp::min(calculated_damage, damage_dealt);
             let substitute_instruction = Instruction::DamageSubstitute(DamageInstruction {
-                side_ref: attacking_side_ref.get_other_side(),
+                side_ref: choice.target_side,
                 damage_amount: substitute_damage_dealt,
             });
             defending_side.substitute_health -= substitute_damage_dealt;
@@ -1446,7 +1453,7 @@ fn generate_instructions_from_damage(
                     .instruction_list
                     .push(Instruction::RemoveVolatileStatus(
                         RemoveVolatileStatusInstruction {
-                            side_ref: attacking_side_ref.get_other_side(),
+                            side_ref: choice.target_side,
                             volatile_status: PokemonVolatileStatus::SUBSTITUTE,
                         },
                     ));
@@ -1478,7 +1485,7 @@ fn generate_instructions_from_damage(
                 }
 
                 let damage_instruction = Instruction::Damage(DamageInstruction {
-                    side_ref: attacking_side_ref.get_other_side(),
+                    side_ref: choice.target_side,
                     damage_amount: damage_dealt,
                 });
                 defending_pokemon.hp -= damage_dealt;
@@ -2022,6 +2029,12 @@ pub fn generate_instructions_from_move(
     mut final_instructions: &mut Vec<StateInstructions>,
     branch_on_damage: bool,
 ) {
+    // Internal move generators (sleep talk, future sight, etc.) may leave the default
+    // target; guarantee a single-target move never targets its own user. Self/spread
+    // effects resolve their target separately and don't depend on this.
+    if choice.target_side == attacking_side {
+        choice.target_side = attacking_side.get_other_side();
+    }
     if state.use_damage_dealt {
         reset_damage_dealt(
             state.get_side(&attacking_side),
@@ -2277,7 +2290,8 @@ pub fn generate_instructions_from_move(
     // most of the time pp decrement doesn't matter and just adds another instruction
     // so we only decrement pp if the move is at 10 or less pp since that is when it starts
     // to matter
-    let (attacker_side, defender_side) = state.get_both_sides(&attacking_side);
+    let (attacker_side, defender_side) =
+        state.get_both_sides_with_target(&attacking_side, &choice.target_side);
     let active = attacker_side.get_active();
     if active.moves[&choice.move_index].pp < 10 {
         let pp_decrement_amount = if choice.target == MoveTarget::Opponent
@@ -2394,7 +2408,8 @@ pub fn generate_instructions_from_move(
         }
     }
 
-    let (_attacker_side, defender_side) = state.get_both_sides(&attacking_side);
+    let (_attacker_side, defender_side) =
+        state.get_both_sides_with_target(&attacking_side, &choice.target_side);
     let defender_active = defender_side.get_active();
     let mut does_damage = false;
     let (mut branch_damage, mut regular_damage) = (0, 0);
@@ -3594,12 +3609,19 @@ fn run_move(
                 state,
                 status,
                 &attacking_side,
+                choice.target_side,
                 &mut instructions,
                 hit_sub,
             );
         }
         if let Some(heal) = &choice.heal {
-            get_instructions_from_heal(state, heal, &attacking_side, &mut instructions);
+            get_instructions_from_heal(
+                state,
+                heal,
+                &attacking_side,
+                choice.target_side,
+                &mut instructions,
+            );
         }
     } // end multi-hit
       // this is wrong, but I am deciding it is good enough for this engine (for now)
@@ -3608,7 +3630,13 @@ fn run_move(
       // without some performance hits.
 
     if let Some(boost) = &choice.boost {
-        get_instructions_from_boosts(state, boost, &attacking_side, &mut instructions);
+        get_instructions_from_boosts(
+            state,
+            boost,
+            &attacking_side,
+            choice.target_side,
+            &mut instructions,
+        );
     }
 
     if choice.flags.drag
@@ -4268,6 +4296,10 @@ pub fn calculate_damage_rolls(
     mut choice: Choice,
     mut defending_choice: &Choice,
 ) -> Option<Vec<i16>> {
+    // This is a 1v1 damage helper; the defender is the attacker's diagonal opponent.
+    // Set it explicitly so the (chosen-target-aware) damage calc doesn't read the default
+    // `Choice::target_side` (which may coincide with the attacker).
+    choice.target_side = attacking_side_ref.get_other_side();
     let mut incoming_instructions = StateInstructions::default();
 
     if choice.flags.charge {

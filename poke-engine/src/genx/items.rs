@@ -943,7 +943,9 @@ pub fn item_modify_attack_against(
     attacking_choice: &mut Choice,
     attacking_side_ref: &SideReference,
 ) {
-    let (attacking_side, defending_side) = state.get_both_sides_immutable(attacking_side_ref);
+    // the defender is the chosen target of this attack (doubles targeting)
+    let (attacking_side, defending_side) =
+        state.get_both_sides_immutable_with_target(attacking_side_ref, &attacking_choice.target_side);
     match defending_side.get_active_immutable().item {
         Items::ABSORBBULB => {
             if attacking_choice.move_type == PokemonType::WATER {

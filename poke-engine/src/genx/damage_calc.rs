@@ -565,7 +565,9 @@ pub fn calculate_damage(
     } else if choice.base_power == 0.0 {
         return Some((0, 0));
     }
-    let (attacking_side, defending_side) = state.get_both_sides_immutable(attacking_side);
+    // doubles: damage is computed against the chosen target slot, not the diagonal opponent
+    let (attacking_side, defending_side) =
+        state.get_both_sides_immutable_with_target(attacking_side, &choice.target_side);
     let attacker = attacking_side.get_active_immutable();
     let defender = defending_side.get_active_immutable();
     let (attacking_stat, defending_stat, crit_attacking_stat, crit_defending_stat) =

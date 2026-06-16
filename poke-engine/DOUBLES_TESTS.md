@@ -9,9 +9,14 @@ behavior that could plausibly regress.
 > generation (the gated constants disappear) and produces ~40 spurious "missing constant"
 > errors. This is *not* a real problem — it's just a missing `--features` flag.
 
-Legend: ⛔ blocked until the lib compiles (Steps 3–6 outstanding) — note that **nothing**
-runs until the whole crate builds, since tests compile against the full lib. Tests are
-marked "trivial" where the logic is pure and only needs the build to go green.
+**Status:** the engine + Python binding now **compile** (`cargo check --features gen9` →
+0 errors). The remaining blocker for *running* tests is that the in-crate `#[cfg(test)]`
+modules and `tests/*.rs` still use the old 2-side API, so `cargo test` won't build until
+those are migrated to a 4-slot state builder (Step 9). New doubles tests below should be
+written against the 4-slot API.
+
+Legend: ⛔ blocked until the **test modules** are migrated (Step 9). Tests are marked
+"trivial" where the logic is pure and only needs the build to go green.
 
 ---
 
@@ -45,13 +50,15 @@ marked "trivial" where the logic is pure and only needs the build to go green.
 11. Switch-option generation never offers bench indices ≥ the team's ≤3 limit; empty
     bench entries are treated as fainted/absent.
 
-## Step 3 — MoveChoice targeting + spread
-> **Note:** option generation is done, but execution honoring the chosen target is **Step
-> 3b** (pending). Until 3b lands, tests 13 below and any "damage hits the *non-diagonal*
-> opponent" assertions will fail (both targets resolve to the diagonal opponent).
-12. ✅(once building) In a 2v2 position, `get_all_options` for an attacker with a
-    single-target move yields a distinct option per **living** opponent target; a move with
-    one opponent alive yields exactly one.
+## Step 3 / 3b — MoveChoice targeting + spread
+> **Done & tested:** execution honors the chosen target (Step 3b). See
+> **`tests/doubles_targeting.rs`** — run `cargo test --features gen9 --test doubles_targeting`
+> (3 tests passing). These bypass the not-yet-migrated in-crate test modules via `--test`.
+12. ✅ **PASSING** (`doubles_targeting.rs`) — single-target damage lands on the chosen
+    opponent slot (`DiagonalOpponent` → SideTwo_1, `OtherOpponent` → SideTwo_2), validated
+    from both side_one_1 and side_one_2 perspectives.
+12b. (todo) `get_all_options` yields a distinct option per **living** opponent for a
+    single-target move; one option when only one opponent is alive.
 13. A **spread** move hitting 2 targets applies the **0.75×** multiplier; hitting 1
     target (ally fainted) does not.
 14. A self/ally-target move collapses to a single option (no per-opponent duplication).

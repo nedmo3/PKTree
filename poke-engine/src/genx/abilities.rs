@@ -681,7 +681,9 @@ pub fn ability_after_damage_hit(
     damage_dealt: i16,
     instructions: &mut StateInstructions,
 ) {
-    let (attacking_side, defending_side) = state.get_both_sides(side_ref);
+    // the defender here is the mon that was actually hit (the chosen target)
+    let (attacking_side, defending_side) =
+        state.get_both_sides_with_target(side_ref, &choice.target_side);
     let active_pkmn = attacking_side.get_active();
     if defending_side.get_active_immutable().ability == Abilities::NEUTRALIZINGGAS
         || active_pkmn.ability == Abilities::NEUTRALIZINGGAS
@@ -733,7 +735,7 @@ pub fn ability_after_damage_hit(
                 active_pkmn.item = defending_pkmn.item;
                 instructions.instruction_list.push(Instruction::ChangeItem(
                     ChangeItemInstruction {
-                        side_ref: side_ref.get_other_side(),
+                        side_ref: choice.target_side,
                         current_item: defending_pkmn.item,
                         new_item: Items::NONE,
                     },
@@ -802,7 +804,7 @@ pub fn ability_after_damage_hit(
             {
                 instructions.instruction_list.push(Instruction::FormeChange(
                     FormeChangeInstruction {
-                        side_ref: side_ref.get_other_side(),
+                        side_ref: choice.target_side,
                         name_change: PokemonName::CRAMORANT as i16 - defending_pkmn.id as i16,
                     },
                 ));
@@ -822,7 +824,7 @@ pub fn ability_after_damage_hit(
                         attacking_side,
                         &PokemonBoostableStat::Defense,
                         &-1,
-                        &side_ref.get_other_side(),
+                        &choice.target_side,
                         side_ref,
                         instructions,
                     );
@@ -842,7 +844,7 @@ pub fn ability_after_damage_hit(
                 && !defending_pkmn.has_type(&choice.move_type)
             {
                 let change_type_instruction = Instruction::ChangeType(ChangeType {
-                    side_ref: side_ref.get_other_side(),
+                    side_ref: choice.target_side,
                     new_types: (choice.move_type, PokemonType::TYPELESS),
                     old_types: defending_pkmn.types,
                 });
@@ -857,7 +859,7 @@ pub fn ability_after_damage_hit(
                     &PokemonBoostableStat::Defense,
                     &1,
                     side_ref,
-                    &side_ref.get_other_side(),
+                    &choice.target_side,
                     instructions,
                 );
             }
@@ -868,7 +870,7 @@ pub fn ability_after_damage_hit(
                     attacking_side,
                     &PokemonBoostableStat::Speed,
                     &-1,
-                    &side_ref.get_other_side(),
+                    &choice.target_side,
                     side_ref,
                     instructions,
                 );
@@ -929,8 +931,8 @@ pub fn ability_after_damage_hit(
                     defending_side,
                     &PokemonBoostableStat::SpecialAttack,
                     &1,
-                    &side_ref.get_other_side(),
-                    &side_ref.get_other_side(),
+                    &choice.target_side,
+                    &choice.target_side,
                     instructions,
                 );
             }
@@ -1870,7 +1872,9 @@ pub fn ability_modify_attack_being_used(
     defender_choice: &Choice,
     attacking_side_ref: &SideReference,
 ) {
-    let (attacking_side, defending_side) = state.get_both_sides_immutable(attacking_side_ref);
+    // the defender is the chosen target of this attack (doubles targeting)
+    let (attacking_side, defending_side) =
+        state.get_both_sides_immutable_with_target(attacking_side_ref, &attacker_choice.target_side);
     let attacking_pkmn = attacking_side.get_active_immutable();
     if defending_side.get_active_immutable().ability == Abilities::NEUTRALIZINGGAS {
         return;
@@ -2288,7 +2292,9 @@ pub fn ability_modify_attack_against(
     defender_choice: &Choice,
     attacking_side_ref: &SideReference,
 ) {
-    let (attacking_side, defending_side) = state.get_both_sides_immutable(attacking_side_ref);
+    // the defender is the chosen target of this attack (doubles targeting)
+    let (attacking_side, defending_side) =
+        state.get_both_sides_immutable_with_target(attacking_side_ref, &attacker_choice.target_side);
     let attacking_pkmn = attacking_side.get_active_immutable();
     let target_pkmn = defending_side.get_active_immutable();
     if target_pkmn.ability == Abilities::NEUTRALIZINGGAS

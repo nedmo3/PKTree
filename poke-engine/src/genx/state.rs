@@ -1119,11 +1119,6 @@ impl State {
         let mut side_two_1_options: Vec<MoveChoice> = Vec::with_capacity(9);
         let mut side_two_2_options: Vec<MoveChoice> = Vec::with_capacity(9);
 
-        let side_one_1_active = self.side_one_1.get_active_immutable();
-        let side_one_2_active = self.side_one_2.get_active_immutable();
-        let side_two_1_active = self.side_two_1.get_active_immutable();
-        let side_two_2_active = self.side_two_2.get_active_immutable();
-
         if self.side_one_1.force_switch {
             self.side_one_1.add_switches(&mut side_one_1_options);
             if self.side_one_2.switch_out_move_second_saved_move == Choices::NONE {

@@ -109,7 +109,7 @@ impl Node {
     pub unsafe fn selection(
         &mut self,
         state: &mut State,
-        children: &mut HashMap<(usize, usize, usize), Box<[Node]>>,
+        children: &mut HashMap<(usize, usize, usize, usize, usize), Box<[Node]>>,
     ) -> (*mut Node, usize, usize, usize, usize) {
         if self.s1_1_options.is_none() {
             let (s1_1_options, s1_2_options, s2_1_options, s2_2_options) = state.get_all_options();
@@ -151,7 +151,7 @@ impl Node {
         s1_2_move_index: usize,
         s2_1_move_index: usize,
         s2_2_move_index: usize,
-        children: &mut HashMap<(usize, usize, usize), Box<[Node]>>,
+        children: &mut HashMap<(usize, usize, usize, usize, usize), Box<[Node]>>,
     ) -> *mut Node {
         let s1_1_move = &self.s1_1_options.as_ref().unwrap()[s1_1_move_index].move_choice;
         let s1_2_move = &self.s1_2_options.as_ref().unwrap()[s1_2_move_index].move_choice;
@@ -188,7 +188,13 @@ impl Node {
         let new_node_ptr = self.sample_node(&mut boxed);
         state.apply_instructions(&(*new_node_ptr).instructions.instruction_list);
 
-        let key = (self as *mut Node as usize, s1_1_mc_index, s1_2_mc_index, s2_1_mc_index, s2_2_mc_index);
+        let key = (
+            self as *mut Node as usize,
+            s1_1_move_index,
+            s1_2_move_index,
+            s2_1_move_index,
+            s2_2_move_index,
+        );
         children.insert(key, boxed);
         new_node_ptr
     }
@@ -211,7 +217,8 @@ impl Node {
 
         let parent_s2_1_movenode =
             &mut (*self.parent).s2_1_options.as_mut().unwrap()[self.s2_1_choice as usize];
-        parent_s2_1_movenode.total_score += score;
+        // team-two slots are scored from team two's perspective (1.0 - score)
+        parent_s2_1_movenode.total_score += 1.0 - score;
         parent_s2_1_movenode.visits += 1;
 
         let parent_s2_2_movenode =
@@ -289,7 +296,7 @@ fn do_mcts(
     root_node: &mut Node,
     state: &mut State,
     root_eval: &f32,
-    children: &mut HashMap<(usize, usize, usize), Box<[Node]>>,
+    children: &mut HashMap<(usize, usize, usize, usize, usize), Box<[Node]>>,
 ) {
     let (mut new_node, s1_1_move, s1_2_move, s2_1_move, s2_2_move) = unsafe { root_node.selection(state, children) };
     new_node = unsafe { (*new_node).expand(state, s1_1_move, s1_2_move, s2_1_move, s2_2_move, children) };
@@ -310,7 +317,7 @@ pub fn perform_mcts(
         root_node.populate(side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
     }
     root_node.root = true;
-    let mut children: HashMap<(usize, usize, usize), Box<[Node]>> = HashMap::new();
+    let mut children: HashMap<(usize, usize, usize, usize, usize), Box<[Node]>> = HashMap::new();
 
     let root_eval = evaluate(state);
     let start_time = std::time::Instant::now();

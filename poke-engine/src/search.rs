@@ -8,7 +8,16 @@ use std::thread;
 use std::time::Duration;
 
 enum IterativeDeependingThreadMessage {
-    Stop((Vec<MoveChoice>, Vec<MoveChoice>, Vec<f32>, i8)),
+    Stop(
+        (
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<MoveChoice>,
+            Vec<f32>,
+            i8,
+        ),
+    ),
 }
 
 pub fn expectiminimax_search(
@@ -70,7 +79,7 @@ pub fn expectiminimax_search(
             } else {
                 for instruction in instructions.iter() {
                     state.apply_instructions(&instruction.instruction_list);
-                    let (next_turn_side_one_1_options, next_turn_side_one_2_options, next_turn_side_twp_1_options, next_turn_side_two_2_options) =
+                    let (next_turn_side_one_1_options, next_turn_side_one_2_options, next_turn_side_two_1_options, next_turn_side_two_2_options) =
                         state.get_all_options();
 
                     let next_turn_side_one_1_options_len = next_turn_side_one_1_options.len();
@@ -155,33 +164,66 @@ fn re_order_moves_for_iterative_deepening(
     side_one_2_options: Vec<MoveChoice>,
     side_two_1_options: Vec<MoveChoice>,
     side_two_2_options: Vec<MoveChoice>,
-) -> (Vec<MoveChoice>, Vec<MoveChoice>) {
+) -> (
+    Vec<MoveChoice>,
+    Vec<MoveChoice>,
+    Vec<MoveChoice>,
+    Vec<MoveChoice>,
+) {
     let num_s1_1_moves = side_one_1_options.len();
     let num_s1_2_moves = side_one_2_options.len();
     let num_s2_1_moves = side_two_1_options.len();
     let num_s2_2_moves = side_two_2_options.len();
+    // For each (s1_1, s1_2) move pair, find the worst-case score over all opposing
+    // (s2_1, s2_2) combinations, then order our slots' moves best-worst-case first. This is
+    // purely a move-ordering heuristic for alpha-beta; it never changes search correctness.
     let mut worst_case_s1_scores: Vec<(MoveChoice, MoveChoice, f32)> = vec![];
     let mut vec_index = 0;
 
     for s1_1_index in 0..num_s1_1_moves {
-    for s1_2_index in 0..num_s1_2_moves {
-        for _ in 0..num_s2_1_moves {
-        let mut worst_case_this_row = f32::MAX;
-        for _ in 0..num_s2_2_moves {
-            let score = last_search_result[vec_index];
-            vec_index += 1;
-            if score < worst_case_this_row {
-                worst_case_this_row = score;
+        for s1_2_index in 0..num_s1_2_moves {
+            let mut worst_case_this_row = f32::MAX;
+            for _ in 0..num_s2_1_moves {
+                for _ in 0..num_s2_2_moves {
+                    let score = last_search_result[vec_index];
+                    vec_index += 1;
+                    if score < worst_case_this_row {
+                        worst_case_this_row = score;
+                    }
+                }
             }
-        }}
-        worst_case_s1_scores.push((
-            side_one_1_options[s1_1_index].clone(), side_one_2_options[s1_2_index].clone(), worst_case_this_row));
-    }} // TODO
+            worst_case_s1_scores.push((
+                side_one_1_options[s1_1_index].clone(),
+                side_one_2_options[s1_2_index].clone(),
+                worst_case_this_row,
+            ));
+        }
+    }
 
-    worst_case_s1_scores.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-    let new_s1_vec = worst_case_s1_scores.iter().map(|x| x.0.clone()).collect();
+    worst_case_s1_scores.sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap());
 
-    (new_s1_vec, side_two_options)
+    // Derive a per-slot ordering by taking each slot's moves in order of first appearance
+    // among the best-scoring pairs (dedup keeps first occurrence). Opposing slots pass
+    // through unchanged.
+    let mut new_s1_1_vec: Vec<MoveChoice> = Vec::with_capacity(num_s1_1_moves);
+    for (m, _, _) in worst_case_s1_scores.iter() {
+        if !new_s1_1_vec.contains(m) {
+            new_s1_1_vec.push(m.clone());
+        }
+    }
+    let mut new_s1_2_vec: Vec<MoveChoice> = Vec::with_capacity(num_s1_2_moves);
+    for (_, m, _) in worst_case_s1_scores.iter() {
+        if !new_s1_2_vec.contains(m) {
+            new_s1_2_vec.push(m.clone());
+        }
+    }
+
+    (
+        new_s1_1_vec,
+        new_s1_2_vec,
+        side_two_1_options,
+        side_two_2_options,
+    )
 }
 
 pub fn iterative_deepen_expectiminimax(

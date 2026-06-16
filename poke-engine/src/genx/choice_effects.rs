@@ -624,7 +624,9 @@ pub fn choice_after_damage_hit(
     instructions: &mut StateInstructions,
     hit_sub: bool,
 ) {
-    let (attacking_side, defending_side) = state.get_both_sides(attacking_side_ref);
+    // defender == the mon that was hit (the chosen target)
+    let (attacking_side, defending_side) =
+        state.get_both_sides_with_target(attacking_side_ref, &choice.target_side);
     let attacker_active = attacking_side.get_active();
     if choice.flags.recharge {
         let instruction = Instruction::ApplyVolatileStatus(ApplyVolatileStatusInstruction {
@@ -730,7 +732,7 @@ pub fn choice_after_damage_hit(
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: attacking_side_ref.get_other_side(),
+                            side_ref: choice.target_side,
                             side_condition: PokemonSideCondition::Reflect,
                             amount: -1 * defending_side.side_conditions.reflect,
                         },
@@ -742,7 +744,7 @@ pub fn choice_after_damage_hit(
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: attacking_side_ref.get_other_side(),
+                            side_ref: choice.target_side,
                             side_condition: PokemonSideCondition::LightScreen,
                             amount: -1 * defending_side.side_conditions.light_screen,
                         },
@@ -754,7 +756,7 @@ pub fn choice_after_damage_hit(
                     .instruction_list
                     .push(Instruction::ChangeSideCondition(
                         ChangeSideConditionInstruction {
-                            side_ref: attacking_side_ref.get_other_side(),
+                            side_ref: choice.target_side,
                             side_condition: PokemonSideCondition::AuroraVeil,
                             amount: -1 * defending_side.side_conditions.aurora_veil,
                         },
@@ -769,7 +771,7 @@ pub fn choice_after_damage_hit(
                 && !hit_sub
             {
                 let instruction = Instruction::ChangeItem(ChangeItemInstruction {
-                    side_ref: attacking_side_ref.get_other_side(),
+                    side_ref: choice.target_side,
                     current_item: defender_active.item,
                     new_item: Items::NONE,
                 });
@@ -788,7 +790,7 @@ pub fn choice_after_damage_hit(
                 let defender_item = defender_active.item;
 
                 let instruction = Instruction::ChangeItem(ChangeItemInstruction {
-                    side_ref: attacking_side_ref.get_other_side(),
+                    side_ref: choice.target_side,
                     current_item: defender_item,
                     new_item: Items::NONE,
                 });
@@ -806,7 +808,7 @@ pub fn choice_after_damage_hit(
         }
         Choices::CLEARSMOG => {
             state.reset_boosts(
-                &attacking_side_ref.get_other_side(),
+                &choice.target_side,
                 &mut instructions.instruction_list,
             );
         }

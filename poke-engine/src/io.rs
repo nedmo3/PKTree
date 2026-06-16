@@ -5,16 +5,20 @@ use crate::engine::generate_instructions::{
 };
 use crate::engine::state::MoveChoice;
 use crate::instruction::{Instruction, StateInstructions};
-use crate::mcts::{perform_mcts, MctsResult};
-use crate::mcts_threaded::perform_mcts_shared_tree;
+use crate::mcts::{perform_mcts, MctsResult, MctsSideResult};
 use crate::search::{expectiminimax_search, iterative_deepen_expectiminimax, pick_safest};
-use crate::state::State;
+use crate::state::{Side, State};
 use clap::Parser;
 use std::io;
 use std::io::Write;
 use std::process::exit;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
+
+// NOTE (doubles): this developer CLI drives only the two "_1" slots from move inputs; the
+// "_2" ally slots default to `MoveChoice::None`. The real interfaces (Python bindings +
+// foul-play) handle all four slots. The expectiminimax/id result is a 4-D matrix that is
+// printed flat rather than as a 2-D table.
 
 struct IOData {
     state: State,
@@ -110,135 +114,29 @@ impl Default for IOData {
     }
 }
 
-fn pprint_expectiminimax_result(
+fn join_options(options: &Vec<MoveChoice>, side: &Side) -> String {
+    options
+        .iter()
+        .map(|x| x.to_string(side))
+        .collect::<Vec<String>>()
+        .join(",")
+}
+
+/// Print a search result. The score matrix is 4-dimensional in doubles, so it is printed
+/// flat rather than as a table. `safest` is `(s1_1_index, s1_2_index, score)`.
+fn print_search_result(
     result: &Vec<f32>,
-    s1_options: &Vec<MoveChoice>,
-    s2_options: &Vec<MoveChoice>,
-    safest_choice: &(usize, f32),
+    s1_1_options: &Vec<MoveChoice>,
+    s1_2_options: &Vec<MoveChoice>,
+    s2_1_options: &Vec<MoveChoice>,
+    s2_2_options: &Vec<MoveChoice>,
+    safest: &(usize, usize, f32),
     state: &State,
 ) {
-    let s1_len = s1_options.len();
-    let s2_len = s2_options.len();
-
-    print!("{: <12}", " ");
-
-    for s2_move in s2_options.iter() {
-        print!("{: >12}", s2_move.to_string(&state.side_two));
-    }
-    print!("\n");
-
-    for i in 0..s1_len {
-        let s1_move_str = s1_options[i];
-        print!("{:<12}", s1_move_str.to_string(&state.side_one));
-        for j in 0..s2_len {
-            let index = i * s2_len + j;
-            print!("{number:>11.2} ", number = result[index]);
-        }
-        print!("\n");
-    }
-    print!(
-        "{:<12}",
-        s1_options[safest_choice.0].to_string(&state.side_one)
-    );
-}
-
-fn print_mcts_result(state: &State, result: MctsResult) {
-    let s1_joined_options = result
-        .s1
-        .iter()
-        .map(|x| {
-            format!(
-                "{},{:.2},{}",
-                x.move_choice.to_string(&state.side_one),
-                x.total_score,
-                x.visits
-            )
-        })
-        .collect::<Vec<String>>()
-        .join("|");
-    let s2_joined_options = result
-        .s2
-        .iter()
-        .map(|x| {
-            format!(
-                "{},{:.2},{}",
-                x.move_choice.to_string(&state.side_two),
-                x.total_score,
-                x.visits
-            )
-        })
-        .collect::<Vec<String>>()
-        .join("|");
-
-    println!("Total Iterations: {}", result.iteration_count);
-    println!("side one: {}", s1_joined_options);
-    println!("side two: {}", s2_joined_options);
-}
-
-fn pprint_mcts_result(state: &State, result: MctsResult) {
-    println!("\nTotal Iterations: {}\n", result.iteration_count);
-    println!("Side One:");
-    println!(
-        "\t{:<25}{:>12}{:>12}{:>10}{:>10}",
-        "Move", "Total Score", "Avg Score", "Visits", "% Visits"
-    );
-    for x in result.s1.iter() {
-        println!(
-            "\t{:<25}{:>12.2}{:>12.2}{:>10}{:>10.2}",
-            x.move_choice.to_string(&state.side_one),
-            x.total_score,
-            x.total_score / x.visits as f32,
-            x.visits,
-            (x.visits as f32 / result.iteration_count as f32) * 100.0
-        );
-    }
-
-    println!("Side Two:");
-    println!(
-        "\t{:<25}{:>12}{:>12}{:>10}{:>10}",
-        "Move", "Total Score", "Avg Score", "Visits", "% Visits"
-    );
-    for x in result.s2.iter() {
-        println!(
-            "\t{:<25}{:>12.2}{:>12.2}{:>10}{:>10.2}",
-            x.move_choice.to_string(&state.side_two),
-            x.total_score,
-            x.total_score / x.visits as f32,
-            x.visits,
-            (x.visits as f32 / result.iteration_count as f32) * 100.0
-        );
-    }
-}
-
-fn pprint_state_instruction_vector(instructions: &Vec<StateInstructions>) {
-    for (i, instruction) in instructions.iter().enumerate() {
-        println!("Index: {}", i);
-        println!("StateInstruction: {:?}", instruction);
-    }
-}
-
-fn print_subcommand_result(
-    result: &Vec<f32>,
-    side_one_options: &Vec<MoveChoice>,
-    side_two_options: &Vec<MoveChoice>,
-    state: &State,
-) {
-    let safest = pick_safest(&result, side_one_options.len(), side_two_options.len());
-    let move_choice = side_one_options[safest.0];
-
-    let joined_side_one_options = side_one_options
-        .iter()
-        .map(|x| format!("{}", x.to_string(&state.side_one)))
-        .collect::<Vec<String>>()
-        .join(",");
-    println!("side one options: {}", joined_side_one_options);
-
-    let joined_side_two_options = side_two_options
-        .iter()
-        .map(|x| format!("{}", x.to_string(&state.side_two)))
-        .collect::<Vec<String>>()
-        .join(",");
-    println!("side two options: {}", joined_side_two_options);
+    println!("side one 1 options: {}", join_options(s1_1_options, &state.side_one_1));
+    println!("side one 2 options: {}", join_options(s1_2_options, &state.side_one_2));
+    println!("side two 1 options: {}", join_options(s2_1_options, &state.side_two_1));
+    println!("side two 2 options: {}", join_options(s2_2_options, &state.side_two_2));
 
     let joined = result
         .iter()
@@ -246,8 +144,69 @@ fn print_subcommand_result(
         .collect::<Vec<String>>()
         .join(",");
     println!("matrix: {}", joined);
-    println!("choice: {}", move_choice.to_string(&state.side_one));
-    println!("evaluation: {}", safest.1);
+    println!(
+        "choice: {} + {}",
+        s1_1_options[safest.0].to_string(&state.side_one_1),
+        s1_2_options[safest.1].to_string(&state.side_one_2),
+    );
+    println!("evaluation: {}", safest.2);
+}
+
+fn print_mcts_side(label: &str, results: &Vec<MctsSideResult>, side: &Side) {
+    let joined = results
+        .iter()
+        .map(|x| {
+            format!(
+                "{},{:.2},{}",
+                x.move_choice.to_string(side),
+                x.total_score,
+                x.visits
+            )
+        })
+        .collect::<Vec<String>>()
+        .join("|");
+    println!("{}: {}", label, joined);
+}
+
+fn print_mcts_result(state: &State, result: MctsResult) {
+    println!("Total Iterations: {}", result.iteration_count);
+    print_mcts_side("side one 1", &result.s1_1, &state.side_one_1);
+    print_mcts_side("side one 2", &result.s1_2, &state.side_one_2);
+    print_mcts_side("side two 1", &result.s2_1, &state.side_two_1);
+    print_mcts_side("side two 2", &result.s2_2, &state.side_two_2);
+}
+
+fn pprint_mcts_side(label: &str, results: &Vec<MctsSideResult>, side: &Side, iterations: u32) {
+    println!("{}:", label);
+    println!(
+        "\t{:<25}{:>12}{:>12}{:>10}{:>10}",
+        "Move", "Total Score", "Avg Score", "Visits", "% Visits"
+    );
+    for x in results.iter() {
+        println!(
+            "\t{:<25}{:>12.2}{:>12.2}{:>10}{:>10.2}",
+            x.move_choice.to_string(side),
+            x.total_score,
+            x.total_score / x.visits as f32,
+            x.visits,
+            (x.visits as f32 / iterations as f32) * 100.0
+        );
+    }
+}
+
+fn pprint_mcts_result(state: &State, result: MctsResult) {
+    println!("\nTotal Iterations: {}\n", result.iteration_count);
+    pprint_mcts_side("Side One 1", &result.s1_1, &state.side_one_1, result.iteration_count);
+    pprint_mcts_side("Side One 2", &result.s1_2, &state.side_one_2, result.iteration_count);
+    pprint_mcts_side("Side Two 1", &result.s2_1, &state.side_two_1, result.iteration_count);
+    pprint_mcts_side("Side Two 2", &result.s2_2, &state.side_two_2, result.iteration_count);
+}
+
+fn pprint_state_instruction_vector(instructions: &Vec<StateInstructions>) {
+    for (i, instruction) in instructions.iter().enumerate() {
+        println!("Index: {}", i);
+        println!("StateInstruction: {:?}", instruction);
+    }
 }
 
 pub fn main() {
@@ -259,10 +218,7 @@ pub fn main() {
         io_data.state = state;
     }
 
-    let result;
     let mut state;
-    let mut side_one_options;
-    let mut side_two_options;
     match args.subcmd {
         None => {
             command_loop(io_data);
@@ -271,47 +227,46 @@ pub fn main() {
         Some(subcmd) => match subcmd {
             SubCommand::Expectiminimax(expectiminimax) => {
                 state = State::deserialize(expectiminimax.state.as_str());
-                (side_one_options, side_two_options) = state.root_get_all_options();
-                result = expectiminimax_search(
+                let (s1_1, s1_2, s2_1, s2_2) = state.root_get_all_options();
+                let result = expectiminimax_search(
                     &mut state,
                     expectiminimax.depth,
-                    side_one_options.clone(),
-                    side_two_options.clone(),
+                    s1_1.clone(),
+                    s1_2.clone(),
+                    s2_1.clone(),
+                    s2_2.clone(),
                     expectiminimax.ab_prune,
                     &Arc::new(Mutex::new(true)),
                 );
-                print_subcommand_result(&result, &side_one_options, &side_two_options, &state);
+                let safest = pick_safest(&result, s1_1.len(), s1_2.len(), s2_1.len(), s2_2.len());
+                print_search_result(&result, &s1_1, &s1_2, &s2_1, &s2_2, &safest, &state);
             }
-            SubCommand::IterativeDeepening(iterative_deepending) => {
-                state = State::deserialize(iterative_deepending.state.as_str());
-                (side_one_options, side_two_options) = state.root_get_all_options();
-                (side_one_options, side_two_options, result, _) = iterative_deepen_expectiminimax(
+            SubCommand::IterativeDeepening(iterative_deepening) => {
+                state = State::deserialize(iterative_deepening.state.as_str());
+                let (s1_1, s1_2, s2_1, s2_2) = state.root_get_all_options();
+                let (r1_1, r1_2, r2_1, r2_2, result, _) = iterative_deepen_expectiminimax(
                     &mut state,
-                    side_one_options.clone(),
-                    side_two_options.clone(),
-                    std::time::Duration::from_millis(iterative_deepending.time_to_search_ms),
+                    s1_1,
+                    s1_2,
+                    s2_1,
+                    s2_2,
+                    std::time::Duration::from_millis(iterative_deepening.time_to_search_ms),
                 );
-                print_subcommand_result(&result, &side_one_options, &side_two_options, &state);
+                let safest =
+                    pick_safest(&result, r1_1.len(), r1_2.len(), r2_1.len(), r2_2.len());
+                print_search_result(&result, &r1_1, &r1_2, &r2_1, &r2_2, &safest, &state);
             }
             SubCommand::MonteCarloTreeSearch(mcts) => {
                 state = State::deserialize(mcts.state.as_str());
-                (side_one_options, side_two_options) = state.root_get_all_options();
-                let result = if mcts.threads > 1 {
-                    perform_mcts_shared_tree(
-                        &mut state,
-                        side_one_options.clone(),
-                        side_two_options.clone(),
-                        std::time::Duration::from_millis(mcts.time_to_search_ms),
-                        mcts.threads,
-                    )
-                } else {
-                    perform_mcts(
-                        &mut state,
-                        side_one_options.clone(),
-                        side_two_options.clone(),
-                        std::time::Duration::from_millis(mcts.time_to_search_ms),
-                    )
-                };
+                let (s1_1, s1_2, s2_1, s2_2) = state.root_get_all_options();
+                let result = perform_mcts(
+                    &mut state,
+                    s1_1,
+                    s1_2,
+                    s2_1,
+                    s2_2,
+                    std::time::Duration::from_millis(mcts.time_to_search_ms),
+                );
                 print_mcts_result(&state, result);
             }
             SubCommand::CalculateDamage(calculate_damage) => {
@@ -335,10 +290,9 @@ pub fn main() {
             }
             SubCommand::GenerateInstructions(generate_instructions) => {
                 state = State::deserialize(generate_instructions.state.as_str());
-                let (s1_movechoice, s2_movechoice);
-                match MoveChoice::from_string(
+                let s1_1_move = match MoveChoice::from_string(
                     generate_instructions.side_one_move.as_str(),
-                    &state.side_one,
+                    &state.side_one_1,
                 ) {
                     None => {
                         println!(
@@ -347,11 +301,11 @@ pub fn main() {
                         );
                         exit(1);
                     }
-                    Some(v) => s1_movechoice = v,
-                }
-                match MoveChoice::from_string(
+                    Some(v) => v,
+                };
+                let s2_1_move = match MoveChoice::from_string(
                     generate_instructions.side_two_move.as_str(),
-                    &state.side_two,
+                    &state.side_two_1,
                 ) {
                     None => {
                         println!(
@@ -360,12 +314,14 @@ pub fn main() {
                         );
                         exit(1);
                     }
-                    Some(v) => s2_movechoice = v,
-                }
+                    Some(v) => v,
+                };
                 let instructions = generate_instructions_from_move_pair(
                     &mut state,
-                    &s1_movechoice,
-                    &s2_movechoice,
+                    &s1_1_move,
+                    &MoveChoice::None,
+                    &s2_1_move,
+                    &MoveChoice::None,
                     true,
                 );
                 pprint_state_instruction_vector(&instructions);
@@ -444,7 +400,7 @@ fn command_loop(mut io_data: IOData) {
             "generate-instructions" | "g" => {
                 let (s1_move, s2_move);
                 match args.next() {
-                    Some(s) => match MoveChoice::from_string(s, &io_data.state.side_one) {
+                    Some(s) => match MoveChoice::from_string(s, &io_data.state.side_one_1) {
                         Some(m) => {
                             s1_move = m;
                         }
@@ -459,7 +415,7 @@ fn command_loop(mut io_data: IOData) {
                     }
                 }
                 match args.next() {
-                    Some(s) => match MoveChoice::from_string(s, &io_data.state.side_two) {
+                    Some(s) => match MoveChoice::from_string(s, &io_data.state.side_two_1) {
                         Some(m) => {
                             s2_move = m;
                         }
@@ -476,7 +432,9 @@ fn command_loop(mut io_data: IOData) {
                 let instructions = generate_instructions_from_move_pair(
                     &mut io_data.state,
                     &s1_move,
+                    &MoveChoice::None,
                     &s2_move,
+                    &MoveChoice::None,
                     true,
                 );
                 pprint_state_instruction_vector(&instructions);
@@ -535,25 +493,29 @@ fn command_loop(mut io_data: IOData) {
             "iterative-deepening" | "id" => match args.next() {
                 Some(s) => {
                     let max_time_ms = s.parse::<u64>().unwrap();
-                    let (side_one_options, side_two_options) = io_data.state.root_get_all_options();
+                    let (s1_1, s1_2, s2_1, s2_2) = io_data.state.root_get_all_options();
 
                     let start_time = std::time::Instant::now();
-                    let (s1_moves, s2_moves, result, depth_searched) =
+                    let (r1_1, r1_2, r2_1, r2_2, result, depth_searched) =
                         iterative_deepen_expectiminimax(
                             &mut io_data.state,
-                            side_one_options.clone(),
-                            side_two_options.clone(),
+                            s1_1,
+                            s1_2,
+                            s2_1,
+                            s2_2,
                             std::time::Duration::from_millis(max_time_ms),
                         );
                     let elapsed = start_time.elapsed();
 
-                    let safest_choice = pick_safest(&result, s1_moves.len(), s2_moves.len());
-
-                    pprint_expectiminimax_result(
+                    let safest =
+                        pick_safest(&result, r1_1.len(), r1_2.len(), r2_1.len(), r2_2.len());
+                    print_search_result(
                         &result,
-                        &s1_moves,
-                        &s2_moves,
-                        &safest_choice,
+                        &r1_1,
+                        &r1_2,
+                        &r2_1,
+                        &r2_2,
+                        &safest,
                         &io_data.state,
                     );
                     println!("Took: {:?}", elapsed);
@@ -567,13 +529,15 @@ fn command_loop(mut io_data: IOData) {
             "monte-carlo-tree-search" | "mcts" => match args.next() {
                 Some(s) => {
                     let max_time_ms = s.parse::<u64>().unwrap();
-                    let (side_one_options, side_two_options) = io_data.state.root_get_all_options();
+                    let (s1_1, s1_2, s2_1, s2_2) = io_data.state.root_get_all_options();
 
                     let start_time = std::time::Instant::now();
                     let result = perform_mcts(
                         &mut io_data.state,
-                        side_one_options.clone(),
-                        side_two_options.clone(),
+                        s1_1,
+                        s1_2,
+                        s2_1,
+                        s2_2,
                         std::time::Duration::from_millis(max_time_ms),
                     );
                     let elapsed = start_time.elapsed();
@@ -586,38 +550,6 @@ fn command_loop(mut io_data: IOData) {
                     continue;
                 }
             },
-            "monte-carlo-tree-search-parallel" | "mctsp" => {
-                let worker_count = match args.next() {
-                    Some(s) => s.parse::<usize>().unwrap(),
-                    None => {
-                        println!(
-                            "Usage: monte-carlo-tree-search-parallel <worker_count> <timeout_ms>"
-                        );
-                        continue;
-                    }
-                };
-                let max_time_ms = match args.next() {
-                    Some(s) => s.parse::<u64>().unwrap(),
-                    None => {
-                        println!(
-                            "Usage: monte-carlo-tree-search-parallel <worker_count> <timeout_ms>"
-                        );
-                        continue;
-                    }
-                };
-                let (side_one_options, side_two_options) = io_data.state.root_get_all_options();
-                let start_time = std::time::Instant::now();
-                let result = perform_mcts_shared_tree(
-                    &mut io_data.state,
-                    side_one_options.clone(),
-                    side_two_options.clone(),
-                    std::time::Duration::from_millis(max_time_ms),
-                    worker_count,
-                );
-                let elapsed = start_time.elapsed();
-                pprint_mcts_result(&io_data.state, result);
-                println!("\nTook: {:?}", elapsed);
-            }
             "apply" | "a" => match args.next() {
                 Some(s) => {
                     let index = s.parse::<usize>().unwrap();
@@ -658,25 +590,29 @@ fn command_loop(mut io_data: IOData) {
                         None => {}
                     }
                     let depth = s.parse::<i8>().unwrap();
-                    let (side_one_options, side_two_options) = io_data.state.root_get_all_options();
+                    let (s1_1, s1_2, s2_1, s2_2) = io_data.state.root_get_all_options();
                     let start_time = std::time::Instant::now();
                     let result = expectiminimax_search(
                         &mut io_data.state,
                         depth,
-                        side_one_options.clone(),
-                        side_two_options.clone(),
+                        s1_1.clone(),
+                        s1_2.clone(),
+                        s2_1.clone(),
+                        s2_2.clone(),
                         ab_prune,
                         &Arc::new(Mutex::new(true)),
                     );
                     let elapsed = start_time.elapsed();
 
-                    let safest_choice =
-                        pick_safest(&result, side_one_options.len(), side_two_options.len());
-                    pprint_expectiminimax_result(
+                    let safest =
+                        pick_safest(&result, s1_1.len(), s1_2.len(), s2_1.len(), s2_2.len());
+                    print_search_result(
                         &result,
-                        &side_one_options,
-                        &side_two_options,
-                        &safest_choice,
+                        &s1_1,
+                        &s1_2,
+                        &s2_1,
+                        &s2_2,
+                        &safest,
                         &io_data.state,
                     );
                     println!("\nTook: {:?}", elapsed);

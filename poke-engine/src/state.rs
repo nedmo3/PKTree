@@ -1395,6 +1395,72 @@ impl State {
         }
     }
 
+    /// Like `get_both_sides`, but the defender is an explicitly chosen `target` slot
+    /// (doubles targeting) rather than the diagonal opponent. `attacker` and `target` must
+    /// be different slots (true for any single-target damaging/status move, whose target is
+    /// always an opponent or the ally — never the user itself).
+    pub fn get_both_sides_with_target(
+        &mut self,
+        attacker: &SideReference,
+        target: &SideReference,
+    ) -> (&mut Side, &mut Side) {
+        match (attacker, target) {
+            (SideReference::SideOne_1, SideReference::SideOne_2) => {
+                (&mut self.side_one_1, &mut self.side_one_2)
+            }
+            (SideReference::SideOne_1, SideReference::SideTwo_1) => {
+                (&mut self.side_one_1, &mut self.side_two_1)
+            }
+            (SideReference::SideOne_1, SideReference::SideTwo_2) => {
+                (&mut self.side_one_1, &mut self.side_two_2)
+            }
+            (SideReference::SideOne_2, SideReference::SideOne_1) => {
+                (&mut self.side_one_2, &mut self.side_one_1)
+            }
+            (SideReference::SideOne_2, SideReference::SideTwo_1) => {
+                (&mut self.side_one_2, &mut self.side_two_1)
+            }
+            (SideReference::SideOne_2, SideReference::SideTwo_2) => {
+                (&mut self.side_one_2, &mut self.side_two_2)
+            }
+            (SideReference::SideTwo_1, SideReference::SideOne_1) => {
+                (&mut self.side_two_1, &mut self.side_one_1)
+            }
+            (SideReference::SideTwo_1, SideReference::SideOne_2) => {
+                (&mut self.side_two_1, &mut self.side_one_2)
+            }
+            (SideReference::SideTwo_1, SideReference::SideTwo_2) => {
+                (&mut self.side_two_1, &mut self.side_two_2)
+            }
+            (SideReference::SideTwo_2, SideReference::SideOne_1) => {
+                (&mut self.side_two_2, &mut self.side_one_1)
+            }
+            (SideReference::SideTwo_2, SideReference::SideOne_2) => {
+                (&mut self.side_two_2, &mut self.side_one_2)
+            }
+            (SideReference::SideTwo_2, SideReference::SideTwo_1) => {
+                (&mut self.side_two_2, &mut self.side_two_1)
+            }
+            _ => panic!(
+                "get_both_sides_with_target called with attacker == target ({:?})",
+                attacker
+            ),
+        }
+    }
+
+    /// Immutable counterpart of `get_both_sides_with_target`. Safe even if `attacker` and
+    /// `target` are the same slot (both are shared borrows).
+    pub fn get_both_sides_immutable_with_target(
+        &self,
+        attacker: &SideReference,
+        target: &SideReference,
+    ) -> (&Side, &Side) {
+        (
+            self.get_side_immutable(attacker),
+            self.get_side_immutable(target),
+        )
+    }
+
     pub fn reset_boosts(&mut self, side_ref: &SideReference, vec_to_add_to: &mut Vec<Instruction>) {
         let side = self.get_side(side_ref);
 

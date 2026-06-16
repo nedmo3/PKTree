@@ -369,26 +369,24 @@ class Instruction:
 
 class State:
     """
-    Represents a Pokemon battle state
+    Represents a Pokemon (doubles) battle state with four slots: side one has slots
+    side_one_1 and side_one_2; side two has slots side_two_1 and side_two_2.
 
-    :param side_one: The first side of the battle
-    :type side_one: Side
-    :param side_two: The second side of the battle
-    :type side_two: Side
+    :param side_one_1: Side one's first active slot
+    :param side_one_2: Side one's second active slot
+    :param side_two_1: Side two's first active slot
+    :param side_two_2: Side two's second active slot
     :param weather: The current weather condition
-    :type weather: Weather
-    :param weather_turns_remaining: The number of turns remaining for the current weather condition
-    :type weather_turns_remaining: int
+    :param weather_turns_remaining: The number of turns remaining for the current weather
     :param terrain: The current terrain condition
-    :type terrain: str
-    :param terrain_turns_remaining: The number of turns remaining for the current terrain condition
-    :type terrain_turns_remaining: int
+    :param terrain_turns_remaining: The number of turns remaining for the current terrain
     :param trick_room: Whether Trick Room is active
-    :type trick_room: bool
     """
 
-    side_one: Side
-    side_two: Side
+    side_one_1: Side
+    side_one_2: Side
+    side_two_1: Side
+    side_two_2: Side
     weather: str
     weather_turns_remaining: int
     terrain: str
@@ -399,8 +397,10 @@ class State:
 
     def __init__(
         self,
-        side_one: Side = None,
-        side_two: Side = None,
+        side_one_1: Side = None,
+        side_one_2: Side = None,
+        side_two_1: Side = None,
+        side_two_2: Side = None,
         weather: Weather = Weather.NONE,
         weather_turns_remaining: int = 0,
         terrain: Terrain = Terrain.NONE,
@@ -423,34 +423,40 @@ class MctsSideResult:
     visits: int
 
 class MctsResult:
-    """Result from MCTS algorithm."""
+    """Result from MCTS algorithm (one list of move results per slot)."""
 
-    side_one: List[MctsSideResult]
-    side_two: List[MctsSideResult]
+    s1_1: List[MctsSideResult]
+    s1_2: List[MctsSideResult]
+    s2_1: List[MctsSideResult]
+    s2_2: List[MctsSideResult]
     iteration_count: int
 
-def mcts(py_state: State, duration_ms: int, threads: int) -> MctsResult:
+def mcts(py_state: State, duration_ms: int, threads: int = 1) -> MctsResult:
     """
     Perform Monte Carlo Tree Search on the given state.
 
     :param py_state: The game state to analyze
     :param duration_ms: Duration in milliseconds to run MCTS
-    :param threads: Number of threads to use for MCTS
-    :return: MCTS results for both sides
+    :param threads: Accepted for compatibility but ignored (single-threaded in doubles)
+    :return: MCTS results for all four slots
     """
     ...
 
 def generate_instructions(
     py_state: State,
-    side_one_move: str,
-    side_two_move: str,
+    side_one_1_move: str,
+    side_one_2_move: str,
+    side_two_1_move: str,
+    side_two_2_move: str,
 ) -> List[StateInstructions]:
     """
-    Generate instructions for a turn given moves for both sides.
+    Generate instructions for a turn given a move for each of the four slots.
 
     :param py_state: The current game state
-    :param side_one_move: Move for side one
-    :param side_two_move: Move for side two
+    :param side_one_1_move: Move for side one's first slot
+    :param side_one_2_move: Move for side one's second slot
+    :param side_two_1_move: Move for side two's first slot
+    :param side_two_2_move: Move for side two's second slot
     :return: List of state instructions
     """
     ...

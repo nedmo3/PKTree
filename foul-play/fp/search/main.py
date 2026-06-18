@@ -56,7 +56,7 @@ def parse_move_pair_from_string(move_pair_str: str) -> tuple:
 def select_move_from_mcts_results(mcts_results: list[(MctsResult, float, int)]) -> str:
     final_policy = {}
     for mcts_result, sample_chance, index in mcts_results:
-        this_policy = max(mcts_result.side_one, key=lambda x: x.visits)
+        this_policy = max(mcts_result.side_one_1, key=lambda x: x.visits)
         logger.info(
             "Policy {}: {} visited {}% avg_score={} sample_chance_multiplier={}".format(
                 index,
@@ -66,7 +66,7 @@ def select_move_from_mcts_results(mcts_results: list[(MctsResult, float, int)]) 
                 round(sample_chance, 3),
             )
         )
-        for s1_option in mcts_result.side_one:
+        for s1_option in mcts_result.side_one_1:
             final_policy[s1_option.move_choice] = final_policy.get(
                 s1_option.move_choice, 0
             ) + (sample_chance * (s1_option.visits / mcts_result.total_visits))
@@ -256,91 +256,106 @@ def find_best_move_pair_mcts(battle: Battle) -> tuple:
 
 def select_move_pair_from_mcts_results(mcts_results: list[(MctsResult, float, int)]) -> tuple:
     """
-    Aggregate MCTS results to select the best move pair for doubles.
-    
-    In doubles battles, MCTS explores the full game tree with both bots' Pokemon active.
-    The result contains side_one options (Bot1's moves) and side_two options (Bot2's moves).
-    We aggregate to find the best move for each bot independently, then combine them.
-    
+    Aggregate MCTS results to select the best move pair for the two ALLIED bots.
+
+    The engine searches a 4-slot state. The bot controls the two allied slots, whose policies
+    are `side_one_1` (user_1 / p1a) and `side_one_2` (user_2 / p3b). `side_two_*` are the
+    OPPONENTS and must not be selected from. We pick the best move for each allied slot
+    independently and combine them.
+
     Args:
         mcts_results: List of (MctsResult, sample_chance, index) tuples from MCTS
-        
+
     Returns:
-        Tuple of (left_move_id, right_move_id) representing best move pair for (Bot1, Bot2)
+        Tuple of (left_move_id, right_move_id) for (user_1 / p1a, user_2 / p3b)
     """
-    # Aggregate move performance for side_one (Bot1's left Pokemon) independently
-    side_one_policy = {}
-    # Aggregate move performance for side_two (Bot2's right Pokemon) independently
-    side_two_policy = {}
-    
+    # Aggregate move performance for each allied slot independently
+    left_policy = {}   # user_1 / p1a  -> side_one_1
+    right_policy = {}  # user_2 / p3b  -> side_one_2
+
     for mcts_result, sample_chance, index in mcts_results:
-        # Process side_one (Bot1's moves)
-        if mcts_result.side_one:
-            best_s1_policy = max(mcts_result.side_one, key=lambda x: x.visits)
-            s1_move = best_s1_policy.move_choice
-            
+        # Process side_one_1 (user_1 / p1a moves)
+        if mcts_result.side_one_1:
+            best_left = max(mcts_result.side_one_1, key=lambda x: x.visits)
+            left_move = best_left.move_choice
+
             logger.info(
-                "Policy {}: side_one {} visited {}% avg_score={} sample_chance_multiplier={}".format(
+                "Policy {}: side_one_1 {} visited {}% avg_score={} sample_chance_multiplier={}".format(
                     index,
-                    s1_move,
-                    round(100 * best_s1_policy.visits / mcts_result.total_visits, 2),
-                    round(best_s1_policy.total_score / best_s1_policy.visits, 3),
+                    left_move,
+                    round(100 * best_left.visits / mcts_result.total_visits, 2)
+                    if mcts_result.total_visits
+                    else 0.0,
+                    round(best_left.total_score / best_left.visits, 3)
+                    if best_left.visits
+                    else 0.0,
                     round(sample_chance, 3),
                 )
             )
-            
-            side_one_policy[s1_move] = side_one_policy.get(s1_move, 0) + (
-                sample_chance * (best_s1_policy.visits / mcts_result.total_visits)
+
+            left_policy[left_move] = left_policy.get(left_move, 0) + (
+                sample_chance * (best_left.visits / mcts_result.total_visits)
             )
-        
-        # Process side_two (Bot2's moves)
-        if mcts_result.side_two:
-            best_s2_policy = max(mcts_result.side_two, key=lambda x: x.visits)
-            s2_move = best_s2_policy.move_choice
-            
+
+        # Process side_one_2 (user_2 / p3b moves)
+        if mcts_result.side_one_2:
+            best_right = max(mcts_result.side_one_2, key=lambda x: x.visits)
+            right_move = best_right.move_choice
+
             logger.info(
-                "Policy {}: side_two {} visited {}% avg_score={} sample_chance_multiplier={}".format(
+                "Policy {}: side_one_2 {} visited {}% avg_score={} sample_chance_multiplier={}".format(
                     index,
-                    s2_move,
-                    round(100 * best_s2_policy.visits / mcts_result.total_visits, 2),
-                    round(best_s2_policy.total_score / best_s2_policy.visits, 3),
+                    right_move,
+                    round(100 * best_right.visits / mcts_result.total_visits, 2)
+                    if mcts_result.total_visits
+                    else 0.0,
+                    round(best_right.total_score / best_right.visits, 3)
+                    if best_right.visits
+                    else 0.0,
                     round(sample_chance, 3),
                 )
             )
-            
-            side_two_policy[s2_move] = side_two_policy.get(s2_move, 0) + (
-                sample_chance * (best_s2_policy.visits / mcts_result.total_visits)
+
+            right_policy[right_move] = right_policy.get(right_move, 0) + (
+                sample_chance * (best_right.visits / mcts_result.total_visits)
             )
-    
-    if not side_one_policy or not side_two_policy:
+
+    if not left_policy or not right_policy:
         logger.warning("No valid moves found in MCTS results, using struggle")
         return ("struggle", "struggle")
-    
+
     # Sort by aggregated policy score
-    side_one_sorted = sorted(side_one_policy.items(), key=lambda x: x[1], reverse=True)
-    side_two_sorted = sorted(side_two_policy.items(), key=lambda x: x[1], reverse=True)
-    
+    left_sorted = sorted(left_policy.items(), key=lambda x: x[1], reverse=True)
+    right_sorted = sorted(right_policy.items(), key=lambda x: x[1], reverse=True)
+
     # Consider moves that are close to the best
-    s1_highest = side_one_sorted[0][1]
-    s1_candidates = [i for i in side_one_sorted if i[1] >= s1_highest * 0.75]
-    
-    s2_highest = side_two_sorted[0][1]
-    s2_candidates = [i for i in side_two_sorted if i[1] >= s2_highest * 0.75]
-    
-    logger.info("Considered Side One Moves:")
-    for i, policy in enumerate(s1_candidates):
+    left_highest = left_sorted[0][1]
+    left_candidates = [i for i in left_sorted if i[1] >= left_highest * 0.75]
+
+    right_highest = right_sorted[0][1]
+    right_candidates = [i for i in right_sorted if i[1] >= right_highest * 0.75]
+
+    logger.info("Considered p1a (user_1) Moves:")
+    for i, policy in enumerate(left_candidates):
         logger.info(f"\t{round(policy[1] * 100, 3)}%: {policy[0]}")
-    
-    logger.info("Considered Side Two Moves:")
-    for i, policy in enumerate(s2_candidates):
+
+    logger.info("Considered p3b (user_2) Moves:")
+    for i, policy in enumerate(right_candidates):
         logger.info(f"\t{round(policy[1] * 100, 3)}%: {policy[0]}")
-    
-    # Select best move for each side independently
-    s1_choice = random.choices(s1_candidates, weights=[p[1] for p in s1_candidates])[0]
-    s2_choice = random.choices(s2_candidates, weights=[p[1] for p in s2_candidates])[0]
-    
-    left_move = s1_choice[0]
-    right_move = s2_choice[0]
-    
+
+    # Select best move for each allied slot independently. If the policy weights are all
+    # zero (degenerate position, e.g. only "No Move" available), fall back to the top
+    # candidate instead of crashing in random.choices.
+    def _weighted_pick(candidates):
+        if sum(p[1] for p in candidates) <= 0:
+            return candidates[0]
+        return random.choices(candidates, weights=[p[1] for p in candidates])[0]
+
+    left_choice = _weighted_pick(left_candidates)
+    right_choice = _weighted_pick(right_candidates)
+
+    left_move = left_choice[0]
+    right_move = right_choice[0]
+
     logger.info(f"Selected move pair: ({left_move}, {right_move})")
     return (left_move, right_move)

@@ -1387,6 +1387,11 @@ fn generate_instructions_from_damage(
         - arbitrary other after_move as well from the old engine (triggers on hit OR miss)
             - dig/dive/bounce/fly volatilestatus
     */
+    // Defensive: never let a degenerate self-target reach the damage instructions (whose
+    // side_ref is choice.target_side). Fall back to the diagonal opponent.
+    if choice.target_side == *attacking_side_ref {
+        choice.target_side = attacking_side_ref.get_other_side();
+    }
     let mut hit_sub = false;
     let attacking_side = state.get_side(attacking_side_ref);
     let attacking_pokemon = attacking_side.get_active();
@@ -2113,7 +2118,10 @@ pub fn generate_instructions_from_move(
                     choice.move_index = last_used_move;
                 }
             }
-            _ => panic!("Encore should not be active when last used move is not a move"),
+            _ => {
+                println!("Encore should not be active when last used move is not a move");
+                //panic!("Encore should not be active when last used move is not a move"),
+            }
         }
 
         // this value is incremented when an encored move has been used

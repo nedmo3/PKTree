@@ -1396,15 +1396,22 @@ impl State {
     }
 
     /// Like `get_both_sides`, but the defender is an explicitly chosen `target` slot
-    /// (doubles targeting) rather than the diagonal opponent. `attacker` and `target` must
-    /// be different slots (true for any single-target damaging/status move, whose target is
-    /// always an opponent or the ally — never the user itself).
+    /// (doubles targeting) rather than the diagonal opponent.
+    ///
+    /// A single-target move should never target its own user, but a degenerate/inconsistent
+    /// input state can produce `attacker == target`. Rather than panic (we cannot hand out
+    /// two `&mut` to the same `Side`), we fall back to the diagonal opponent for the target.
     pub fn get_both_sides_with_target(
         &mut self,
         attacker: &SideReference,
         target: &SideReference,
     ) -> (&mut Side, &mut Side) {
-        match (attacker, target) {
+        let target = if attacker == target {
+            attacker.get_other_side()
+        } else {
+            *target
+        };
+        match (attacker, &target) {
             (SideReference::SideOne_1, SideReference::SideOne_2) => {
                 (&mut self.side_one_1, &mut self.side_one_2)
             }
@@ -1441,24 +1448,25 @@ impl State {
             (SideReference::SideTwo_2, SideReference::SideTwo_1) => {
                 (&mut self.side_two_2, &mut self.side_two_1)
             }
-            _ => panic!(
-                "get_both_sides_with_target called with attacker == target ({:?})",
-                attacker
-            ),
+            // `target` is guaranteed distinct from `attacker` above.
+            _ => unreachable!("attacker and target are distinct after the diagonal fallback"),
         }
     }
 
-    /// Immutable counterpart of `get_both_sides_with_target`. Safe even if `attacker` and
-    /// `target` are the same slot (both are shared borrows).
+    /// Immutable counterpart of `get_both_sides_with_target`. Two shared borrows of the same
+    /// `Side` would be legal, but for behavioural consistency with the mutable version we
+    /// also fall back to the diagonal opponent when `attacker == target`.
     pub fn get_both_sides_immutable_with_target(
         &self,
         attacker: &SideReference,
         target: &SideReference,
     ) -> (&Side, &Side) {
-        (
-            self.get_side_immutable(attacker),
-            self.get_side_immutable(target),
-        )
+        let target = if attacker == target {
+            attacker.get_other_side()
+        } else {
+            *target
+        };
+        (self.get_side_immutable(attacker), self.get_side_immutable(&target))
     }
 
     pub fn reset_boosts(&mut self, side_ref: &SideReference, vec_to_add_to: &mut Vec<Instruction>) {

@@ -140,6 +140,30 @@ impl MoveChoice {
             format!(" {}", token)
         }
     }
+    pub fn to_string_pkmn(&self, pkmn: &Pokemon) -> String {
+        match self {
+            MoveChoice::MoveTera(index, target) => format!(
+                "{}-tera{}",
+                pkmn.moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
+            MoveChoice::MoveMega(index, target) => format!(
+                "{}-mega{}",
+                pkmn.moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
+            MoveChoice::Move(index, target) => format!(
+                "{}{}",
+                pkmn.moves[&index].id,
+                Self::target_suffix(target)
+            )
+            .to_lowercase(),
+            MoveChoice::Switch(index) => format!("{}", pkmn.id).to_lowercase(),
+            MoveChoice::None => "No Move".to_string(),
+        }
+    }
     pub fn to_string(&self, side: &Side) -> String {
         match self {
             MoveChoice::MoveTera(index, target) => format!(
@@ -1098,9 +1122,18 @@ impl State {
         }
 
         if s1_1_options.len() == 0 {
+            // add a debug warning
+            #[cfg(debug_assertions)]
+            {
+                println!("Warning: No options available for side 1 pokemon 1. Adding None option.");
+            }
             s1_1_options.push(MoveChoice::None);
         }
         if s1_2_options.len() == 0 {
+            #[cfg(debug_assertions)]
+            {
+                println!("Warning: No options available for side 1 pokemon 2. Adding None option.");
+            }
             s1_2_options.push(MoveChoice::None);
         }
         if s2_1_options.len() == 0 {
@@ -1114,10 +1147,30 @@ impl State {
     }
 
     pub fn get_all_options(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>) {
-        let mut side_one_1_options: Vec<MoveChoice> = Vec::with_capacity(9);
-        let mut side_one_2_options: Vec<MoveChoice> = Vec::with_capacity(9);
-        let mut side_two_1_options: Vec<MoveChoice> = Vec::with_capacity(9);
-        let mut side_two_2_options: Vec<MoveChoice> = Vec::with_capacity(9);
+        // Guarantee every slot has at least one option (MoveChoice::None) so downstream
+        // search code (e.g. MCTS `expand`) never indexes an empty list. Some early-return
+        // paths in the inner function could otherwise yield an empty Vec for a slot.
+        let (mut s1_1, mut s1_2, mut s2_1, mut s2_2) = self.get_all_options_inner();
+        if s1_1.is_empty() {
+            s1_1.push(MoveChoice::None);
+        }
+        if s1_2.is_empty() {
+            s1_2.push(MoveChoice::None);
+        }
+        if s2_1.is_empty() {
+            s2_1.push(MoveChoice::None);
+        }
+        if s2_2.is_empty() {
+            s2_2.push(MoveChoice::None);
+        }
+        (s1_1, s1_2, s2_1, s2_2)
+    }
+
+    fn get_all_options_inner(&self) -> (Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>, Vec<MoveChoice>) {
+        let mut side_one_1_options: Vec<MoveChoice> = Vec::with_capacity(19);
+        let mut side_one_2_options: Vec<MoveChoice> = Vec::with_capacity(19);
+        let mut side_two_1_options: Vec<MoveChoice> = Vec::with_capacity(19);
+        let mut side_two_2_options: Vec<MoveChoice> = Vec::with_capacity(19);
 
         if self.side_one_1.force_switch {
             self.side_one_1.add_switches(&mut side_one_1_options);
@@ -1235,65 +1288,54 @@ impl State {
             return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
         }
 
-        let side_one_1_force_switch = self.side_one_1.get_active_immutable().hp <= 0;
-        let side_one_2_force_switch = self.side_one_2.get_active_immutable().hp <= 0;
-        let side_two_1_force_switch = self.side_two_1.get_active_immutable().hp <= 0;
-        let side_two_2_force_switch = self.side_two_2.get_active_immutable().hp <= 0;
-
-        if side_one_1_force_switch {
+        // Each slot is handled INDEPENDENTLY: a fainted active offers switch options (it
+        // must be replaced), while an alive active offers its normal actions. A faint in one
+        // slot must NOT zero out the other (alive) slots' moves — this is the key doubles
+        // difference from singles. (Mid-turn "you already moved, now replace" requests are
+        // signalled separately by the `force_switch` field handled above.)
+        if self.side_one_1.get_active_immutable().hp <= 0 {
             self.side_one_1.add_switches(&mut side_one_1_options);
         } else {
-            side_one_1_options.push(MoveChoice::None);
+            Self::add_actions_for_slot(
+                &self.side_one_1,
+                &self.side_two_1,
+                &self.side_two_2,
+                &mut side_one_1_options,
+            );
         }
 
-        if side_one_2_force_switch {
+        if self.side_one_2.get_active_immutable().hp <= 0 {
             self.side_one_2.add_switches(&mut side_one_2_options);
         } else {
-            side_one_2_options.push(MoveChoice::None);
+            Self::add_actions_for_slot(
+                &self.side_one_2,
+                &self.side_two_2,
+                &self.side_two_1,
+                &mut side_one_2_options,
+            );
         }
 
-        if side_two_1_force_switch {
+        if self.side_two_1.get_active_immutable().hp <= 0 {
             self.side_two_1.add_switches(&mut side_two_1_options);
         } else {
-            side_two_1_options.push(MoveChoice::None);
+            Self::add_actions_for_slot(
+                &self.side_two_1,
+                &self.side_one_1,
+                &self.side_one_2,
+                &mut side_two_1_options,
+            );
         }
 
-        if side_two_2_force_switch {
+        if self.side_two_2.get_active_immutable().hp <= 0 {
             self.side_two_2.add_switches(&mut side_two_2_options);
         } else {
-            side_two_2_options.push(MoveChoice::None);
+            Self::add_actions_for_slot(
+                &self.side_two_2,
+                &self.side_one_2,
+                &self.side_one_1,
+                &mut side_two_2_options,
+            );
         }
-        if side_one_1_force_switch || side_one_2_force_switch || side_two_1_force_switch || side_two_2_force_switch {
-            return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
-        }
-
-        Self::add_actions_for_slot(
-            &self.side_one_1,
-            &self.side_two_1,
-            &self.side_two_2,
-            &mut side_one_1_options,
-        );
-
-        Self::add_actions_for_slot(
-            &self.side_one_2,
-            &self.side_two_2,
-            &self.side_two_1,
-            &mut side_one_2_options,
-        );
-
-        Self::add_actions_for_slot(
-            &self.side_two_1,
-            &self.side_one_1,
-            &self.side_one_2,
-            &mut side_two_1_options,
-        );
-
-        Self::add_actions_for_slot(
-            &self.side_two_2,
-            &self.side_one_2,
-            &self.side_one_1,
-            &mut side_two_2_options,
-        );
 
         return (side_one_1_options, side_one_2_options, side_two_1_options, side_two_2_options);
     }

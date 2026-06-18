@@ -7,7 +7,7 @@ from copy import deepcopy
 from config import FoulPlayConfig, init_logging, BotModes
 
 from teams import load_team, TeamListIterator
-from fp.run_battle import pokemon_battle
+from fp.run_battle import pokemon_battle, pokemon_battle_reader, start_random_battle_reader
 from fp.websocket_client import PSWebsocketClient
 
 from data import all_move_json
@@ -118,27 +118,33 @@ async def bot_accepter(original_pokedex, original_move_json, command_queue, team
     )
     
     logger.info("Bot 2: Challenge accepted, waiting for commands from Bot 1...")
+
+    await pokemon_battle_reader(ps_websocket_client, FoulPlayConfig.pokemon_format, command_queue)
     
     # Wait for commands from the master thread and send them to the server
-    while True:
-        try:
-            # Wait for a command with a timeout (5 minutes)
-            command = await asyncio.wait_for(command_queue.get(), timeout=300.0)
+    # while True:
+    #     try:
+    #         # Wait for a command with a timeout (5 minutes)
+    #         command = await asyncio.wait_for(command_queue.get(), timeout=300.0)
             
-            if command is None:  # Signal to stop
-                logger.info("Bot 2: Received stop signal, closing...")
-                break
+    #         if command is None:  # Signal to stop
+    #             logger.info("Bot 2: Received stop signal, closing...")
+    #             break
             
-            logger.info(f"Bot 2: Sending command to server: {command}")
-            await ps_websocket_client.send_message(command[0], command[1])
+    #         logger.info(f"Bot 2: Sending command to server: {command}")
+    #         await ps_websocket_client.send_message(command[0], command[1])
+    #         await asyncio.sleep(0.1)  # Small delay to avoid overwhelming the server
+    #         # read response from server (optional, can be used for debugging)
+    #         response = await ps_websocket_client.receive_message()
+    #         print("BOt 2 received response: {}".format(response))
             
-        except asyncio.TimeoutError:
-            logger.warning("Bot 2: Timeout waiting for command (300s), closing...")
-            break
-        except Exception as e:
-            logger.error(f"Bot 2: Error while sending command: {e}")
-            traceback.print_exc()
-            break
+    #     except asyncio.TimeoutError:
+    #         logger.warning("Bot 2: Timeout waiting for command (300s), closing...")
+    #         break
+    #     except Exception as e:
+    #         logger.error(f"Bot 2: Error while sending command: {e}")
+    #         traceback.print_exc()
+    #         break
     
     check_dictionaries_are_unmodified(original_pokedex, original_move_json)
     await ps_websocket_client.close()

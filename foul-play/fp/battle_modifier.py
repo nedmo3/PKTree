@@ -182,18 +182,25 @@ def unlikely_to_have_choice_item(move_name):
 # just chooses the 1st pokemon on other side for other_active. be smart if you need to
 def get_actives(battle, split_msg) :
     if is_opponent(battle, split_msg):
-        active = battle.opponent_1.active if split_msg[2].startswith(battle.opponent_1.name) else battle.opponent_2.active
-        other_active = battle.user_1.active if battle.user_1 is not None else battle.user_2.active
+        active = battle.opponent_1 if split_msg[2].startswith(battle.opponent_1.name) else battle.opponent_2
+        other_active = battle.user_1 if battle.user_1 is not None else battle.user_2
     else:
-        active = battle.user_1.active if split_msg[2].startswith(battle.user_1.name) else battle.user_2.active
-        other_active = battle.opponent_1.active if battle.opponent_1 is not None else battle.opponent_2.active
+        active = battle.user_1 if split_msg[2].startswith(battle.user_1.name) else battle.user_2
+        other_active = battle.opponent_1 if battle.opponent_1 is not None else battle.opponent_2
 
     return active, other_active
 
 def is_opponent(battle, split_msg):
     logger.debug("Determining if split_msg is for opponent or user: {}".format(split_msg))
     logger.debug("User 1: {}, User 2: {}".format(battle.user_1.name, battle.user_2.name))
-    return not split_msg[2].startswith(battle.user_1.name) or split_msg[2].startswith(battle.user_2.name)
+    # A position belongs to an OPPONENT only if it is neither of our two allied slots
+    # (user_1 == p1, user_2 == p3). The previous precedence `(not startswith(user_1)) or
+    # startswith(user_2)` wrongly classified the ally (p3b) as an opponent, so the ally's
+    # switches were never applied to user_2.
+    return not (
+        split_msg[2].startswith(battle.user_1.name)
+        or split_msg[2].startswith(battle.user_2.name)
+    )
 
 
 def get_move_information(m):
@@ -2468,7 +2475,9 @@ def upkeep(battle, _):
     # If a pkmn has less than maxhp during upkeep,
     # we do not want to guess leftovers/blacksludge anymore when it is time to guess an item
     # leftovers and blacksludge will reveal themselves at the end of the turn if they exist
-    for opp_pkmn in [battle.opponent_1, battle.opponent_2]:
+    for opp_side in [battle.opponent_1, battle.opponent_2]:
+        if opp_side and opp_side.active : opp_pkmn = opp_side.active
+        else : return
         if opp_pkmn.hp < opp_pkmn.max_hp:
             logger.info(
                 "{} has less than maxhp during upkeep, no longer guessing leftovers or blacksludge".format(
@@ -2599,38 +2608,47 @@ def check_speed_ranges(battle, msg_lines):
     if number_of_moves not in [2, 3, 4]:
         return
     
-    opps = [battle.opponent_1.active, battle.opponent_2.active]
-    users = [battle.user_1.active, battle.user_2.active]
+    print(moves, len(moves))
 
-    for i in [0, 1]: # index of user we're considering
-        for j in [0, 1]: # index of opponent we're considering
-            user = users[i]
-            opp = opps[j]
-            i = 2*i #convert to index in moves array
-            j = 1 + 2*j
+    for move1 in moves :
+        user = None
+        if move1[0][0:2] == "p1a" : user = battle.user_1
+        elif move1[0][0:2] == "p2a" : user = battle.opponent_1
+        elif move1[0][0:2] == "p3b" : user = battle.user_2
+        elif move1[0][0:2] == "p4a" : user = battle.opponent_2
+        for move2 in moves: 
+            if move1 == move2 : continue
             
+            #TODO this is not true unless all 4 move, very bad. need's fix.
             if ( # in the moves array, the user (bot) will be index 0 and 2. opp will be 1 and 3
-                moves[i][1][constants.PRIORITY] != moves[j][1][constants.PRIORITY]
-                or moves[i][1][constants.ID] == "encore"
+                move1[1][constants.PRIORITY] != move2[1][constants.PRIORITY]
+                or move1[1][constants.ID] == "encore"
             ):
                 continue
 
-            bot_went_first = moves[i][0].startswith(user.name)
+            move1first = moves[0] == move1
+
+            opp = None
+            if move2[0][0:2] == "p1a" : opp = battle.user_1
+            elif move2[0][0:2] == "p2a" : opp = battle.opponent_1
+            elif move2[0][0:2] == "p3b" : opp = battle.user_2
+            elif move2[0][0:2] == "p4a" : opp = battle.opponent_2
 
             if (
                 opp is None
-                or opp.item == "choicescarf"
-                or can_have_speed_modified(battle, opp)
+                or opp.active is None
+                or opp.active.item == "choicescarf"
+                or can_have_speed_modified(battle, opp.active)
                 or (
                     not bot_went_first
                     and can_have_priority_modified(
-                        battle, opp.active, moves[j][1][constants.ID]
+                        battle, opp.active, move2[1][constants.ID]
                     )
                 )
                 or (
-                    bot_went_first
+                    move1first
                     and can_have_priority_modified(
-                        battle, user.active, moves[i][1][constants.ID]
+                        battle, user.active, move1[1][constants.ID]
                     )
                 )
             ):
@@ -2671,9 +2689,9 @@ def check_speed_ranges(battle, msg_lines):
 
             # we want to swap which attribute gets updated in trickroom because the slower pokemon goes first
             if battle.trick_room:
-                bot_went_first = not bot_went_first
+                move1first = not move1first
 
-            if bot_went_first:
+            if move1first:
                 opponent_max_speed = min(
                     opp.active.speed_range.max, speed_threshold
                 )

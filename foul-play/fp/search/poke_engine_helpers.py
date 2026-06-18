@@ -208,7 +208,7 @@ def battler_to_poke_engine_side(
         switch_out_move_second_saved_move="NONE",  # always none because we can't know this
     )
 
-    while num_reserves < 5:
+    while num_reserves < 2:
         side.pokemon.append(get_dummy_poke_engine_pkmn())
         num_reserves += 1
 
@@ -323,19 +323,33 @@ def battle_to_poke_engine_state(battle: Battle, swap=False):
     elif battle.user_2.last_used_move.move == "return":
         replace_return_last_used_move(battle.user_2)
 
-    side_one = battler_to_poke_engine_side(
+    # Multi-battle slot mapping (engine uses 4 sides; side_one_* are allies, side_two_* foes):
+    #   user_1     (p1a)             -> side_one_1
+    #   user_2     (p3b, ally bot)   -> side_one_2
+    #   opponent_1 (p2a)             -> side_two_1
+    #   opponent_2 (p4b, opp ally)   -> side_two_2
+    side_one_1 = battler_to_poke_engine_side(
         battle.user_1, force_switch=battle.force_switch
     )
-    side_two = battler_to_poke_engine_side(
+    side_one_2 = battler_to_poke_engine_side(
+        battle.user_2, force_switch=battle.force_switch
+    )
+    side_two_1 = battler_to_poke_engine_side(
         battle.opponent_1, stayed_in_on_switchout_move=opponent_switchout_move_stayed_in
+    )
+    side_two_2 = battler_to_poke_engine_side(
+        battle.opponent_2, stayed_in_on_switchout_move=opponent_switchout_move_stayed_in
     )
 
     if swap:
-        side_one, side_two = side_two, side_one
+        side_one_1, side_two_1 = side_two_1, side_one_1
+        side_one_2, side_two_2 = side_two_2, side_one_2
 
-    state = PokeEngineState( #TODO pokeEngineState may need revamped to account for doubles
-        side_one=side_one,
-        side_two=side_two,
+    state = PokeEngineState(
+        side_one_1=side_one_1,
+        side_one_2=side_one_2,
+        side_two_1=side_two_1,
+        side_two_2=side_two_2,
         weather=get_weather_string(battle.weather),
         weather_turns_remaining=battle.weather_turns_remaining,
         terrain=get_terrain_string(battle.field),

@@ -309,13 +309,18 @@ class Battler:
     def get_active_json(self, request_json, ally=False) :
         active_pkmn = None
         if not ally :
-            active_pkmn = request_json[constants.ACTIVE][0]
+            pkmn = request_json[constants.SIDE][constants.POKEMON]
         else :
-            pkmn = request_json[constants.ALLY][constants.POKEMON]
-            for p in pkmn : 
-                if p[constants.ACTIVE] :
-                    active_pkmn = p
-                    break
+            if constants.ALLY not in request_json : # weird. but this is when accepter bot calls this for it's own request json
+                pkmn = request_json[constants.SIDE][constants.POKEMON]
+            else: 
+                pkmn = request_json[constants.ALLY][constants.POKEMON]
+        print(pkmn)
+        for p in pkmn : 
+            if p[constants.ACTIVE] :
+                active_pkmn = p
+                break
+        print("!!!",active_pkmn, type(active_pkmn))
         return active_pkmn
 
     def _initialize_user_active_from_request_json(self, request_json, ally=False):
@@ -342,7 +347,7 @@ class Battler:
         for index, move in enumerate(
             active_pkmn[constants.MOVES]
         ):
-            if not ally: 
+            if not ally and False : 
                 # hidden power's ID is always 'hiddenpower' regardless of the type
                 # parse it separately from the 'move' key
                 logger.debug("Parsing move from request JSON: {}".format(move))
@@ -386,8 +391,16 @@ class Battler:
         except KeyError:
             self.trapped = False
 
-        for index, pkmn_dict in enumerate(
-            request_json[constants.SIDE][constants.POKEMON] if not ally else request_json[constants.ALLY][constants.POKEMON]
+        pkmns = None
+        if not ally :
+            pkmns = request_json[constants.SIDE][constants.POKEMON] 
+        elif constants.ALLY in request_json  :
+            pkmns = request_json[constants.ALLY][constants.POKEMON]
+        else : 
+            pkmns = request_json[constants.SIDE][constants.POKEMON]
+
+        for index, pkmn_dict in enumerate( # I think the right answer is to make a function for the initial call, but whatevs
+           pkmns 
         ):
             switch_string_pkmn = Pokemon.from_switch_string(
                 pkmn_dict[constants.DETAILS]
@@ -404,7 +417,7 @@ class Battler:
                     )
 
                 if constants.ACTIVE in request_json:
-                    self._initialize_user_active_from_request_json(request_json)
+                    self._initialize_user_active_from_request_json(request_json, ally)
 
                 pkmn = self.active
             else:

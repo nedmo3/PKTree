@@ -329,10 +329,10 @@ def battle_to_poke_engine_state(battle: Battle, swap=False):
     #   opponent_1 (p2a)             -> side_two_1
     #   opponent_2 (p4b, opp ally)   -> side_two_2
     side_one_1 = battler_to_poke_engine_side(
-        battle.user_1, force_switch=battle.force_switch
+        battle.user_1, force_switch=battle.user_1.force_switch
     )
     side_one_2 = battler_to_poke_engine_side(
-        battle.user_2, force_switch=battle.force_switch
+        battle.user_2, force_switch=battle.user_2.force_switch
     )
     side_two_1 = battler_to_poke_engine_side(
         battle.opponent_1, stayed_in_on_switchout_move=opponent_switchout_move_stayed_in

@@ -23,7 +23,8 @@ fn common_pkmn_stat_calc(stat: u16, ev: u16, level: u16) -> u16 {
 }
 
 fn multiply_boost(boost_num: i8, stat_value: i16) -> i16 {
-    match boost_num {
+    let boost_num_bound = boost_num.min(-6).max(6); 
+    match boost_num_bound {
         -6 => stat_value * 2 / 8,
         -5 => stat_value * 2 / 7,
         -4 => stat_value * 2 / 6,

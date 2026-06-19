@@ -11,7 +11,7 @@ import constants
 from constants import BattleType
 from config import BotModes, FoulPlayConfig, SaveReplay
 from fp.battle import LastUsedMove, Pokemon, Battle
-from fp.battle_modifier import async_update_battle, process_battle_updates
+from fp.battle_modifier import async_update_battle, process_battle_updates, send_to_master
 from fp.helpers import normalize_name
 from fp.search.main import find_best_move
 
@@ -130,7 +130,6 @@ def convert_mcts_choice_to_move_name(mcts_choice: str, active_pokemon) -> str:
         # Check if this move exists in the active Pokemon's moveset
         move_names = [m.name for m in active_pokemon.moves]
         if choice_for_processing in move_names:
-            logger.info(f"MCTS move '{choice_for_processing}' validated for {active_pokemon.name}")
             return choice_for_processing + modifiers
         else:
             # Move not in this Pokemon's moveset - try to find any valid move
@@ -166,7 +165,7 @@ def convert_mcts_choice_to_move_name(mcts_choice: str, active_pokemon) -> str:
         return "struggle"
     
     move_name = active_pokemon.moves[move_index].name
-    logger.debug(f"Converted MCTS 'move {move_index}' to '{move_name}' for {active_pokemon.name}")
+    #logger.debug(f"Converted MCTS 'move {move_index}' to '{move_name}' for {active_pokemon.name}")
     
     return move_name + modifiers
 
@@ -191,7 +190,7 @@ def format_decision(battle, decision, battle_user, target_token=""):
         # Safety check: ensure we have an active Pokemon before formatting a move choice
         if battle_user.active is None :
             logger.warning(f"No active Pokemon available; defaulting to pass")
-            return ["/pass", str(battle.rqid)]
+            return ["/pass", str(battle_user.rqid)]
             
         tera = False
         mega = False
@@ -230,7 +229,7 @@ def format_decision(battle, decision, battle_user, target_token=""):
         if move and move.can_z:
             message = "{} {}".format(message, constants.ZMOVE)
 
-    return [message, str(battle.rqid)]
+    return [message, str(battle_user.rqid)]
 
 
 def battle_is_finished(battle_tag, msg):
@@ -249,17 +248,12 @@ def extract_battle_factory_tier_from_msg(msg):
     return normalize_name(tier_name)
 
 
-async def async_pick_move(battle, ps_websocket_client: PSWebsocketClient, ally = False):
+async def async_pick_move(battle):
     battle_copy = deepcopy(battle)
-    print("user 1 name: ",battle.user_1.name,ally)
-    print("user 2 name: ",battle.user_2.name,ally)
+    logger.warning("async pick move called, rqids: {} | {}".format(battle.user_1.rqid, battle.user_2.rqid))
     if not battle_copy.team_preview:
-        if not ally : 
-            battle_copy.user_1.update_from_request_json(battle_copy.request_json)
-            battle_copy.user_2.update_from_request_json(battle_copy.request_json, ally=True)
-        else :
-            battle_copy.user_2.update_from_request_json(battle_copy.request_json)
-            battle_copy.user_1.update_from_request_json(battle_copy.request_json, ally=True)
+        battle_copy.user_1.update_from_request_json(battle_copy.user_1.request_json)
+        battle_copy.user_2.update_from_request_json(battle_copy.user_2.request_json)
 
     loop = asyncio.get_event_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
@@ -279,7 +273,7 @@ async def async_pick_move(battle, ps_websocket_client: PSWebsocketClient, ally =
             convert_mcts_choice_to_move_name(raw_right, battle_copy.user_2.active)
         ]
 
-        logger.info(f"Bot selected: {selected_move} ")
+        # logger.info(f"Bot selected: {selected_move} ")
 
         # Track the selected move for this bot
         battle.user_1.last_selected_move = LastUsedMove(
@@ -318,7 +312,7 @@ async def handle_team_preview(battle, ps_websocket_client):
     battle_copy.opponent_2.active = Pokemon.get_dummy()
     battle_copy.team_preview = True
 
-    best_move = await async_pick_move(battle_copy, ps_websocket_client)
+    best_move = await async_pick_move(battle_copy)
 
     # because we copied the battle before sending it in, we need to update the last selected move here
     pkmn_name_1 = battle.user_1.reserve[int(best_move[0].split()[1]) - 1].name
@@ -337,7 +331,7 @@ async def handle_team_preview(battle, ps_websocket_client):
     team_list_indexes.remove(choice_digit)
     message = [
         "/team {}{}|{}".format(
-            choice_digit, "".join(str(x) for x in team_list_indexes), battle.rqid
+            choice_digit, "".join(str(x) for x in team_list_indexes), battle.user_1.rqid
         )
     ]
     # HOPING THIS ISN'T APPLICABLE TO MULTI BATTLES
@@ -391,30 +385,39 @@ async def start_battle_common(
 
 
 async def get_first_request_json(
-    ps_websocket_client: PSWebsocketClient, battle: Battle, is_reader=False
+    ps_websocket_client: PSWebsocketClient, battle: Battle, request_queue
 ):
     while True:
         msg = await ps_websocket_client.receive_message()
         msg_split = msg.split("|")
         if msg_split[1].strip() == "request" and msg_split[2].strip():
             user_json = json.loads(msg_split[2].strip("'"))
-            battle.request_json = user_json
-            # Keep user_1 == p1 and user_2 == p3 constant for BOTH bots. The request's
-            # "side" section is always the *receiving* bot's own player; for the master (p1)
-            # that is user_1, but for the reader/accepter (p3) it is user_2. So the reader
-            # reads its own side into user_2 and the ally (p1) into user_1.
-            if not is_reader:
-                battle.user_1.initialize_first_turn_user_from_json(user_json)
-                battle.user_2.initialize_first_turn_user_from_json(user_json, ally=True)
-            else:
-                battle.user_1.initialize_first_turn_user_from_json(user_json, ally=True)
-                battle.user_2.initialize_first_turn_user_from_json(user_json)
-            battle.rqid = user_json[constants.RQID]
+            battle.user_1.request_json = user_json
+            battle.user_1.initialize_first_turn_user_from_json(user_json)
+            battle.user_1.rqid = user_json[constants.RQID]
+            break
+    bot_2_msgs = await asyncio.wait_for(request_queue.get(), timeout=15.0)
+    for msg in bot_2_msgs : 
+        msg_split = msg.split("|")
+        if msg_split[1].strip() == "request" and msg_split[2].strip():
+            user_2_json = json.loads(msg_split[2].strip("'"))
+            battle.user_2.request_json = user_2_json
+            battle.user_2.initialize_first_turn_user_from_json(user_2_json)
+            battle.user_2.rqid = user_2_json[constants.RQID]
             return
 
+async def get_first_request_json_worker(ps_websocket_client: PSWebsocketClient, request_queue) :
+    msgs = []
+    while True:
+        msg = await ps_websocket_client.receive_message()
+        msgs.append(msg)
+        msg_split = msg.split("|")
+        if msg_split[1].strip() == "request" and msg_split[2].strip():
+            break
+    await request_queue.put(msgs)
 
 async def start_random_battle(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue, request_queue
 ):
     battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
     battle.battle_type = BattleType.RANDOM_BATTLE
@@ -435,19 +438,19 @@ async def start_random_battle(
             break
         msg = await ps_websocket_client.receive_message()
 
-    await get_first_request_json(ps_websocket_client, battle)
+    await get_first_request_json(ps_websocket_client, battle, request_queue)
 
     # apply the messages that were held onto
     process_battle_updates(battle)
 
-    best_move = await async_pick_move(battle, ps_websocket_client)
+    best_move = await async_pick_move(battle)
     await command_queue.put([battle.battle_tag, best_move[1]])
     await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
 
     return battle
 
 async def start_random_battle_reader(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue, request_queue
 ):
     battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
     battle.battle_type = BattleType.RANDOM_BATTLE
@@ -468,17 +471,17 @@ async def start_random_battle_reader(
             break
         msg = await ps_websocket_client.receive_message()
 
-    await get_first_request_json(ps_websocket_client, battle, is_reader=True)
+    await get_first_request_json_worker(ps_websocket_client, request_queue)
 
     # apply the messages that were held onto
-    process_battle_updates(battle)
+    # process_battle_updates(battle)
 
-    # best_move = await async_pick_move(battle, ps_websocket_client)
+    # best_move = await async_pick_move(battle)
     # await command_queue.put([battle.battle_tag, best_move[1]])
 
     command = await asyncio.wait_for(command_queue.get(), timeout=30.0)
-    logger.debug(f"1 Received command from queue: {command}")
-    await ps_websocket_client.send_message(battle.battle_tag, replace_command_with_reader_rqid(command[1], battle))
+    logger.warning(f"1 Received command from command queue: {command}")
+    await ps_websocket_client.send_message(battle.battle_tag, command[1])
 
     return battle
 
@@ -523,7 +526,7 @@ async def start_standard_battle(
         # apply the messages that were held onto
         process_battle_updates(battle)
 
-        best_move = await async_pick_move(battle, ps_websocket_client)
+        best_move = await async_pick_move(battle)
         await command_queue.put([battle.battle_tag, best_move[1]])
         await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
 
@@ -575,12 +578,12 @@ async def start_standard_battle(
     return battle
 
 
-async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue):
+async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue):
     if "random" in pokemon_battle_type:
-        battle = await start_random_battle(ps_websocket_client, pokemon_battle_type, command_queue)
+        battle = await start_random_battle(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     else:
         battle = await start_standard_battle(
-            ps_websocket_client, pokemon_battle_type, team_dict, command_queue
+            ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue
         )
 
     await ps_websocket_client.send_message(battle.battle_tag, ["hf"])
@@ -590,16 +593,12 @@ async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, comm
     return battle
 
 
-async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue=None):
+async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue):
     # Extract the correct team_dict based on the bot's username
-    if isinstance(team_dicts, list):
-        # Multi-battle: team_dicts is [bot1_dict, bot2_dict]
-        team_dict = team_dicts[0] if ps_websocket_client.username == FoulPlayConfig.bot1username else team_dicts[1]
-    else:
-        # Single-battle: team_dicts is just a dict
-        team_dict = team_dicts
+    # Multi-battle: team_dicts is [bot1_dict, bot2_dict]
+    team_dict = team_dicts[0] if ps_websocket_client.username == FoulPlayConfig.bot1username else team_dicts[1]
     
-    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue)
+    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue)
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):
@@ -625,16 +624,38 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
             await ps_websocket_client.leave_battle(battle.battle_tag)
             return winner
         else:
-            action_required = await async_update_battle(battle, msg)
-            if action_required and not battle.wait:
-                best_move = await async_pick_move(battle, ps_websocket_client)
+            # try and get the request that p3/worker received from websocket
+            workerRequestMsg = None
+            try :
+                workerRequestMsg = await asyncio.wait_for(request_queue.get(), timeout=10.0)
+                logger.warning("!! popped msg from request_queue: {}".format(workerRequestMsg))
+            except : 
+                logger.warning("Timed out waiting for request received from worker")
+            
+            action_required = await async_update_battle(battle, msg, False)
+            action_required_worker = False
+            if workerRequestMsg is not None : 
+                action_required_worker = await async_update_battle(battle, workerRequestMsg, True)
+            
+            if (action_required_worker and not battle.user_2.wait) or (action_required and not battle.user_1.wait) :
+                best_move = await async_pick_move(battle)
+            if action_required_worker and not battle.user_2.wait :
                 await command_queue.put([battle.battle_tag, best_move[1]])
+                battle.user_2.wait = True
+            else : 
+                logger.warning("nothing for worker to do. rqid: {}. wait?{}. action_required_worker?{}".format(battle.user_2.rqid,battle.user_2.wait, action_required_worker))
+                await command_queue.put(None)
+            if action_required and not battle.user_1.wait :
                 await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
+                battle.user_1.wait = True
+            else : 
+                logger.warning("nothing for master to do",battle.user_1.rqid)
+                
 
 
-async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue=None):
+async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue):
     
-    battle = await start_random_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue)
+    battle = await start_random_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):
@@ -660,21 +681,19 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
             await ps_websocket_client.leave_battle(battle.battle_tag)
             return winner
         else:
-            action_required = await async_update_battle(battle, msg)
-            if action_required and not battle.wait:
-                best_move = await async_pick_move(battle, ps_websocket_client, ally=True)
-                # await command_queue.put([battle.battle_tag, best_move[1]])
-                try :
-                    command = await asyncio.wait_for(command_queue.get(), timeout=15.0)
-                    logger.debug(f"Received command from queue: {command}")
-                    await ps_websocket_client.send_message(battle.battle_tag, replace_command_with_reader_rqid(command[1], battle))
-                except :
-                    # if we get nothing from command_queue after 15 seconds, do our own thang.
-                    await ps_websocket_client.send_message(battle.battle_tag, best_move[1])
-
-
-# "choose" messages are tagged with a rqid, the last thing on the messsage, right after the "|".
-# The accepter bot needs to replace that rqid with the rqid from the most recent request message, which is stored in battle.rqid
-def replace_command_with_reader_rqid(msg, battle):
-    msg[-1] = str(battle.rqid)
-    return msg
+            # TODO make reader version of this. For now, just send every message and it shouldn't process any battle updates 
+            if send_to_master(battle, msg) : 
+                logger.warning("put msg on req queue",msg)
+                await request_queue.put(msg)
+            else: 
+                logger.warning("didn't put msg on queue",msg)
+            try : 
+                command = await asyncio.wait_for(command_queue.get(), timeout=10.0)
+                if command : 
+                    logger.warning(f"Received command from queue: {command}")
+                    await ps_websocket_client.send_message(battle.battle_tag, command[1])
+                else : 
+                    logger.warning("Worker thread taking no action")
+            except :
+                # if we get nothing from command_queue after 15 seconds
+                logger.error("No communication received from master thread!")

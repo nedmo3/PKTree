@@ -179,7 +179,7 @@ def unlikely_to_have_choice_item(move_name):
 
     return False
 
-# just chooses the 1st pokemon on other side for other_active. be smart if you need to
+# just chooses the 1st pokemon on other side for other_active. be smart if you need to. #TODO
 def get_actives(battle, split_msg) :
     if is_opponent(battle, split_msg):
         active = battle.opponent_1 if split_msg[2].startswith(battle.opponent_1.name) else battle.opponent_2
@@ -191,8 +191,8 @@ def get_actives(battle, split_msg) :
     return active, other_active
 
 def is_opponent(battle, split_msg):
-    logger.debug("Determining if split_msg is for opponent or user: {}".format(split_msg))
-    logger.debug("User 1: {}, User 2: {}".format(battle.user_1.name, battle.user_2.name))
+    # logger.debug("Determining if split_msg is for opponent or user: {}".format(split_msg))
+    # logger.debug("User 1: {}, User 2: {}".format(battle.user_1.name, battle.user_2.name))
     # A position belongs to an OPPONENT only if it is neither of our two allied slots
     # (user_1 == p1, user_2 == p3). The previous precedence `(not startswith(user_1)) or
     # startswith(user_2)` wrongly classified the ally (p3b) as an opponent, so the ally's
@@ -217,23 +217,23 @@ def get_move_information(m):
         return m.split("|")[2], {constants.ID: "unknown", constants.PRIORITY: 0}
 
 
-def request(battle, split_msg):
+def request(battler, split_msg):
     if len(split_msg) >= 2:
         battle_json = json.loads(split_msg[2].strip("'"))
-        logger.debug("Received battle JSON from server: {}".format(battle_json))
-        battle.rqid = battle_json[constants.RQID]
+        logger.debug("Received battle JSON for {} from server: {}".format(battler.name, battle_json))
+        battler.rqid = battle_json[constants.RQID]
 
         if battle_json.get(constants.FORCE_SWITCH):
-            battle.force_switch = True
+            battler.force_switch = True
         else:
-            battle.force_switch = False
+            battler.force_switch = False
 
         if battle_json.get(constants.WAIT):
-            battle.wait = True
+            battler.wait = True
         else:
-            battle.wait = False
+            battler.wait = False
 
-        battle.request_json = battle_json
+        battler.request_json = battle_json
 
 
 def inactive(battle, split_msg):
@@ -258,6 +258,7 @@ def inactiveoff(battle, _):
 
 # Definitely noot wokiing rght now
 def user_just_switched_into_zoroark(battle, switch_or_drag):
+    return False
     """
     some truly heinous shit going on here, can we ban this fucker?
 
@@ -452,7 +453,7 @@ def switch_or_drag(battle, split_msg, switch_or_drag="switch"):
         logger.info("Starting split_msg: {}".format(split_msg))
         request_json_zoroark = [
             p
-            for p in battle.request_json[constants.SIDE][constants.POKEMON]
+            for p in side.request_json[constants.SIDE][constants.POKEMON]
             if p[constants.DETAILS].startswith("Zoroark")
         ]
         assert len(request_json_zoroark) == 1
@@ -541,7 +542,7 @@ def switch_or_drag(battle, split_msg, switch_or_drag="switch"):
     # need to re-apply the stats that the P.S. server sends us because prior to the first
     # switch-in the stats would be for zacian, not zacian-crowned
     if side_name == "user" and pkmn.name in ["zaciancrowned", "zamazentacrowned"]:
-        side.re_initialize_active_pokemon_from_request_json(battle.request_json)
+        side.re_initialize_active_pokemon_from_request_json(side.request_json)
 
     for ability in ABILITIES_REVEALED_ON_SWITCH_IN:
         if battle.generation == "gen3" and ability == "pressure":
@@ -1757,35 +1758,35 @@ def immune(battle, split_msg):
         if constants.ABILITY in normalize_name(msg):
             ability = normalize_name(msg.split(":")[-1])
             logger.info("Setting {}'s ability to {}".format(side.active.name, ability))
-            side.active.ability = ability
+            pkmn.ability = ability
 
     zoroark_from_reserves = side.find_pokemon_in_reserves(
         "zoroark"
     ) or side.find_pokemon_in_reserves("zoroarkhisui")
 
     expected_damage_rolls, _ = poke_engine_get_damage_rolls(
-        deepcopy(battle), battle.user.last_used_move.move, "none", True
+        deepcopy(battle), side.last_used_move.move, "none", True
     )
 
     # Zoroark checks
     if (
         is_opponent(battle, split_msg)
         and not side.active.name.startswith("zoroark")
-        and battle.user.last_used_move.move in all_move_json
-        and all_move_json[battle.user.last_used_move.move][constants.CATEGORY]
+        and side.last_used_move.move in all_move_json
+        and all_move_json[side.last_used_move.move][constants.CATEGORY]
         != constants.STATUS
         and type_effectiveness_modifier(
-            all_move_json[battle.user.last_used_move.move][constants.TYPE],
+            all_move_json[side.last_used_move.move][constants.TYPE],
             side.active.types,
         )
         != 0
         and "from" not in split_msg[-1]
         and not all(x == 0 for x in expected_damage_rolls)
-        and battle.user.future_sight[0] != 1
+        and side.future_sight[0] != 1
         and not (
             side.active.terastallized
             and type_effectiveness_modifier(
-                all_move_json[battle.user.last_used_move.move][constants.TYPE],
+                all_move_json[side.last_used_move.move][constants.TYPE],
                 [side.active.tera_type],
             )
             == 0
@@ -1797,7 +1798,7 @@ def immune(battle, split_msg):
             battle.battle_type == BattleType.BATTLE_FACTORY
             and zoroark_from_reserves is not None
             and type_effectiveness_modifier(
-                all_move_json[battle.user.last_used_move.move][constants.TYPE],
+                all_move_json[side.last_used_move.move][constants.TYPE],
                 zoroark_from_reserves.types,
             )
             == 0
@@ -1805,7 +1806,7 @@ def immune(battle, split_msg):
             logger.info(
                 "{} was immune to {} when it shouldn't be - it is {}".format(
                     pkmn.name,
-                    battle.user.last_used_move.move,
+                    side.last_used_move.move,
                     zoroark_from_reserves.name,
                 )
             )
@@ -1822,7 +1823,7 @@ def immune(battle, split_msg):
             if (
                 zoroark_from_reserves is not None
                 and type_effectiveness_modifier(
-                    all_move_json[battle.user.last_used_move.move][constants.TYPE],
+                    all_move_json[side.last_used_move.move][constants.TYPE],
                     zoroark_from_reserves.types,
                 )
                 == 0
@@ -1833,7 +1834,7 @@ def immune(battle, split_msg):
             elif (
                 zoroark_from_reserves is None
                 and type_effectiveness_modifier(
-                    all_move_json[battle.user.last_used_move.move][constants.TYPE],
+                    all_move_json[side.last_used_move.move][constants.TYPE],
                     zoroark_hisui.types,
                 )
                 == 0
@@ -1849,7 +1850,7 @@ def immune(battle, split_msg):
             elif (
                 zoroark_from_reserves is None
                 and type_effectiveness_modifier(
-                    all_move_json[battle.user.last_used_move.move][constants.TYPE],
+                    all_move_json[side.last_used_move.move][constants.TYPE],
                     zoroark_regular.types,
                 )
                 == 0
@@ -1866,7 +1867,7 @@ def immune(battle, split_msg):
                 logger.info(
                     "{} was immune to {} when it shouldn't be - it is {}".format(
                         pkmn.name,
-                        battle.user.last_used_move.move,
+                        side.last_used_move.move,
                         actual_zoroark.name,
                     )
                 )
@@ -2055,7 +2056,7 @@ def form_change(battle, split_msg):
     logger.info("Form Change: {} -> {}".format(side.active.name, split_msg[3]))
     side.active.forme_change(split_msg[3])
     if is_user:
-        side.re_initialize_active_pokemon_from_request_json(battle.request_json)
+        side.re_initialize_active_pokemon_from_request_json(side.request_json)
 
 
 def zpower(battle, split_msg):
@@ -2607,8 +2608,6 @@ def check_speed_ranges(battle, msg_lines):
     number_of_moves = len(moves)
     if number_of_moves not in [2, 3, 4]:
         return
-    
-    print(moves, len(moves))
 
     for move1 in moves :
         user = None
@@ -2640,7 +2639,7 @@ def check_speed_ranges(battle, msg_lines):
                 or opp.active.item == "choicescarf"
                 or can_have_speed_modified(battle, opp.active)
                 or (
-                    not bot_went_first
+                    not move1first
                     and can_have_priority_modified(
                         battle, opp.active, move2[1][constants.ID]
                     )
@@ -2726,6 +2725,7 @@ def check_opponent_hiddenpower(battle, msg_line):
     This function checks if the move was resisted, super-effective, or neutral.
     It then updates pkmn.hidden_power_possibilities based on that information
     """
+    return # TODO for doubles
     attacker = battle.opponent.active
     defender_types = battle.user.active.types
     logger.info(
@@ -3041,7 +3041,7 @@ def update_dataset_possibilities(
     for user in [battle.user_1, battle.user_2]:
         for opp in [battle.opponent_1, battle.opponent_2]:
             if (
-                battle.wait
+                user.wait
                 or battle.generation in {"gen1", "gen2"}
                 or opp.active is None
                 or opp.active.hp <= 0
@@ -3310,7 +3310,7 @@ def check_heavydutyboots(battle, msg_lines):
             side_to_check.active.impossible_items.add(constants.HEAVY_DUTY_BOOTS)
 
 
-def update_battle(battle: Battle, msg: str):
+def update_battle(battle: Battle, msg: str, isWorker):
     msg_lines = msg.split("\n")
     for line in msg_lines:
         split_msg = line.split("|")
@@ -3319,11 +3319,26 @@ def update_battle(battle: Battle, msg: str):
 
         action = split_msg[1].strip()
         if action == "request":
-            request(battle, split_msg)
-            process_battle_updates(battle)
-            return not battle.wait
+            request(battle.user_1 if not isWorker else battle.user_2, split_msg)
+            if not isWorker: # TODO see if this should be run on both?
+                process_battle_updates(battle)
+            return not battle.user_1.wait if not isWorker else not battle.user_2.wait
         else:
-            battle.msg_list.append(line)
+            if not isWorker: 
+                battle.msg_list.append(line)
+
+    return False
+
+def send_to_master(battle: Battle, msg: str) :
+    msg_lines = msg.split("\n")
+    for line in msg_lines:
+        split_msg = line.split("|")
+        if len(split_msg) < 2:
+            continue
+
+        action = split_msg[1].strip()
+        if action == "request":
+            return True
 
     return False
 
@@ -3332,7 +3347,7 @@ def process_battle_updates(battle: Battle):
     msg_lines = battle.msg_list
     check_speed_ranges(battle, msg_lines)
     for i, line in enumerate(msg_lines):
-        logger.debug("Processing battle modifier: {}".format(line))
+        # logger.debug("Processing battle modifier: {}".format(line))
         split_msg = line.split("|")
         if len(split_msg) < 2:
             continue
@@ -3413,5 +3428,5 @@ def process_battle_updates(battle: Battle):
     battle.msg_list.clear()
 
 
-async def async_update_battle(battle, msg):
-    return update_battle(battle, msg)
+async def async_update_battle(battle, msg, isWorker):
+    return update_battle(battle, msg, isWorker)

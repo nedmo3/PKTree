@@ -1575,8 +1575,12 @@ fn generate_instructions_from_damage(
     hit_sub
 }
 
-fn move_has_no_effect(state: &State, choice: &Choice, attacking_side_ref: &SideReference) -> bool {
-    let (_attacking_side, defending_side) = state.get_both_sides_immutable(attacking_side_ref);
+fn move_has_no_effect(state: &State, choice: &Choice, _attacking_side_ref: &SideReference) -> bool {
+    // Evaluate against the actual chosen target slot, not the diagonal opponent.
+    // In doubles `choice.target_side` is the source of truth for who the move hits;
+    // using the hardcoded diagonal here breaks single-target checks (e.g. Encore's
+    // last_used_move requirement) whenever the move is aimed at the non-diagonal slot.
+    let defending_side = state.get_side_immutable(&choice.target_side);
     let defender = defending_side.get_active_immutable();
 
     #[cfg(any(feature = "gen6", feature = "gen7", feature = "gen8", feature = "gen9"))]
@@ -1593,10 +1597,7 @@ fn move_has_no_effect(state: &State, choice: &Choice, attacking_side_ref: &SideR
     {
         return true;
     } else if choice.move_id == Choices::ENCORE {
-        return match state
-            .get_side_immutable(&attacking_side_ref.get_other_side())
-            .last_used_move
-        {
+        return match defending_side.last_used_move {
             LastUsedMove::None => true,
             LastUsedMove::Move(_) => false,
             LastUsedMove::Switch(_) => true,
@@ -2119,8 +2120,10 @@ pub fn generate_instructions_from_move(
                 }
             }
             _ => {
-                println!("Encore should not be active when last used move is not a move");
-                //panic!("Encore should not be active when last used move is not a move"),
+                // Reaching here means the root state was inconsistent (ENCORE volatile on a
+                // pokemon with no recorded last move). With the move_has_no_effect target fix
+                // the engine no longer produces this internally; if a serialized state does,
+                // leave the chosen move unchanged rather than spamming / panicking.
             }
         }
 

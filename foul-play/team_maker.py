@@ -1,6 +1,8 @@
 import random
 import csv
 
+from teams.team_converter import export_to_dict, export_to_packed
+
 class Pokemon:
     def __init__(
         self,
@@ -90,15 +92,30 @@ class Trainer:
     def chooseRandomTeam(self, team_size) :
         self.active_team = random.sample(self.team, team_size)
 
-    def prettyName(self) : 
+    def prettyName(self) :
         return f"{self.prefix} {self.name}"
+
+    # Showdown export text for the currently-chosen active_team (joined Pokemon.to_text() blocks)
+    def team_export_string(self) :
+        return "\n\n".join(p.to_text() for p in self.active_team)
+
+    # Convert the chosen active_team into foul-play's team formats.
+    # Returns (packed_string, team_dict):
+    #   packed_string -> the packed string passed to PSWebsocketClient.update_team()
+    #   team_dict     -> list of per-pokemon dicts (foul-play's team_dict format)
+    def to_foulplay_team(self) :
+        export = self.team_export_string()
+        return export_to_packed(export), export_to_dict(export)
 
 
 class TeamMaker : 
 
     def __init__(self, pkmn_input_file="TreePokemonAll.csv", trainer_input_file="TreeTrainersAl.csv") :
         self.pokemon_dict = self.load_pokemon_from_csv(pkmn_input_file)
-        self.load_pokemon_from_csv(trainer_input_file)
+        for k in self.pokemon_dict.keys() : 
+            if '(' in k : 
+                print(k)
+        self.load_trainers_from_csv(trainer_input_file)
         
     # what we'll want to call to get our opponents based on the battle number
     def get_opponents(self, battle_number=1, team_size = 2) : 
@@ -203,7 +220,7 @@ class TeamMaker :
         #     self.trainer_list_boss
         # )
 
-    def load_pokemon_from_csv(filename):
+    def load_pokemon_from_csv(self, filename):
         pokemon_dict = {}
 
         with open(filename, newline="", encoding="utf-8") as csvfile:

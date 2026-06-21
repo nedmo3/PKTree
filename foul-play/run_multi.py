@@ -42,7 +42,7 @@ def check_dictionaries_are_unmodified(original_pokedex, original_move_json):
         logger.debug("Pokedex JSON unmodified!")
 
 
-async def bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, bot_index):
+async def bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, bot_index):
     """Bot 1 (Master) that challenges Bot 2 and makes all battle decisions"""
     logger.info("Bot 1 (Challenger/Master) starting...")
     
@@ -56,16 +56,13 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue, re
         await ps_websocket_client.avatar(FoulPlayConfig.avatar)
     
     if FoulPlayConfig.requires_team():
-        # Use team_dicts[bot_index] which is team_dicts[0] for Bot 1
+        # Team for this bot was built by TeamMaker (see run_foul_play_multi)
         team_dict = team_dicts[bot_index]
-        # Need to reconstruct team_packed for update_team
-        # For now, we'll load it again (could optimize by returning team_packed from run_foul_play_multi)
-        team_packed, _, _ = load_team(FoulPlayConfig.team_name)
-        await ps_websocket_client.update_team(team_packed)
+        await ps_websocket_client.update_team(team_packs[bot_index])
     else:
         team_dict = None
         await ps_websocket_client.update_team("None")
-    
+
     # Challenge user and get the battle tag
     await ps_websocket_client.challenge_user(
         FoulPlayConfig.user_to_challenge,
@@ -89,7 +86,7 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue, re
     await ps_websocket_client.close()
 
 
-async def bot_accepter(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, bot_index):
+async def bot_accepter(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, bot_index):
     """Bot 2 (Worker) that accepts the challenge and waits for commands from Bot 1"""
     logger.info("Bot 2 (Accepter/Worker) starting...")
     
@@ -103,11 +100,9 @@ async def bot_accepter(original_pokedex, original_move_json, command_queue, requ
         await ps_websocket_client.avatar(FoulPlayConfig.avatar)
     
     if FoulPlayConfig.requires_team():
-        # Use team_dicts[bot_index] which is team_dicts[1] for Bot 2
+        # Team for this bot was built by TeamMaker (see run_foul_play_multi)
         team_dict = team_dicts[bot_index]
-        # Need to reconstruct team_packed for update_team
-        team_packed, _, _ = load_team(FoulPlayConfig.team_name)
-        await ps_websocket_client.update_team(team_packed)
+        await ps_websocket_client.update_team(team_packs[bot_index])
     else:
         team_dict = None
         await ps_websocket_client.update_team("None")
@@ -146,12 +141,14 @@ async def run_foul_play_multi():
     team_maker = TeamMaker()
     opps = team_maker.get_opponents(battle_number=FoulPlayConfig.round, team_size=2)
 
-    
+    # Each bot's team comes from one of the TeamMaker trainers, converted to foul-play's
+    # formats: team_packs feed update_team(), team_dicts feed the search.
+    team_packs = ["None", "None"]
     if FoulPlayConfig.requires_team():
-        # Load Bot 1's team
-        team_packed_1, team_dicts[0], team_names[0] = load_team(FoulPlayConfig.team_name)
-        # Load Bot 2's team (same config for now, but could be different)
-        team_packed_2, team_dicts[1], team_names[1] = load_team(FoulPlayConfig.team_name)
+        team_packs[0], team_dicts[0] = opps[0].to_foulplay_team()
+        team_names[0] = opps[0].prettyName()
+        team_packs[1], team_dicts[1] = opps[1].to_foulplay_team()
+        team_names[1] = opps[1].prettyName()
     
     # Create command queue
     command_queue = asyncio.Queue() # master writes to this to tell worker what to send
@@ -159,8 +156,8 @@ async def run_foul_play_multi():
     
     # Run both bots concurrently, passing the list of team dicts
     await asyncio.gather(
-        bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, 0),
-        bot_accepter(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, 1),
+        bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, 0),
+        bot_accepter(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, 1),
     )
 
 

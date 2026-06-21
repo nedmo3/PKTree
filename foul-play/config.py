@@ -153,7 +153,7 @@ class _FoulPlayConfig:
         parser.add_argument(
             "--round",
             type=int,
-            default=None,
+            default=1,
             help="For standard battles: determines which battlers are chosen.",
         )
         parser.add_argument(

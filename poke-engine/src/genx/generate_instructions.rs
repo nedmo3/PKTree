@@ -2419,6 +2419,13 @@ pub fn generate_instructions_from_move(
         }
     }
 
+    // Spread moves (Opponents / All) hit every valid target and skip the single-target
+    // crit/kill damage branching; run_move applies per-target damage with the 0.75x spread
+    // multiplier instead.
+    let is_spread =
+        damage.is_some() && matches!(choice.target, MoveTarget::Opponents | MoveTarget::All);
+    let branch_on_damage = branch_on_damage && !is_spread;
+
     let (_attacker_side, defender_side) =
         state.get_both_sides_with_target(&attacking_side, &choice.target_side);
     let defender_active = defender_side.get_active();
@@ -3575,6 +3582,55 @@ fn add_end_of_turn_instructions(
     } // end volatile statuses
 }
 
+fn run_spread_damage(
+    state: &mut State,
+    choice: &mut Choice,
+    attacking_side_ref: &SideReference,
+    instructions: &mut StateInstructions,
+) -> bool {
+    // Targets for a spread move: both opponents (Opponents), or both opponents + the ally
+    // (All, e.g. Earthquake). The user itself is never hit.
+    let candidate_sides: Vec<SideReference> = match choice.target {
+        MoveTarget::Opponents => attacking_side_ref.get_other_sides(),
+        MoveTarget::All => {
+            let mut v = attacking_side_ref.get_other_sides();
+            v.push(attacking_side_ref.get_ally());
+            v
+        }
+        _ => vec![choice.target_side],
+    };
+    let alive_targets: Vec<SideReference> = candidate_sides
+        .into_iter()
+        .filter(|s| state.get_side_immutable(s).get_active_immutable().hp > 0)
+        .collect();
+
+    // The 0.75x spread multiplier only applies when more than one target is actually hit.
+    let spread_multiplier = if alive_targets.len() > 1 { 0.75 } else { 1.0 };
+
+    let original_target_side = choice.target_side;
+    let original_base_power = choice.base_power;
+    let mut hit_sub = false;
+    for target in alive_targets {
+        choice.target_side = target;
+        choice.base_power = original_base_power * spread_multiplier;
+        let damage = calculate_damage(state, attacking_side_ref, choice, DamageRolls::Average);
+        choice.base_power = original_base_power;
+        if let Some((damage_amount, _)) = damage {
+            if generate_instructions_from_damage(
+                state,
+                choice,
+                damage_amount,
+                attacking_side_ref,
+                instructions,
+            ) {
+                hit_sub = true;
+            }
+        }
+    }
+    choice.target_side = original_target_side;
+    hit_sub
+}
+
 fn run_move(
     state: &mut State,
     attacking_side: SideReference,
@@ -3589,13 +3645,19 @@ fn run_move(
     let mut hit_sub = false;
     for _ in 0..hit_count {
         if does_damage {
-            hit_sub = generate_instructions_from_damage(
-                state,
-                choice,
-                damage_amount,
-                &attacking_side,
-                &mut instructions,
-            );
+            if matches!(choice.target, MoveTarget::Opponents | MoveTarget::All) {
+                // spread move: apply per-target damage (with the 0.75x multiplier) to every
+                // valid target rather than only choice.target_side
+                hit_sub = run_spread_damage(state, choice, &attacking_side, &mut instructions);
+            } else {
+                hit_sub = generate_instructions_from_damage(
+                    state,
+                    choice,
+                    damage_amount,
+                    &attacking_side,
+                    &mut instructions,
+                );
+            }
         }
         if let Some(side_condition) = &choice.side_condition {
             generate_instructions_from_side_conditions(

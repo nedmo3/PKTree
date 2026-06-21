@@ -427,29 +427,49 @@ def sample_standardbattle_pokemon(existing_pokemon: list[Pokemon]) -> Pokemon:
     return pkmn
 
 
-# take a Battle and fill in the unrevealed pkmn for the opponent
+def _battler_known_team_size(battler) -> int:
+    """Number of pokemon we already know on a battler's team (active + reserve)."""
+    size = len(battler.reserve)
+    if battler.active is not None:
+        size += 1
+    return size
+
+
+# take a Battle and fill in the unrevealed pkmn for the opposing side
 def populate_standardbattle_unrevealed_pkmn(battle: Battle):
-    num_revealed_pkmn = 0
-    existing_pkmn = []
-    for pkmn in battle.opponent.reserve:
-        existing_pkmn.append(pkmn)
-        num_revealed_pkmn += 1
-    if battle.opponent.active is not None:
-        existing_pkmn.append(battle.opponent.active)
-        num_revealed_pkmn += 1
-    if battle.opponent.active_right is not None:
-        existing_pkmn.append(battle.opponent.active_right)
-        num_revealed_pkmn += 1
+    # In a multi battle the opposing side is two SEPARATE players (opponent_1 / p2a and
+    # opponent_2 / p4b), each with their own team -- not one shared team of 6. Fill each
+    # opponent's hidden slots independently.
+    #
+    # Every player in a multi battle has the same team size, and our own side is fully
+    # known from our request, so infer the per-player team size from our team rather than
+    # assuming 6.
+    team_size = max(
+        _battler_known_team_size(battle.user_1),
+        _battler_known_team_size(battle.user_2),
+    )
+    if team_size <= 0:
+        team_size = 6  # defensive fallback; shouldn't happen once our request is known
 
-    if num_revealed_pkmn == 6:
-        return
+    for opponent in (battle.opponent_1, battle.opponent_2):
+        # Seed with this opponent's already-revealed team so sampled pokemon respect the
+        # per-team likelihood/dedup logic in sample_standardbattle_pokemon.
+        existing_pkmn = list(opponent.reserve)
+        if opponent.active is not None:
+            existing_pkmn.append(opponent.active)
 
-    logger.info("Sampling {} unrevealed pokemon".format(6 - num_revealed_pkmn))
-    while num_revealed_pkmn < 6:
-        pkmn = sample_standardbattle_pokemon(existing_pkmn)
-        existing_pkmn.append(pkmn)
-        battle.opponent.reserve.append(pkmn)
-        num_revealed_pkmn += 1
+        if len(existing_pkmn) >= team_size:
+            continue
+
+        logger.info(
+            "Sampling {} unrevealed pokemon for {}".format(
+                team_size - len(existing_pkmn), opponent.name
+            )
+        )
+        while len(existing_pkmn) < team_size:
+            pkmn = sample_standardbattle_pokemon(existing_pkmn)
+            existing_pkmn.append(pkmn)
+            opponent.reserve.append(pkmn)
 
 
 def sample_mega_evolution(battler: Battler, index: int):
@@ -482,16 +502,22 @@ def prepare_battles(battle: Battle, num_battles: int) -> list[(Battle, float)]:
     for index in range(num_battles):
         logger.info("Sampling battle {}".format(index))
         battle_copy = deepcopy(battle)
-        if battle_copy.mega_evolve_possible():
-            sample_mega_evolution(battle_copy.opponent, index)
 
-        sample_pokemon(battle_copy.opponent.active)
-        for pkmn in filter(lambda x: x.is_alive(), battle_copy.opponent.reserve):
-            sample_pokemon(pkmn)
+        # Multi battle: sample sets for both opposing players (opponent_1 and opponent_2).
+        for opponent in (battle_copy.opponent_1, battle_copy.opponent_2):
+            if battle_copy.mega_evolve_possible():
+                sample_mega_evolution(opponent, index)
+
+            if opponent.active is not None:
+                sample_pokemon(opponent.active)
+            for pkmn in filter(lambda x: x.is_alive(), opponent.reserve):
+                sample_pokemon(pkmn)
 
         if battle.generation in constants.NO_TEAM_PREVIEW_GENS:
             populate_standardbattle_unrevealed_pkmn(battle_copy)
-        battle_copy.opponent.lock_moves()
+
+        battle_copy.opponent_1.lock_moves()
+        battle_copy.opponent_2.lock_moves()
         sampled_battles.append((battle_copy, 1 / num_battles))
 
     return sampled_battles

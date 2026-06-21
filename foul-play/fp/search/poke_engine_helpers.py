@@ -249,7 +249,7 @@ def get_terrain_string(terrain):
         return "psychicterrain"
     elif terrain is None:
         return "none"
-    elif terrain == "none":
+    elif terrain == "none" or terrain == "wonderroom":
         return "none"
     else:
         raise ValueError(f"Unknown terrain {terrain}")

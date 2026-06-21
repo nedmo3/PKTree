@@ -471,13 +471,11 @@ def switch_or_drag(battle, split_msg, switch_or_drag="switch"):
     if pkmn is None:
         pkmn = Pokemon.from_switch_string(split_msg[3], nickname=nickname)
 
-        # for standard battles gen4 and lower
-        # we want to add the new pokemon to the datasets as they are revealed
-        # because there is no teampreview
-        if (
-            battle.battle_type == BattleType.STANDARD_BATTLE
-            and battle.generation in constants.NO_TEAM_PREVIEW_GENS
-        ):
+        # We run standard battles without team preview, so newly-revealed pokemon (the
+        # opponent's, primarily) must be added to the datasets when they switch in -- there's
+        # no team preview to have pre-loaded them. Without this, opponent mons not on our own
+        # team have no sets and can't be sampled ("Could not sample <pkmn>").
+        if battle.battle_type == BattleType.STANDARD_BATTLE:
             SmogonSets.add_new_pokemon(pkmn.name)
             TeamDatasets.add_new_pokemon(pkmn.name)
             logger.info("Adding new pokemon '{}' to the datasets".format(pkmn.name))

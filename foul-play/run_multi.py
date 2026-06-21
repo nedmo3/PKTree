@@ -42,7 +42,7 @@ def check_dictionaries_are_unmodified(original_pokedex, original_move_json):
         logger.debug("Pokedex JSON unmodified!")
 
 
-async def bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, bot_index):
+async def bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, bot_index, msg):
     """Bot 1 (Master) that challenges Bot 2 and makes all battle decisions"""
     logger.info("Bot 1 (Challenger/Master) starting...")
     
@@ -71,7 +71,7 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue, re
     
     # Play the battle, passing the list of team dicts
     winner = await pokemon_battle(
-        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dicts, command_queue, request_queue
+        ps_websocket_client, FoulPlayConfig.pokemon_format, team_dicts, command_queue, request_queue, greeting = msg
     )
     
     if winner == FoulPlayConfig.bot1username:
@@ -140,6 +140,7 @@ async def run_foul_play_multi():
     """
     team_maker = TeamMaker()
     opps = team_maker.get_opponents(battle_number=FoulPlayConfig.round, team_size=2)
+    msg = f"Round {FoulPlayConfig.round} : You are challenged by {opps[0].prettyName} and {opps[1].prettyName}"
 
     # Each bot's team comes from one of the TeamMaker trainers, converted to foul-play's
     # formats: team_packs feed update_team(), team_dicts feed the search.
@@ -156,7 +157,7 @@ async def run_foul_play_multi():
     
     # Run both bots concurrently, passing the list of team dicts
     await asyncio.gather(
-        bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, 0),
+        bot_challenger(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, 0, msg),
         bot_accepter(original_pokedex, original_move_json, command_queue, request_queue, team_dicts, team_packs, 1),
     )
 

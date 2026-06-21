@@ -444,11 +444,11 @@ async def start_random_battle_reader(
 
 
 async def start_standard_battle(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, team_dict, command_queue, request_queue
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, team_dicts, command_queue, request_queue
 ):
     battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
-    battle.user_1.team_dict = team_dict[0]
-    battle.user_2.team_dict = team_dict[1]
+    battle.user_1.team_dict = team_dicts[0]
+    battle.user_2.team_dict = team_dicts[1]
     battle.battle_type = BattleType.STANDARD_BATTLE
 
     while True:
@@ -471,8 +471,11 @@ async def start_standard_battle(
     unique_pkmn_names = set(
         [p.name for p in battle.user_1.reserve] + [battle.user_1.active.name]
     )
+    # Our custom multi format has no Smogon usage stats. Fall back to gen7 doubles
+    # (gen7doublesou) builds for opponent set prediction (still overridable via
+    # --smogon-stats-format).
     SmogonSets.initialize(
-        FoulPlayConfig.smogon_stats or pokemon_battle_type, unique_pkmn_names
+        FoulPlayConfig.smogon_stats or "gen7doublesou", unique_pkmn_names
     )
     TeamDatasets.initialize(pokemon_battle_type, unique_pkmn_names)
 
@@ -516,12 +519,12 @@ async def start_standard_battle_reader(
     return battle
 
 
-async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue):
+async def start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue):
     if "random" in pokemon_battle_type:
         battle = await start_random_battle(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     else:
         battle = await start_standard_battle(
-            ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue
+            ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue
         )
 
     await ps_websocket_client.send_message(battle.battle_tag, ["hf"])
@@ -531,12 +534,12 @@ async def start_battle(ps_websocket_client, pokemon_battle_type, team_dict, comm
     return battle
 
 
-async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue):
-    # Extract the correct team_dict based on the bot's username
-    # Multi-battle: team_dicts is [bot1_dict, bot2_dict]
-    team_dict = team_dicts[0] if ps_websocket_client.username == FoulPlayConfig.bot1username else team_dicts[1]
-    
-    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dict, command_queue, request_queue)
+async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue, greeting = None):
+    # Multi-battle: team_dicts is [bot1_dict, bot2_dict]. The master tracks both allied
+    # slots (user_1 = p1 = bot1, user_2 = p3 = bot2), so pass both teams through.
+    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue)
+    if greeting : 
+        await ps_websocket_client.send_message(battle.battle_tag, greeting)
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):

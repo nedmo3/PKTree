@@ -693,7 +693,19 @@ class _SmogonSets(PokemonSets):
                         month_delta=2,
                     )
                 )
-            infos = r.json()["data"]
+            # Smogon has no usage stats for custom / unsupported formats; the request
+            # returns a non-200 (e.g. 404 HTML) page. Degrade gracefully instead of
+            # crashing on r.json(), mirroring get_sets_file()'s handling.
+            try:
+                infos = r.json()["data"]
+            except (ValueError, KeyError):
+                logger.warning(
+                    "Could not retrieve Smogon stats from {} (status code {}); "
+                    "proceeding without Smogon set predictions".format(
+                        smogon_stats_url, r.status_code
+                    )
+                )
+                infos = {}
             with open(cache_file, "w") as f:
                 json.dump(infos, f)
 

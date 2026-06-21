@@ -2,6 +2,53 @@ import random
 import csv
 
 from teams.team_converter import export_to_dict, export_to_packed
+from data import pokedex
+from fp.helpers import normalize_name
+
+
+# Forme-keyword aliases -> the keyword Showdown actually uses in its forme id.
+_FORME_KEYWORD_ALIASES = {
+    "alolan": "alola",
+    "galarian": "galar",
+    "hisuian": "hisui",
+}
+
+
+def _to_showdown_species(display_name):
+    """Convert a Battle-Tree display name into a valid Showdown species.
+
+    e.g. "Ninetales (Alola Form)"     -> "ninetales-alola"
+         "Rotom (Frost Rotom)"        -> "rotom-frost"
+         "Wishiwashi (School Form)"   -> "Wishiwashi"  (battle-only forme -> base)
+         "Tornadus (Incarnate Forme)" -> "Tornadus"    (default forme -> base)
+
+    Names without a parenthesised forme are returned unchanged. The Showdown export
+    format reads "Nickname (Species)" with the species in parens, so leaving these
+    display names as-is makes the converter read e.g. "Alola Form" as the species.
+    """
+    display_name = display_name.strip()
+    if "(" not in display_name or ")" not in display_name:
+        return display_name
+
+    base = display_name[: display_name.index("(")].strip()
+    descriptor = display_name[display_name.index("(") + 1 : display_name.index(")")].strip()
+    if not descriptor:
+        return base
+
+    # The forme keyword is the first token of the descriptor:
+    # "Alola Form" -> Alola, "Sensu Style" -> Sensu, "Frost Rotom" -> Frost.
+    keyword = descriptor.split()[0]
+    keyword = _FORME_KEYWORD_ALIASES.get(normalize_name(keyword), keyword)
+
+    candidate_id = normalize_name("{}-{}".format(base, keyword))
+    entry = pokedex.get(candidate_id)
+    # Only keep the forme if it's a real, team-buildable species. Battle-only formes
+    # (Wishiwashi-School, Minior-Meteor, ...) and default-forme descriptors
+    # (Incarnate, Midday, ...) aren't buildable -> fall back to the base species.
+    if entry is not None and not entry.get("battleOnly"):
+        return entry["name"]
+    return base
+
 
 class Pokemon:
     def __init__(
@@ -228,7 +275,7 @@ class TeamMaker :
 
             for row in reader:
                 # Basic fields
-                name = row["Species"]  # use Species instead of Pokemon (removes "-1")
+                name = _to_showdown_species(row["Species"])  # forme display name -> Showdown species
                 id = row["Pokemon"]
                 nature = row["Nature"]
                 item = row["Item"]

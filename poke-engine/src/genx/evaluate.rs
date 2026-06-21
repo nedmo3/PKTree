@@ -90,7 +90,8 @@ fn evaluate_burned(pokemon: &Pokemon) -> f32 {
 }
 
 fn get_boost_multiplier(boost: i8) -> f32 {
-    match boost {
+    let bound_boost = boost.min(-6).max(6);
+    match bound_boost {
         6 => POKEMON_BOOST_MULTIPLIER_6,
         5 => POKEMON_BOOST_MULTIPLIER_5,
         4 => POKEMON_BOOST_MULTIPLIER_4,
@@ -104,7 +105,7 @@ fn get_boost_multiplier(boost: i8) -> f32 {
         -4 => POKEMON_BOOST_MULTIPLIER_NEG_4,
         -5 => POKEMON_BOOST_MULTIPLIER_NEG_5,
         -6 => POKEMON_BOOST_MULTIPLIER_NEG_6,
-        _ => panic!("Invalid boost value: {}", boost),
+        _ => panic!("Invalid boost value: {}", bound_boost),
     }
 }
 

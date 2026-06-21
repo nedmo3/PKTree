@@ -9,6 +9,7 @@ from config import FoulPlayConfig, init_logging, BotModes
 from teams import load_team, TeamListIterator
 from fp.run_battle import pokemon_battle, pokemon_battle_reader, start_random_battle_reader
 from fp.websocket_client import PSWebsocketClient
+from team_maker import Pokemon, Trainer, TeamMaker
 
 from data import all_move_json
 from data import pokedex
@@ -137,6 +138,14 @@ async def run_foul_play_multi():
     # Load teams for both bots
     team_dicts = [None, None]  # [bot1_team_dict, bot2_team_dict]
     team_names = ["", ""]
+
+    """
+    TODO get the team creation / initialization from files into foul-play. Create trainers, and they have a list
+    of pokemon for their team. When we need, we can get a random team from 2 of their pokemon :)
+    """
+    team_maker = TeamMaker()
+    opps = team_maker.get_opponents(battle_number=FoulPlayConfig.round, team_size=2)
+
     
     if FoulPlayConfig.requires_team():
         # Load Bot 1's team

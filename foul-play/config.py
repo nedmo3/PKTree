@@ -81,6 +81,7 @@ class _FoulPlayConfig:
     run_count: int
     team_name: str
     team_list: str = None
+    round: int = None
     user_to_challenge: str
     save_replay: SaveReplay
     room_name: str
@@ -122,7 +123,7 @@ class _FoulPlayConfig:
         parser.add_argument(
             "--search-time-ms",
             type=int,
-            default=100,
+            default=2000,
             help="Time to search per battle in milliseconds",
         )
         parser.add_argument(
@@ -148,6 +149,12 @@ class _FoulPlayConfig:
             "--team-list",
             default=None,
             help="A path to a text file containing a list of team names to choose from in order. Takes precedence over --team-name.",
+        )
+        parser.add_argument(
+            "--round",
+            type=int,
+            default=None,
+            help="For standard battles: determines which battlers are chosen.",
         )
         parser.add_argument(
             "--save-replay",
@@ -184,6 +191,7 @@ class _FoulPlayConfig:
         self.run_count = args.run_count
         self.team_name = args.team_name or self.pokemon_format
         self.team_list = args.team_list
+        self.round = args.round
         self.user_to_challenge = args.user_to_challenge
         self.save_replay = SaveReplay[args.save_replay]
         self.room_name = args.room_name

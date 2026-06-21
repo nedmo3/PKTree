@@ -624,17 +624,19 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
             await ps_websocket_client.leave_battle(battle.battle_tag)
             return winner
         else:
+            action_required = await async_update_battle(battle, msg, False)
+
             # try and get the request that p3/worker received from websocket
             workerRequestMsg = None
             try :
-                workerRequestMsg = await asyncio.wait_for(request_queue.get(), timeout=10.0)
-                logger.warning("!! popped msg from request_queue: {}".format(workerRequestMsg))
+                workerRequestMsg = await asyncio.wait_for(request_queue.get(), timeout=4.0)
+                logger.info("Received msg from worker : {}".format(workerRequestMsg))
             except : 
-                logger.warning("Timed out waiting for request received from worker")
+                logger.info("Nothing to read from worker")
             
-            action_required = await async_update_battle(battle, msg, False)
             action_required_worker = False
             if workerRequestMsg is not None : 
+                # this should always be true, since we only send msg to master when it's a |request|
                 action_required_worker = await async_update_battle(battle, workerRequestMsg, True)
             
             if (action_required_worker and not battle.user_2.wait) or (action_required and not battle.user_1.wait) :
@@ -644,7 +646,6 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
                 battle.user_2.wait = True
             else : 
                 logger.warning("nothing for worker to do. rqid: {}. wait?{}. action_required_worker?{}".format(battle.user_2.rqid,battle.user_2.wait, action_required_worker))
-                await command_queue.put(None)
             if action_required and not battle.user_1.wait :
                 await ps_websocket_client.send_message(battle.battle_tag, best_move[0])
                 battle.user_1.wait = True
@@ -656,6 +657,7 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
 async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue):
     
     battle = await start_random_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
+    need_to_respond = False
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):
@@ -681,19 +683,25 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
             await ps_websocket_client.leave_battle(battle.battle_tag)
             return winner
         else:
-            # TODO make reader version of this. For now, just send every message and it shouldn't process any battle updates 
-            if send_to_master(battle, msg) : 
-                logger.warning("put msg on req queue",msg)
+            # TODO make reader version of this. For now, just send every message and it shouldn't process any battle updates
+
+            # if we get a |request| from the server
+            got_req = send_to_master(battle,msg)
+
+            if got_req : 
+                logger.info("put msg on req queue")
+                need_to_respond = True
                 await request_queue.put(msg)
             else: 
-                logger.warning("didn't put msg on queue",msg)
-            try : 
-                command = await asyncio.wait_for(command_queue.get(), timeout=10.0)
-                if command : 
-                    logger.warning(f"Received command from queue: {command}")
-                    await ps_websocket_client.send_message(battle.battle_tag, command[1])
-                else : 
-                    logger.warning("Worker thread taking no action")
-            except :
-                # if we get nothing from command_queue after 15 seconds
-                logger.error("No communication received from master thread!")
+                logger.debug("Message received wasn't a request")
+            need_to_respond = got_req or need_to_respond
+            if need_to_respond :
+                try : 
+                    command = await asyncio.wait_for(command_queue.get(), timeout=3.0)
+                    if command : 
+                        logger.info(f"Received command from queue: {command}")
+                        await ps_websocket_client.send_message(battle.battle_tag, command[1])
+                        need_to_respond = False
+                except :
+                    # if we get nothing from command_queue after
+                    logger.warning("Need to respond, but nothing received from master")

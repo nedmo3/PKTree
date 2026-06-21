@@ -1,6 +1,34 @@
-sudo apt update
-sudo apt -y install nodejs npm git
+#!/bin/bash
+set -euxo pipefail
+apt update
+apt -y install git build-essential
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt -y install nodejs
+
+cd /home/ubuntu
 git clone https://github.com/nedmo3/PKTree.git
 cd PKTree/pokemon-showdown
 mkdir -p logs/{chat,repl,ladder,modlog}
-node pokemon-showdown
+npm install --no-audit --no-fund
+chown -R ubuntu:ubuntu /home/ubuntu/PKTree
+
+cat >/etc/systemd/system/showdown.service <<'EOF'
+[Unit]
+Description=Pokemon Showdown
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/PKTree/pokemon-showdown
+ExecStart=/usr/bin/node pokemon-showdown start --no-security
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now showdown

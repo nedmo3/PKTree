@@ -181,29 +181,46 @@ def _more_than_1_pokemon_with_4x_weakness(team: list[Pokemon]) -> bool:
     return False
 
 
-# take a Battle and fill in the unrevealed pkmn for the opponent
+def _battler_known_team_size(battler) -> int:
+    """Number of pokemon we already know on a battler's team (active + reserve)."""
+    size = len(battler.reserve)
+    if battler.active is not None:
+        size += 1
+    return size
+
+
+# take a Battle and fill in the unrevealed pkmn for the opposing side
 def populate_randombattle_unrevealed_pkmn(battle: Battle):
-    num_revealed_pkmn = 0
-    existing_pkmn = []
-    for pkmn in battle.opponent_1.reserve:
-        existing_pkmn.append(pkmn)
-        num_revealed_pkmn += 1
-    for pkmn in battle.opponent_2.reserve:
-        existing_pkmn.append(pkmn)
-        num_revealed_pkmn += 1
-    if battle.opponent_1.active is not None:
-        existing_pkmn.append(battle.opponent_1.active)
-        num_revealed_pkmn += 1
-    if battle.opponent_2.active is not None:
-        existing_pkmn.append(battle.opponent_2.active)
-        num_revealed_pkmn += 1
+    # In a multi battle the opposing side is two SEPARATE players (opponent_1 / p2a and
+    # opponent_2 / p4b), each with their own team -- not one shared team of 6. Fill each
+    # opponent's hidden slots independently.
+    #
+    # Every player in a random multi battle has the same team size, and our own side is
+    # fully known from our request, so infer the per-player team size from our team rather
+    # than assuming 6.
+    team_size = max(
+        _battler_known_team_size(battle.user_1),
+        _battler_known_team_size(battle.user_2),
+    )
+    if team_size <= 0:
+        team_size = 6  # defensive fallback; shouldn't happen once our request is known
 
-    if num_revealed_pkmn == 6:
-        return
+    for opponent in (battle.opponent_1, battle.opponent_2):
+        # Seed with this opponent's already-revealed team so sampled pokemon respect the
+        # per-team species/composition constraints in sample_randombattle_pokemon.
+        existing_pkmn = list(opponent.reserve)
+        if opponent.active is not None:
+            existing_pkmn.append(opponent.active)
 
-    logger.info("Sampling {} unrevealed pokemon".format(6 - num_revealed_pkmn))
-    while num_revealed_pkmn < 6:
-        pkmn = sample_randombattle_pokemon(existing_pkmn)
-        existing_pkmn.append(pkmn)
-        battle.opponent_1.reserve.append(pkmn)
-        num_revealed_pkmn += 1
+        if len(existing_pkmn) >= team_size:
+            continue
+
+        logger.info(
+            "Sampling {} unrevealed pokemon for {}".format(
+                team_size - len(existing_pkmn), opponent.name
+            )
+        )
+        while len(existing_pkmn) < team_size:
+            pkmn = sample_randombattle_pokemon(existing_pkmn)
+            existing_pkmn.append(pkmn)
+            opponent.reserve.append(pkmn)

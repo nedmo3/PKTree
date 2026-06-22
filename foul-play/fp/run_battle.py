@@ -53,14 +53,11 @@ def _showdown_target_loc(token: str, battle, acting_user):
 
     Field layout: own side.active = [user_1 / p1a, user_2 / p3b];
                   foe.active     = [opponent_1 / p2a, opponent_2 / p4b].
-    Per Showdown's getAtLoc convention a foe at side-index i is targeted with
-    loc = num_foe_active - i (foes are numbered in reverse), and an ally at index i with
-    loc = -(i + 1). For a fixed 2v2 that yields:
-        opponent_1 (p2a) -> +2,  opponent_2 (p4b) -> +1,
+    Verified against pokemon-showdown/sim/pokemon.ts `getLocOf`: in this multi battle
+    (4 sides, each 1 active; side n: p1=0, p2=1, p3=2, p4=3) the target numbers are
+        opponent_1 (p2a) -> +1,  opponent_2 (p4b) -> +2,
         user_1 (p1a)     -> -1,  user_2 (p3b)     -> -2
-
-    NOTE: verify the foe reversal against a live `|error|` response. If foes turn out to be
-    numbered left-to-right (p2a -> +1, p4b -> +2), swap the two foe return values below.
+    and these are the same regardless of which allied slot is acting.
     """
     is_user_1 = acting_user is battle.user_1
 
@@ -78,9 +75,9 @@ def _showdown_target_loc(token: str, battle, acting_user):
 
     # Absolute battler -> Showdown target location.
     if target is battle.opponent_1:
-        return "+2"
-    if target is battle.opponent_2:
         return "+1"
+    if target is battle.opponent_2:
+        return "+2"
     if target is battle.user_1:
         return "-1"
     if target is battle.user_2:
@@ -519,7 +516,7 @@ async def start_standard_battle_reader(
     return battle
 
 
-async def start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue):
+async def start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue, greeting = None):
     if "random" in pokemon_battle_type:
         battle = await start_random_battle(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     else:
@@ -527,9 +524,9 @@ async def start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, com
             ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue
         )
 
-    await ps_websocket_client.send_message(battle.battle_tag, ["hf"])
-    #await command_queue.put([battle.battle_tag, ["hf"]])
-    await ps_websocket_client.send_message(battle.battle_tag, ["/timer on"])
+    await ps_websocket_client.send_message(battle.battle_tag, [greeting])
+    # await command_queue.put([battle.battle_tag, ["hf"]])
+    # await ps_websocket_client.send_message(battle.battle_tag, ["/timer on"])
 
     return battle
 
@@ -537,9 +534,7 @@ async def start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, com
 async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue, greeting = None):
     # Multi-battle: team_dicts is [bot1_dict, bot2_dict]. The master tracks both allied
     # slots (user_1 = p1 = bot1, user_2 = p3 = bot2), so pass both teams through.
-    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue)
-    if greeting : 
-        await ps_websocket_client.send_message(battle.battle_tag, greeting)
+    battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue, greeting = greeting)
     while True:
         msg = await ps_websocket_client.receive_message()
         if battle_is_finished(battle.battle_tag, msg):

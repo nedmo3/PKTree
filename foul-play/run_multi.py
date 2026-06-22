@@ -140,7 +140,7 @@ async def run_foul_play_multi():
     """
     team_maker = TeamMaker()
     opps = team_maker.get_opponents(battle_number=FoulPlayConfig.round, team_size=2)
-    msg = f"Round {FoulPlayConfig.round} : You are challenged by {opps[0].prettyName} and {opps[1].prettyName}"
+    msg = f"Round {FoulPlayConfig.round} : You are challenged by {opps[0].prettyName()} and {opps[1].prettyName()}"
 
     # Each bot's team comes from one of the TeamMaker trainers, converted to foul-play's
     # formats: team_packs feed update_team(), team_dicts feed the search.

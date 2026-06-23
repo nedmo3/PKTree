@@ -63,7 +63,7 @@ async def bot_challenger(original_pokedex, original_move_json, command_queue, re
         
         if FoulPlayConfig.requires_team():
             opps = team_maker.get_opponents(battle_number=battle_number, team_size=2)
-            msg = f"Round {FoulPlayConfig.round} : You are challenged by {opps[0].prettyName()} and {opps[1].prettyName()}"
+            msg = f"Round {battle_number} : You are challenged by {opps[0].prettyName()} and {opps[1].prettyName()}"
 
             # Each bot's team comes from one of the TeamMaker trainers, converted to foul-play's
             # formats: team_packs feed update_team(), team_dicts feed the search.

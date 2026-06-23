@@ -83,6 +83,7 @@ class _FoulPlayConfig:
     team_list: str = None
     round: int = None
     user_to_challenge: str
+    user_to_challenge_2: str = None
     save_replay: SaveReplay
     room_name: str
     log_level: str
@@ -111,6 +112,11 @@ class _FoulPlayConfig:
             "--user-to-challenge",
             default=None,
             help="If bot_mode is `challenge_user`, this is required",
+        )
+        parser.add_argument(
+            "--user-to-challenge-2",
+            default=None,
+            help="Optional second user to challenge (multi battle ally opponent)",
         )
         parser.add_argument(
             "--pokemon-format", required=True, help="e.g. gen9randombattle"
@@ -193,6 +199,7 @@ class _FoulPlayConfig:
         self.team_list = args.team_list
         self.round = args.round
         self.user_to_challenge = args.user_to_challenge
+        self.user_to_challenge_2 = args.user_to_challenge_2
         self.save_replay = SaveReplay[args.save_replay]
         self.room_name = args.room_name
         self.log_level = args.log_level

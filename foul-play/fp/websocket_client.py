@@ -141,6 +141,14 @@ class PSWebsocketClient:
         await self.send_message("", message)
         self.last_challenge_time = time.time()
 
+    # pos e.g. "p4"
+    # /msgroom battle-gen7multibattle-349,/invitebattle {username}, p4
+    async def add_to_multi_battle(self, msgroom, user_to_challenge, pos) : 
+        logger.info("Challenging {}...".format(user_to_challenge))
+        message = ["/msgroom {},/invitebattle {}, {}".format(msgroom, user_to_challenge, pos)]
+        await self.send_message("", message)
+        self.last_challenge_time = time.time()
+
     async def accept_challenge(self, battle_format, room_name):
         if room_name is not None:
             await self.join_room(room_name)

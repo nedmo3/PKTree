@@ -256,7 +256,7 @@ exports.disablebasicnamefilter = false;
 /**
  * allowrequestingties - enables the use of `/offerdraw` and `/acceptdraw`
  */
-exports.allowrequestingties = true;
+exports.allowrequestingties = false;
 
 /**
  * report joins and leaves - shows messages like "<USERNAME> joined"
@@ -303,7 +303,7 @@ exports.monitorminpunishments = 3;
 /**
  * Turns off all time-based throttles - rename, challenges, laddering, etc.
  */
-exports.nothrottle = false;
+exports.nothrottle = true;
 
 /**
  * Removes all ip-based alt checking.

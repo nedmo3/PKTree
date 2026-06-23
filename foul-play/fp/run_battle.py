@@ -328,6 +328,20 @@ async def start_battle_common(
     # |player|p1|OpponentName|2|' TODO CHECK THIS
     while True:
         msg = await ps_websocket_client.receive_message()
+        # once the first player joins, add in our other bot.
+        if "|player|" in msg and "p2" in msg and inviteOtherBot : 
+            msgroom = msg.split("\n")[0][1:]
+            await ps_websocket_client.add_to_multi_battle(
+            msgroom,
+            FoulPlayConfig.bot2username,
+            "p3",
+            )
+            if FoulPlayConfig.user_to_challenge_2 : 
+                await ps_websocket_client.add_to_multi_battle(
+                    msgroom,
+                    FoulPlayConfig.user_to_challenge_2,
+                    "p4",
+                )
         if "|player|" in msg and "p4" in msg:
             battle.opponent_1.name = "p2a"
             battle.opponent_2.name = "p4b"
@@ -373,7 +387,7 @@ async def get_first_request_json_worker(ps_websocket_client: PSWebsocketClient, 
 async def start_random_battle(
     ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue, request_queue
 ):
-    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
+    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue, inviteOtherBot=True)
     battle.battle_type = BattleType.RANDOM_BATTLE
     RandomBattleTeamDatasets.initialize(battle.generation)
 
@@ -443,7 +457,7 @@ async def start_random_battle_reader(
 async def start_standard_battle(
     ps_websocket_client: PSWebsocketClient, pokemon_battle_type, team_dicts, command_queue, request_queue
 ):
-    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue)
+    battle, msg = await start_battle_common(ps_websocket_client, pokemon_battle_type, command_queue, inviteOtherBot=True)
     battle.user_1.team_dict = team_dicts[0]
     battle.user_2.team_dict = team_dicts[1]
     battle.battle_type = BattleType.STANDARD_BATTLE
@@ -606,6 +620,7 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
     else:
         battle = await start_standard_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     need_to_respond = False
+    last_req = None
     while True:
         msg = None
         try : 
@@ -642,9 +657,14 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
                 # if we get a |request| from the server
                 got_req = send_to_master(battle,msg)
 
+                if "|error|" in msg :
+                    got_req = True
+                    msg = last_req
+
                 if got_req : 
                     logger.info("put msg on req queue")
                     need_to_respond = True
+                    last_req = msg
                     await request_queue.put(msg)
                 else: 
                     logger.debug("Message received wasn't a request")

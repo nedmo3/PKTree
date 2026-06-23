@@ -309,7 +309,7 @@ async def get_battle_tag_and_opponent(ps_websocket_client: PSWebsocketClient):
 
 
 async def start_battle_common(
-    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue
+    ps_websocket_client: PSWebsocketClient, pokemon_battle_type, command_queue, inviteOtherBot = False
 ):
     battle_tag, opponent_name = await get_battle_tag_and_opponent(ps_websocket_client)
     if FoulPlayConfig.log_to_file:
@@ -536,8 +536,12 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
     # slots (user_1 = p1 = bot1, user_2 = p3 = bot2), so pass both teams through.
     battle = await start_battle(ps_websocket_client, pokemon_battle_type, team_dicts, command_queue, request_queue, greeting = greeting)
     while True:
-        msg = await ps_websocket_client.receive_message()
-        if battle_is_finished(battle.battle_tag, msg):
+        msg = None
+        try : 
+            msg = await asyncio.wait_for(ps_websocket_client.receive_message(), timeout=1.0 )
+        except : 
+            pass
+        if msg and battle_is_finished(battle.battle_tag, msg):
             winner = (
                 msg.split(constants.WIN_STRING)[-1].split("\n")[0].strip()
                 if constants.WIN_STRING in msg
@@ -560,18 +564,23 @@ async def pokemon_battle(ps_websocket_client, pokemon_battle_type, team_dicts, c
             await ps_websocket_client.leave_battle(battle.battle_tag)
             return winner
         else:
-            action_required = await async_update_battle(battle, msg, False)
-
             # try and get the request that p3/worker received from websocket
             workerRequestMsg = None
             try :
-                workerRequestMsg = await asyncio.wait_for(request_queue.get(), timeout=4.0)
-                logger.info("Received msg from worker : {}".format(workerRequestMsg))
+                workerRequestMsg = await asyncio.wait_for(request_queue.get(), timeout=1.0)
+                logger.debug("Received msg from worker : {}".format(workerRequestMsg))
             except : 
-                logger.info("Nothing to read from worker")
+                logger.debug("Nothing to read from worker")
+
+            if msg : 
+                action_required = await async_update_battle(battle, msg, False)
+            else : 
+                action_required = False
+
+            
             
             action_required_worker = False
-            if workerRequestMsg is not None : 
+            if workerRequestMsg : 
                 # this should always be true, since we only send msg to master when it's a |request|
                 action_required_worker = await async_update_battle(battle, workerRequestMsg, True)
             
@@ -598,8 +607,13 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
         battle = await start_standard_battle_reader(ps_websocket_client, pokemon_battle_type, command_queue, request_queue)
     need_to_respond = False
     while True:
-        msg = await ps_websocket_client.receive_message()
-        if battle_is_finished(battle.battle_tag, msg):
+        msg = None
+        try : 
+            msg = await asyncio.wait_for(ps_websocket_client.receive_message(), timeout=1.0 )
+        except : 
+            pass
+
+        if msg and battle_is_finished(battle.battle_tag, msg):
             winner = (
                 msg.split(constants.WIN_STRING)[-1].split("\n")[0].strip()
                 if constants.WIN_STRING in msg
@@ -624,19 +638,20 @@ async def pokemon_battle_reader(ps_websocket_client, pokemon_battle_type, comman
         else:
             # TODO make reader version of this. For now, just send every message and it shouldn't process any battle updates
 
-            # if we get a |request| from the server
-            got_req = send_to_master(battle,msg)
+            if msg : 
+                # if we get a |request| from the server
+                got_req = send_to_master(battle,msg)
 
-            if got_req : 
-                logger.info("put msg on req queue")
-                need_to_respond = True
-                await request_queue.put(msg)
-            else: 
-                logger.debug("Message received wasn't a request")
+                if got_req : 
+                    logger.info("put msg on req queue")
+                    need_to_respond = True
+                    await request_queue.put(msg)
+                else: 
+                    logger.debug("Message received wasn't a request")
             need_to_respond = got_req or need_to_respond
             if need_to_respond :
                 try : 
-                    command = await asyncio.wait_for(command_queue.get(), timeout=3.0)
+                    command = await asyncio.wait_for(command_queue.get(), timeout=1.0)
                     if command : 
                         logger.info(f"Received command from queue: {command}")
                         await ps_websocket_client.send_message(battle.battle_tag, command[1])

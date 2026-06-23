@@ -137,7 +137,29 @@ class Trainer:
 
     # sets the active team to a new random sample of the whole set of possibilities
     def chooseRandomTeam(self, team_size) :
-        self.active_team = random.sample(self.team, team_size)
+        i = 0 # odds of a bad team are low, so I'm going with low effort code :)
+        while i < 25 : 
+            self.active_team = random.sample(self.team, team_size)
+            if self.teamCheck() : 
+                return
+            i += 1
+    
+    # Returns true if there aren't any issues with the team (mainly just having the same pokemon multiple times)
+    def teamCheck(self) :
+        for pkmn_1 in self.active_team : 
+            for pkmn_2 in self.active_team : 
+                if pkmn_1.id == pkmn_2.id :
+                    continue
+                if pkmn_1.name == pkmn_2.name :
+                    return False
+                if "-mega" in pkmn_1.name and "-mega" in pkmn_2.name : 
+                    return False
+        # we're good. Now need to remove "-mega" so it doesn't send an already mega evolved pkmn out
+        for p in self.active_team : 
+            if "-mega" in p.name : 
+                p.name = p.name.split("-")[0]
+        return True
+
 
     def prettyName(self) :
         return f"{self.prefix} {self.name}"
@@ -163,6 +185,14 @@ class TeamMaker :
             if '(' in k : 
                 print(k)
         self.load_trainers_from_csv(trainer_input_file)
+
+    # Checks that two trainers aren't running the same pokemon. True -> no issues.
+    def duo_check(self, trainer_1, trainer_2) : 
+        for pkmn_1 in trainer_1.active_team : 
+            for pkmn_2 in trainer_2.active_team : 
+                if pkmn_1.name == pkmn_2.name :
+                    return False
+        return True
         
     # what we'll want to call to get our opponents based on the battle number
     def get_opponents(self, battle_number=1, team_size = 2) : 
@@ -184,10 +214,14 @@ class TeamMaker :
             list_to_choose = self.trainer_list_41_50
         else : 
             list_to_choose = self.trainer_list_51
-        opps = random.sample(list_to_choose, 2)
-        for opp in opps : 
-            opp.chooseRandomTeam(team_size)
-        return [opps[0], opps[1]]
+        tries = 0
+        while tries < 39 : 
+            opps = random.sample(list_to_choose, 2)
+            for opp in opps : 
+                opp.chooseRandomTeam(team_size)
+            if self.duo_check(opps[0], opps[1]) :
+                return opps
+            tries += 1
 
 
     def write_team_to_file(pokemon_dict, pokemon_list, filename):
